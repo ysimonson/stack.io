@@ -13,6 +13,7 @@ library has been implemented to be transport agnostic. So other transports will
 follow.
 
 Features:
+
  * EventEmitter-like implementation
  * RPC, expose and call a Service from anywhere
  * Transport agnostic (multi-transport will follow)
