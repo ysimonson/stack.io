@@ -115,7 +115,7 @@ stackio.prototype._afterEmit = function(args) {}
 stackio.prototype._beforeRemoveAll = function(args) {}
 
 stackio.prototype._afterRemoveAll = function(args) {
-    this.emit('_listeners_removed', args[0]);
+    this.emit('_listeners_removed', args[0].substring(this._prefix.length));
 }
 
 /**
