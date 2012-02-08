@@ -73,8 +73,7 @@ stackio.prototype.call = function (service, method) {
             responseCallback = null;
         var args = [];
         // converting arguments object to an array
-        for (var i in arguments)
-            args.push(arguments[i]);
+        args = g_objValues(arguments);
         var data = {
             method: method,
             args: args,
@@ -135,4 +134,12 @@ g_debug = function (data) {
 
 g_error = function (data) {
     console.log('# ERROR::' + Date.now() + ':: ' + data);
+}
+
+g_objValues = function (obj) {
+    var result = [];
+    for (var k in obj) {
+        result.push(obj[k]);
+    }
+    return result;
 }
