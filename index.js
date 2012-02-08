@@ -61,6 +61,7 @@ stackio.prototype.expose = function (service, obj) {
         });
         method.apply(this, data.args);
     });
+    this.emit('_new_rpc_service', service);
 };
 
 stackio.prototype.call = function (service, method) {
@@ -100,7 +101,6 @@ stackio.prototype.call = function (service, method) {
     }
 };
 
-
 /**
  * Browser support
  */
@@ -117,9 +117,6 @@ stackio.prototype.browser = function (app) {
  */
 
 g_createMessage = function (data) {
-    if (data instanceof Array && data.length == 1) {
-        data = data[0];
-    }
     return {
         data: data,
         version: 1
