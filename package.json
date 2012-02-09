@@ -21,10 +21,11 @@
         "lib" : "./lib"
     },
     "dependencies" : {
-        "redis" : "0.6.x"
+        "redis" : "0.6.x",
+        "socket.io" : ">=0.8.7"
     },
     "scripts" : {
-        "test" : "mocha tests/*.js"
+        "test" : "tap test/"
     },
     "engine" : {
         "node" : ">=0.4.0"
