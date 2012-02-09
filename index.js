@@ -72,9 +72,7 @@ stackio.prototype.call = function (service, method) {
             delete arguments[arguments.length - 1];
         else
             responseCallback = null;
-        var args = [];
-        // converting arguments object to an array
-        args = g_objValues(arguments);
+        var args = g_objValues(arguments);
         var data = {
             method: method,
             args: args,
