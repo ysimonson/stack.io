@@ -46,6 +46,8 @@ function stackio(options) {
  * High level methods for RPC
  */
 
+stackio.prototype.rpcChannel = 'rpc_response_channel';
+
 stackio.prototype.expose = function (service, obj) {
     var self = this;
     this.on('rpc_' + service, function (data) {
@@ -55,9 +57,10 @@ stackio.prototype.expose = function (service, obj) {
         data.args.push(function (response, keepOpen) {
             var m = {
                 close: !keepOpen,
-                data: response
+                data: response,
+                id : data.id
             };
-            self._replyTransport.emit(data.responseChannel, m, keepOpen);
+            self._replyTransport.emit(self.rpcChannel, m, keepOpen);
         });
         method.apply(this, data.args);
     });
@@ -76,23 +79,26 @@ stackio.prototype.call = function (service, method) {
         var data = {
             method: method,
             args: args,
-            responseChannel: 'response_' + Math.floor(Math.random() * 1000001)
+            id : g_nextId()
         };
         if (responseCallback) {
             // In case the callback never used the response channel, we set a
             // timeout to destroy it after 30 seconds
             var replied = false;
-            self._replyTransport.on(data.responseChannel, function (m) {
-                replied = true;
-                responseCallback(m.data, !m.close);
-                if (m.close === true)
-                    self._replyTransport.removeAllListeners(data.responseChannel);
-            });
+            function cb(m) {
+                if (m.id == data.id) {
+                    replied = true;
+                    responseCallback(m.data, !m.close);
+                    if (m.close === true)
+                        self._replyTransport.removeListener(self.rpcChannel, cb);
+                }
+            }
+            self._replyTransport.on(self.rpcChannel, cb);
             setTimeout(function () {
                 if (replied === true)
                     return;
                 g_debug('Cleaning responseChannel');
-                self._replyTransport.removeAllListeners(data.responseChannel);
+                self._replyTransport.removeListener(self.rpcChannel, cb);
             }, 30 * 1000);
         }
         self.emit('rpc_' + service, data);
@@ -155,3 +161,9 @@ g_objValues = function (obj) {
     }
     return result;
 }
+
+g_nextId = function() {
+    return g_nextId.id++;
+}
+
+g_nextId.id = 1;
