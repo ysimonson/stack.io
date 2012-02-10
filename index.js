@@ -163,7 +163,5 @@ g_objValues = function (obj) {
 }
 
 g_nextId = function() {
-    return g_nextId.id++;
+    return Math.floor(Math.random() * 1000001);
 }
-
-g_nextId.id = 1;
