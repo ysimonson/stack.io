@@ -106,23 +106,6 @@ stackio.prototype.call = function (service, method) {
 };
 
 /**
- * Hooks on transport-related methods
- */
-
-stackio.prototype._beforeOn = function(args) {
-    this.emit('_listen', args[0]);
-}
-
-stackio.prototype._afterOn = function(args) {}
-stackio.prototype._beforeEmit = function(args) {}
-stackio.prototype._afterEmit = function(args) {}
-stackio.prototype._beforeRemoveAll = function(args) {}
-
-stackio.prototype._afterRemoveAll = function(args) {
-    this.emit('_listeners_removed', args[0].substring(this._prefix.length));
-}
-
-/**
  * Browser support
  */
 
