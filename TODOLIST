@@ -1,4 +1,4 @@
-* Improve channel resource usage on the RPC layer to decrease the number of
-  transport clients.
+* Internal events.
+* Callback on RPC service exposition (when it is ready to be used)
 * Implement the ZeroMQ transport.
 * Implement the RabbitMQ transport.
