@@ -1,6 +1,6 @@
 {
     "name" : "stack.io",
-    "version" : "0.1.4",
+    "version" : "0.1.5",
     "description" : "Distributed Event library",
     "main" : "./index.js",
     "keywords" : [
