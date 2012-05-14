@@ -34,5 +34,9 @@
         "name" : "Samuel Alba",
         "email" : "sam@dotcloud.com",
         "url" : "http://www.dotcloud.com/"
-    }
+    },
+    "contributors" : [{
+        "name": "Joffrey Fuhrer",
+        "email": "joffrey@dotcloud.com"
+    }]
 }
