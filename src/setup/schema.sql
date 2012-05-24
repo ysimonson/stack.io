@@ -14,7 +14,7 @@ CREATE TABLE user_groups (
     group_id SMALLINT UNSIGNED REFERENCES groups(id)
 );
 
-CREATE TABLE privileges (
+CREATE TABLE permissions (
     group_id SMALLINT UNSIGNED REFERENCES groups(id),
     pattern TEXT NOT NULL
 );

@@ -17,13 +17,13 @@
     },
 
     "auth": {
-        "type": "base",
+        "type": "mysql",
         "host": "localhost",
         "port": 3306,
-        "database": "zerorpc-auth",
-        "user": "zerorpc-auth",
+        "database": "stackio_auth",
+        "user": "stackio_auth",
         "password": "volkswagon",
         "rounds": 10,
-        "privilegesSleepTime": 1000
+        "permissionsSleepTime": 1000
     }
 }

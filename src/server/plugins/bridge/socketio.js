@@ -40,9 +40,9 @@ function invoke(channel, service, method, args, options) {
     //TODO: validate all the things
 
     if(!self.user) {
-        return self.emit(channel, "Not authenticated", null, false);
+        return self.emit("response", channel, "Not authenticated", null, false);
     } else if(!self.user.canInvoke(service, method)) {
-        return self.emit(channel, "Not permitted", null, false);
+        return self.emit("response", channel, "Not permitted", null, false);
     }
 
     self.backend.invoke(self.user, service, method, args, options, function(error, result, more) {

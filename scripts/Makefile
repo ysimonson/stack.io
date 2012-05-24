@@ -1,4 +1,4 @@
-all: clean build-server build-client build-apps
+all: clean build-server build-client build-utils build-apps
 
 clean:
 	rm -rf bin/
@@ -13,6 +13,9 @@ build-server:
 build-client:
 	cp -r src/client bin/client
 	scripts/inject lib/client/socket.io.js '' bin/client/stack.io.js
+
+build-utils:
+	cp -r src/authorizer bin/authorizer
 
 build-apps:
 	cp -r apps bin/apps

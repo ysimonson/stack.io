@@ -1,24 +1,14 @@
 {
-    "users": {
-        "test": {
-            "groups": ["test"],
-            "password": "test-password"
-        },
-
-        "demo": {
-            "groups": ["demo"],
-            "password": "demo-password"
-        }
-    },
+    "users": [{
+        "groups": ["test"],
+        "token": "test:test-password"
+    },{
+        "groups": ["demo"],
+        "token": "demo:demo-password"
+    }],
 
     "groups": {
-        "test": {
-            "simpleKeyPermissions": ["does not exist"],
-            "complexKeyPermissions": ["simple ..", "complex ..", "random/.+", "patterns/.+", "ember-data/.+"]
-        },
-
-        "demo": {
-            "complexKeyPermissions": [".+"]
-        }
+        "test": ["test.*"],
+        "demo": ["*"]
     }
 }

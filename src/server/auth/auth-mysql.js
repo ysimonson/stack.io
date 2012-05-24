@@ -4,10 +4,9 @@ var mysql = require("mysql"),
     base = require("./auth-base"),
     util = require("util"),
     crypto = require("crypto"),
-    str = require("../str"),
     _ = require("underscore");
 
-var GET_PRIVILEGES_QUERY = "SELECT privileges.pattern AS pattern FROM privileges, user_groups WHERE privileges.group_id=user_groups.group_id AND user_groups.user_id=?";
+var GET_PERMISSIONS_QUERY = "SELECT permissions.pattern AS pattern FROM permissions, user_groups WHERE permissions.group_id=user_groups.group_id AND user_groups.user_id=?";
 var GET_USER_ID_QUERY = "SELECT id FROM users WHERE token_hash=? LIMIT 1";
 
 function Authorizer(config) {
@@ -25,7 +24,7 @@ Authorizer.prototype.authenticate = function(token, callback) {
     var hash = sha.digest('base64');
 
     var updatePermissions = function(user, callback) {
-        self._client.query(GET_PRIVILEGES_QUERY, [user.id], function(error, results) {
+        self._client.query(GET_PERMISSIONS_QUERY, [user.id], function(error, results) {
             if(error) {
                 return callback(error);
             }
@@ -44,9 +43,11 @@ Authorizer.prototype.authenticate = function(token, callback) {
 
             setInterval(function() {
                 updatePermissions(user, function(error) {
-                    console.error("Could not update user permissions:", error);
+                    if(error) {
+                        console.error("Could not update user permissions:", error);
+                    }
                 });
-            }, config.privilegesSleepTime);
+            }, self.config.permissionsSleepTime);
 
             callback(null, user);
         });
@@ -59,7 +60,7 @@ Authorizer.prototype.authenticate = function(token, callback) {
         } else if(!results || results.length == 0) {
             callback("Authentication failed", self.unauthenticated());
         } else {
-            var user = new base.User(reuslts[0].id, []);
+            var user = new base.User(results[0].id, []);
             initialUpdatePermissions(user);
         }
     });

@@ -1,9 +1,7 @@
 #!/bin/sh
 
 function seed {
-    echo "SEED"
-    #TODO
-    #node bin/auth-engine/app bin/apps/seed.json &
+    python bin/authorizer/app.py bin/server/config.json bin/apps/seed.json &
 }
 
 function server {
