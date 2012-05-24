@@ -1,0 +1,89 @@
+<html>
+    <head>
+        <title>Stack.io dashboard</title>
+
+        <link type="text/css" rel="stylesheet" href="lib/bootstrap/css/bootstrap.min.css" />
+        <link type="text/css" rel="stylesheet" href="css/main.css" />
+
+        <script type="text/javascript" src="lib/jquery.min.js"></script>
+        <script type="text/javascript" src="lib/jquery.cookie.js"></script>
+        <script type="text/javascript" src="lib/bootstrap/js/bootstrap.min.js"></script>
+        <script type="text/javascript" src="stack.io.js"></script>
+        <script type="text/javascript" src="js/core.js"></script>
+
+        <style>
+        body {
+            padding: 1em;
+        }
+
+        h1 {
+            text-align: center;
+        }
+        </style>
+    </head>
+    <body>
+        <div class="row">
+            <div class="span4">
+                <h1>Stack.io dashboard</h1>
+
+                <ul id="nav" class="nav nav-pills nav-stacked">
+                    <li class="active">
+                        <a href="#authorization" data-toggle="tab">Authorization</a>
+                    </li>
+                    <li>
+                        <a href="#introspector" data-toggle="tab">Introspector</a>
+                    </li>
+                    <li>
+                        <a href="#rpc" data-toggle="tab">RPC</a>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="tab-content span8">
+                <div id="authorization" class="tab-pane active">
+                    Authorization
+                </div>
+
+                <div id="introspector" class="tab-pane">
+                    Introspector
+                </div>
+
+                <div id="rpc" class="tab-pane">
+                    RPC
+                </div>
+            </div>
+        </div>
+
+        <div id="loginModal" class="modal" style="display:none">
+            <div class="modal-header">
+                <button class="close" data-dismiss="modal">x</button>
+                <h3>Login</h3>
+            </div>
+
+            <div class="modal-body">
+                <p>You must be logged in to use the stack.io dashboard</p>
+
+                <form id="loginForm" class="form-horizontal">
+                    <fieldset>
+                        <div class="control-group">
+                            <label class="control-label" for="username">Username</label>
+                            <div class="controls">
+                                <input id="username" class="input-xlarge focused" type="text" />
+                            </div>
+                        </div>
+                        <div class="control-group">
+                            <label class="control-label" for="password">Password</label>
+                            <div class="controls">
+                                <input id="password" class="input-xlarge" type="text" />
+                            </div>
+                        </div>
+                    </fieldset>
+                </form>
+            </div>
+
+            <div class="modal-footer">
+                <a id="doLogin" href="#" class="btn btn-primary">Login</a>
+            </div>
+        </div>
+    </body>
+</html>
