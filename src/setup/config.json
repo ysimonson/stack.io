@@ -1,0 +1,29 @@
+{
+    "debug": true,
+    "port": 8080,
+
+    "backend": {
+        "registrarEndpoint": "tcp://0.0.0.0:27615",
+        "registrarConfig": {},
+        "clientConfig": {}
+    },
+
+    "plugins": {
+        "bridge/socketio": {},
+
+        "bridge/http": {
+            "origin": "*"
+        }
+    },
+
+    "auth": {
+        "type": "base",
+        "host": "localhost",
+        "port": 3306,
+        "database": "zerorpc-auth",
+        "user": "zerorpc-auth",
+        "password": "volkswagon",
+        "rounds": 10,
+        "privilegesSleepTime": 1000
+    }
+}

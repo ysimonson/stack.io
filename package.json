@@ -1,42 +1,34 @@
 {
     "name" : "stack.io",
-    "version" : "0.1.5",
-    "description" : "Distributed Event library",
-    "main" : "./index.js",
+    "version" : "0.2.0",
+    "description" : "ZeroRPC bridge to the web",
+    
     "keywords" : [
         "message passing",
         "rpc",
-        "redis",
-        "push pull",
-        "pub sub",
         "remote",
         "communication"
     ],
+    
     "repository" : {
         "type" : "git",
-        "url" : "http://github.com/dotcloud/stack.io.git"
+        "url" : "http://github.com/ysimonson/stack.io"
     },
-    "directories" : {
-        "examples" : "./examples",
-        "lib" : "./lib"
-    },
-    "dependencies" : {
-        "redis" : "0.6.x",
-        "socket.io" : ">=0.8.7"
-    },
-    "scripts" : {
-        "test" : "tap test/"
-    },
+    
     "engine" : {
-        "node" : ">=0.4.0"
+        "node" : ">=0.6.11"
     },
-    "author" : {
-        "name" : "Samuel Alba",
-        "email" : "sam@dotcloud.com",
-        "url" : "http://www.dotcloud.com/"
-    },
+
+    "author" : "dotCloud <opensource@dotcloud.com>",
+    
     "contributors" : [{
         "name": "Joffrey Fuhrer",
         "email": "joffrey@dotcloud.com"
+    }, {
+        "name": "Sam Alba",
+        "email": "sam@dotcloud.com"
+    }, {
+        "name": "Yusuf Simonson",
+        "email": "yusuf@dotcloud.com"
     }]
 }

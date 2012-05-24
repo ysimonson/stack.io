@@ -1,0 +1,9 @@
+#!/bin/sh
+
+if [ ! -d "node_modules" ]; then
+    npm install underscore mysql socket.io express
+fi
+
+cp scripts/Makefile Makefile
+cp scripts/run run
+chmod +x run

@@ -1,4 +1,0 @@
-* Internal events.
-* Callback on RPC service exposition (when it is ready to be used)
-* Implement the ZeroMQ transport.
-* Implement the RabbitMQ transport.

@@ -1,0 +1,42 @@
+#!/bin/sh
+
+function seed {
+    echo "SEED"
+    #TODO
+    #node bin/auth-engine/app bin/apps/seed.json &
+}
+
+function server {
+    node bin/server/app bin/server/config.json &
+}
+
+function dashboard {
+    server; seed
+    node bin/apps/dashboard/server/app.js &
+
+    pushd bin/apps/dashboard/static
+    python -m SimpleHTTPServer &
+    popd
+}
+
+function test {
+    server; seed
+    node bin/apps/test/server/app.js &
+    
+    pushd bin/apps/test/static
+    python -m SimpleHTTPServer &
+    popd
+}
+
+function control_c {
+    kill `jobs -p`
+    exit $?
+}
+
+for i in $@
+do
+    $i
+done
+
+trap control_c SIGINT
+while true; do read x; done
