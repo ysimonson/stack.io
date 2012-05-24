@@ -22,6 +22,9 @@
     "author" : "dotCloud <opensource@dotcloud.com>",
     
     "contributors" : [{
+        "name": "Francois-Xavier Bourlet",
+        "email": "fx@dotcloud.com"
+    }, {
         "name": "Joffrey Fuhrer",
         "email": "joffrey@dotcloud.com"
     }, {
