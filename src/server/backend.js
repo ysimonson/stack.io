@@ -25,7 +25,7 @@ function ZeroRPCBackend(config) {
         register: function(cb, service, endpoint) {
             //TODO: validation
             self._services[service] = endpoint;
-            cb(null, null, false);
+            cb(null, undefined, false);
         }
     });
 }

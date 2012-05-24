@@ -8,6 +8,8 @@ try:
 except:
     import simplejson as json
 
+AUTH_ENDPOINT = "tcp://0.0.0.0:27616"
+
 def exit(message):
     print >> sys.stderr, message
     sys.exit(-1)
@@ -74,11 +76,14 @@ def main():
         seed_config = get_json_content(sys.argv[2])
         seed(auth, seed_config)
 
-    server = zerorpc.Server(auth)
-    server.bind("tcp://0.0.0.0:27616")
-    server.run()
+    registrar = zerorpc.Client()
+    registrar.connect("tcp://127.0.0.1:27615")
+    registrar.register("_stackio_auth", AUTH_ENDPOINT)
+    registrar.close()
 
-    #TODO: register auth
+    server = zerorpc.Server(auth)
+    server.bind(AUTH_ENDPOINT)
+    server.run()
 
 if __name__ == "__main__":
     main()
