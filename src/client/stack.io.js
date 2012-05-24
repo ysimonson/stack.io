@@ -18,7 +18,7 @@ __socket_source__
         self._channels = {};
 
         var callback = arguments.length > 0 ? arguments[arguments.length - 1] : function(error) {
-            if(error) throw new Error(error);  
+            if(error) console.error(error);
         };
 
         if(self.host.indexOf("http://") != 0 && self.host.indexOf("https://") != 0) {
@@ -28,14 +28,14 @@ __socket_source__
         self._socket = io.connect(self.host);
 
         self._socket.on("error", function(error, userId, permissions) {
-            throw new Error(error);
+            console.error(error);
         });
 
         self._socket.on("response", function(channel, error, result, more) {
             var callback = self._channels[channel];
 
             if(callback === undefined) {
-                throw new Error("Response receive on closed or non-existent channel " + channel);
+                console.error("Response receive on closed or non-existent channel " + channel);
             } else {
                 callback(error, result, more);
                 if(!more) delete self._channels[channel];

@@ -24,6 +24,7 @@ function ready() {
 
     if(readyCount == 2) {
         testIntegration();
+        testAuth();
     }
 }
 

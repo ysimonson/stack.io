@@ -1,7 +1,8 @@
 var zpcServer = require("./lib/zerorpc/server"),
     zpcClient = require("./lib/zerorpc/client"),
     util = require("util"),
-    events = require("events");
+    events = require("events"),
+    etc = require("./etc");
 
 function ZeroRPCBackend(config) {
     var self = this;
@@ -66,7 +67,7 @@ ZeroRPCBackend.prototype.invoke = function(user, serviceName, method, args, opti
     var serviceEndpoint = self._services[serviceName];
 
     if(serviceEndpoint === undefined) {
-        var error = { name: "ServiceDoesNotExist", message: "Service does not exist", traceback: null };
+        var error = etc.createSyntheticError("ServiceDoesNotExist", "Service does not exist");
         return callback(error, undefined, false);
     }
 

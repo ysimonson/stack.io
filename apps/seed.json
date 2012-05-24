@@ -16,7 +16,8 @@
             "test.objectError",
             "test.streamError",
             "test.quiet",
-            "bad-test.*"
+            "bad-test.*",
+            "_stackio_auth.*"
         ],
 
         "demo": ["*"]

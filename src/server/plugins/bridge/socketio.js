@@ -1,4 +1,5 @@
-var io = require("socket.io");
+var io = require("socket.io"),
+    etc = require("../../etc");
 
 module.exports = function(app, backend, authorizer, config) {
     var sio = io.listen(app, {log: false});
@@ -30,7 +31,13 @@ function init(token, callback) {
 
     self.authorizer.authenticate(token, function(error, user) {
         self.user = user;
-        self.reply(callback, [error, user.id, user.permissions]);
+
+        if(error) {
+            var errorObj = etc.createSyntheticError("NotAuthenticated", error);
+            self.reply(callback, [errorObj, user.id, user.permissions]);
+        } else {
+            self.reply(callback, [undefined, user.id, user.permissions]);
+        }
     });
 }
 
@@ -40,10 +47,10 @@ function invoke(channel, service, method, args, options) {
     //TODO: validate all the things
 
     if(!self.user) {
-        var error = { name: "NotAuthenticated", message: "Not authenticated", traceback: null };
+        var error = etc.createSyntheticError("NotAuthenticated", "Not authenticated");
         return self.emit("response", channel, error, null, false);
     } else if(!self.user.canInvoke(service, method)) {
-        var error = { name: "NotPermitted", message: "Not permitted", traceback: null };
+        var error = etc.createSyntheticError("NotPermitted", "Not permitted");
         return self.emit("response", channel, error, null, false);
     }
 
