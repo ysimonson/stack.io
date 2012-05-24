@@ -66,7 +66,8 @@ ZeroRPCBackend.prototype.invoke = function(user, serviceName, method, args, opti
     var serviceEndpoint = self._services[serviceName];
 
     if(serviceEndpoint === undefined) {
-        return callback("Service does not exist", undefined, false);
+        var error = { name: "ServiceDoesNotExist", message: "Service does not exist", traceback: null };
+        return callback(error, undefined, false);
     }
 
     var client = this._getClient(user, serviceName, serviceEndpoint);

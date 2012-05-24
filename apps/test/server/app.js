@@ -53,6 +53,10 @@ rpcServer.expose({
         setTimeout(function() {
             cb(null, "Should not happen", false);
         }, 31 * 1000);
+    },
+
+    notAuthorized: function(cb) {
+        cb(null, "Should not happen", false);
     }
 });
 

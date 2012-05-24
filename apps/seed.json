@@ -8,7 +8,17 @@
     }],
 
     "groups": {
-        "test": ["test.*"],
+        "test": [
+            "test.addMan",
+            "test.add42",
+            "test.iter",
+            "test.simpleError",
+            "test.objectError",
+            "test.streamError",
+            "test.quiet",
+            "bad-test.*"
+        ],
+
         "demo": ["*"]
     }
 }
