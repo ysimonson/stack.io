@@ -74,7 +74,13 @@ ZeroRPCBackend.prototype.invoke = function(user, serviceName, method, args, opti
 };
 
 ZeroRPCBackend.prototype.removeUser = function(user) {
-    //TODO
+    var userClients = this._getUserClients(user);
+
+    for(var clientId in userClients) {
+        userClients[clientId].close();
+    }
+
+    delete this._clients[user.id];
 };
 
 exports.ZeroRPCBackend = ZeroRPCBackend;
