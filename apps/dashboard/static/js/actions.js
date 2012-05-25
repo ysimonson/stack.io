@@ -4,6 +4,11 @@ function logout() {
 }
 
 function introspectService(service) {
-    var content = tmpl("introspectorResultsTemplate", { methods: services[service] });
-    $("#introspectorResults").empty().append($(content));
+    var container = $("#introspectorResults");
+    container.empty();
+
+    if(service) {
+        var content = tmpl("introspectorResultsTemplate", { methods: services[service] });    
+        container.append($(content));
+    }
 }

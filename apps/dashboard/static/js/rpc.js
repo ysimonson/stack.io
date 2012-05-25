@@ -1,7 +1,11 @@
 function rpcService(service) {
-    var methods = services[service];
-    var content = tmpl("rpcMethodsTemplate", { methods: services[service] });
-    $("#rpcMethod").empty().html($(content));
+    var container = $("#rpcMethod");
+    container.empty();
+
+    if(service) {
+        var content = tmpl("rpcMethodsTemplate", { methods: services[service] });    
+        container.append($(content));
+    }
 }
 
 function rpcMethod(service, method) {
@@ -42,7 +46,7 @@ function rpcInvoke(service, method) {
 
         client.invoke(service, method, args, function(error, res, more) {
             if(error) {
-                showError(container, "RPC Error", error.message, true);
+                errorMessage(container, error.name, error.message, true);
             } else {
                 container.prepend($("<pre>").text(JSON.stringify(res)));
             }

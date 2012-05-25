@@ -62,17 +62,18 @@ $(function() {
             var introspectedCount = 0;
 
             for(var i=0; i<client.services.length; i++) {
-                var service = client.services[i];
-
-                client.invoke(service, "_zerorpc_inspect", [], function(error, res, more) {
-                    if(error) {
-                        showInitializationError("Could not introspect on service " + service + ": " + error.message + ".");
-                    } else {
-                        introspectedCount++;
-                        services[service] = cleanMethods(res.methods);
-                        if(introspectedCount == client.services.length) showContent();
-                    }
-                });
+                (function(service) {
+                    client.invoke(service, "_zerorpc_inspect", [], function(error, res, more) {
+                        if(error) {
+                            var errorMsg = "Could not introspect on service " + service + ": " + error.message + ".";
+                            showInitializationError(errorMsg);
+                        } else {
+                            introspectedCount++;
+                            services[service] = cleanMethods(res.methods);
+                            if(introspectedCount == client.services.length) showContent();
+                        }
+                    });
+                })(client.services[i]);
             }
         }
     };
