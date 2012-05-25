@@ -65,13 +65,15 @@ $(function() {
                 (function(service) {
                     client.invoke(service, "_zerorpc_inspect", [], function(error, res, more) {
                         if(error) {
-                            var errorMsg = "Could not introspect on service " + service + ": " + error.message + ".";
-                            showInitializationError(errorMsg);
-                        } else {
-                            introspectedCount++;
-                            services[service] = cleanMethods(res.methods);
-                            if(introspectedCount == client.services.length) showContent();
+                            console.error("Could not introspect on service " + service + ":", error);
                         }
+                        introspectedCount++;
+
+                        if(res) {
+                            services[service] = cleanMethods(res.methods);
+                        }
+
+                        if(introspectedCount == client.services.length) showContent();
                     });
                 })(client.services[i]);
             }
