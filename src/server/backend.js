@@ -2,7 +2,8 @@ var zpcServer = require("./lib/zerorpc/server"),
     zpcClient = require("./lib/zerorpc/client"),
     util = require("util"),
     events = require("events"),
-    etc = require("./etc");
+    etc = require("./etc"),
+    _ = require("underscore");
 
 function ZeroRPCBackend(config) {
     var self = this;
@@ -83,6 +84,10 @@ ZeroRPCBackend.prototype.removeUser = function(user) {
     }
 
     delete this._clients[user.id];
+};
+
+ZeroRPCBackend.prototype.services = function() {
+    return _.keys(this._services);
 };
 
 exports.ZeroRPCBackend = ZeroRPCBackend;

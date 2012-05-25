@@ -34,9 +34,10 @@ function init(token, callback) {
 
         if(error) {
             var errorObj = etc.createSyntheticError("NotAuthenticated", error);
-            self.reply(callback, [errorObj, user.id, user.permissions]);
+            self.reply(callback, [errorObj, null, null, null]);
         } else {
-            self.reply(callback, [undefined, user.id, user.permissions]);
+            var args = [undefined, user.id, user.permissions, self.backend.services()];
+            self.reply(callback, args);
         }
     });
 }

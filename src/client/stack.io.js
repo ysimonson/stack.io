@@ -42,9 +42,10 @@ __socket_source__
             }
         });
 
-        self._socket.emit("init", self.token, function(error, userId, permissions) {
+        self._socket.emit("init", self.token, function(error, userId, permissions, services) {
             self.userId = userId;
             self.permissions = permissions;
+            self.services = services;
             callback(error);
         });
     }
