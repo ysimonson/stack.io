@@ -108,7 +108,7 @@ class Connection(object):
             self._execute(cursor, query, parameters)
             column_names = [d[0] for d in cursor.description]
             for row in cursor:
-                yield Row(zip(column_names, row))
+                yield dict(zip(column_names, row))
         finally:
             cursor.close()
 
@@ -118,7 +118,7 @@ class Connection(object):
         try:
             self._execute(cursor, query, parameters)
             column_names = [d[0] for d in cursor.description]
-            return [Row(itertools.izip(column_names, row)) for row in cursor]
+            return [dict(itertools.izip(column_names, row)) for row in cursor]
         finally:
             cursor.close()
 
@@ -209,15 +209,6 @@ class Connection(object):
             logging.error("Error connecting to MySQL on %s", self.host)
             self.close()
             raise
-
-
-class Row(dict):
-    """A dict that allows for object-like property access syntax."""
-    def __getattr__(self, name):
-        try:
-            return self[name]
-        except KeyError:
-            raise AttributeError(name)
 
 if MySQLdb is not None:
     # Fix the access conversions to properly recognize unicode/binary

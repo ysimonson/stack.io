@@ -12,91 +12,14 @@
         <script type="text/javascript" src="stack.io.js"></script>
         <script type="text/javascript" src="js/core.js"></script>
 
-        <style>
-        #header {
-            height: 40px;
-            background-image: url(img/bar.png);
-            background-repeat: repeat-x;
-            background-position: left bottom;
-        }
-
-        body {
-            padding: 1em;
-        }
-
-        h1 {
-            background-color: #2C2C2C;
-            background-image: -moz-linear-gradient(top, #333, #222);
-            background-image: -ms-linear-gradient(top, #333, #222);
-            background-image; -webkit-gradient(linear, 0 0, 0 100%, from(#333), to(#222));
-            background-image: -webkit-linear-gradient(top,#333,#222);
-            background-image: -o-linear-gradient(top,#333,#222);
-            background-image: linear-gradient(top,#333,#222);
-            filter: progid:dximagetransform.microsoft.gradient(startColorstr='#333333', endColorstr='#222222', GradientType=0);
-
-            background-repeat: repeat-x;
-            
-            -webkit-border-radius: 4px 4px 0 0;
-            -moz-border-radius: 4px 4px 0 0;
-            border-radius: 4px 4px 0 0;
-            
-            -webkit-box-shadow: 0 1px 3px rgba(0, 0, 0, 0.25), inset 0 -1px 0 rgba(0, 0, 0, 0.1);
-            -moz-box-shadow: 0 1px 3px rgba(0, 0, 0, 0.25), inset 0 -1px 0 rgba(0, 0, 0, 0.1);
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.25), inset 0 -1px 0 rgba(0, 0, 0, 0.1);
-
-            text-align: center;
-            color: black;
-            text-shadow: 0 1px 0 rgba(255, 255, 255, .1), 0 0 30px rgba(255, 255, 255, .125);
-            font-weight: bold;
-        }
-
-        .loading {
-            text-align: center;
-        }
-
-        .input-xlarge {
-            height: 28px;
-        }
-        </style>
-
-        <script id="loadingTemplate" type="text/html">
-            <div class="loading">
-                <p><img src="img/loading.gif" alt="" /></p>
-                <p>Loading...</p>
-            </div>
-        </script>
-
-        <script id="authorizationTemplate" type="text/html">
-            <p>User ID: <%=userId%></p>
-            <p>
-                <div>Permissions:</div>
-                <pre><%=permissions%></pre>
-            </p>
-        </script>
-
-        <script id="introspectorTemplate" type="text/html">
-            <p>
-                Services:
-                <select id="serviceSelector">
-                    <option></option>
-                    <%for(var i=0; i<services.length; i++) {%>
-                        <option><%=services[i]%></option>
-                    <%}%>
-                </select>
-            </p>
-
-            <p id="serviceIntrospector"></p>
-        </script>
-
-        <script id="serviceIntrospectorTemplate" type="text/html">
-            <%for(var i=0; i<methods.length; i++) {%>
-                <%var method = methods[i];%>
+        <script id="introspectorResultsTemplate" type="text/html">
+            <%for(var method in methods) {%>
                 <div class="well">
                     <div>
-                        <span style="font-weight:bold"><%=method[0]%></span>
-                        (<%=method[1][0].join(", ")%>)
+                        <span style="font-weight:bold"><%=method%></span>
+                        (<%=methods[method].args.join(", ")%>)
                     </div>
-                    <div><%=method[2]%></div>
+                    <div><%=methods[method].doc%></div>
                 </div>
             <%}%>
         </script>
@@ -107,21 +30,11 @@
             </div>
         </script>
 
-        <script id="rpcTemplate" type="text/html">
-            <p>
-                <select id="rpcServiceSelector">
-                    <option></option>
-                    <%for(var i=0; i<services.length; i++) {%>
-                        <option><%=services[i]%></option>
-                    <%}%>
-                </select>
-
-                <select id="rpcMethodSelector">
-                </select>
-            </p>
-
-            <p id="rpcArgs"></p>
-            <p id="rpcResults"></p>
+        <script id="rpcMethodsTemplate" type="text/html">
+            <option></option>
+            <%for(var method in methods) {%>
+                <option><%=method%></option>
+            <%}%>
         </script>
 
         <script id="rpcArgsTemplate" type="text/html">
@@ -129,7 +42,7 @@
                 <fieldset>
                     <%for(var i=0; i<args.length; i++) {%>
                         <%var arg = args[i];%>
-                        
+
                         <div class="control-group">
                             <label class="control-label" for="input-<%=arg%>"><%=arg%></label>
                             <div class="controls">
@@ -144,12 +57,46 @@
                     </div>
                 </fieldset>
             </form>
-
-            
         </script>
     </head>
     <body>
-        <div class="row">
+        <div id="loading">
+            <p><img src="img/loading.gif" alt="" /></p>
+            <p>Loading...</p>
+        </div>
+
+        <div id="initError" class="alert alert-error" style="display:none">
+            <span style="font-weight:bold">Initialization failed: </span>
+            <span id="initErrorMessage"></span>
+            <a href="javascript:logout()">Click to logout.</a>
+        </div>
+
+        <div id="login" style="display:none">
+            <h2>You must be logged in to use the stack.io dashboard</h2>
+
+            <form id="loginForm" class="form-horizontal">
+                <fieldset>
+                    <div class="control-group">
+                        <label class="control-label" for="username">Username</label>
+                        <div class="controls">
+                            <input id="loginUsername" class="input-xlarge focused" type="text" />
+                        </div>
+                    </div>
+                    <div class="control-group">
+                        <label class="control-label" for="password">Password</label>
+                        <div class="controls">
+                            <input id="loginPassword" class="input-xlarge" type="password" />
+                        </div>
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="submit" class="btn btn-primary">Login</button>
+                    </div>
+                </fieldset>
+            </form>
+        </div>
+
+        <div id="content" class="row" style="display:none">
             <div class="span4">
                 <div id="header">
                     <h1>Stack.io dashboard</h1>
@@ -172,41 +119,32 @@
             </div>
 
             <div class="tab-content span8 well">
-                <div id="authorization" class="tab-pane active"></div>
-                <div id="introspector" class="tab-pane"></div>
-                <div id="rpc" class="tab-pane"></div>
-            </div>
-        </div>
+                <div id="authorization" class="tab-pane active">
+                    <p>User ID: <span id="authorizationId"></span></p>
+                    <p>
+                        <div>Permissions:</div>
+                        <pre id="authorizationPermissions"></pre>
+                    </p>
+                </div>
+                <div id="introspector" class="tab-pane">
+                    <p>
+                        Services:
+                        <select id="introspectorService" class="serviceSelector"></select>
+                    </p>
+                    <p id="introspectorResults"></p>
+                </div>
+                <div id="rpc" class="tab-pane">
+                    <p>
+                        <select id="rpcService" class="serviceSelector">
+                        </select>
 
-        <div id="loginModal" class="modal" style="display:none">
-            <div class="modal-header">
-                <button class="close" data-dismiss="modal">x</button>
-                <h3>Login</h3>
-            </div>
+                        <select id="rpcMethod" class="methodSelector">
+                        </select>
+                    </p>
 
-            <div class="modal-body">
-                <p>You must be logged in to use the stack.io dashboard</p>
-
-                <form id="loginForm" class="form-horizontal">
-                    <fieldset>
-                        <div class="control-group">
-                            <label class="control-label" for="username">Username</label>
-                            <div class="controls">
-                                <input id="username" class="input-xlarge focused" type="text" />
-                            </div>
-                        </div>
-                        <div class="control-group">
-                            <label class="control-label" for="password">Password</label>
-                            <div class="controls">
-                                <input id="password" class="input-xlarge" type="password" />
-                            </div>
-                        </div>
-                    </fieldset>
-                </form>
-            </div>
-
-            <div class="modal-footer">
-                <a id="doLogin" href="#" class="btn btn-primary">Login</a>
+                    <p id="rpcArgs"></p>
+                    <p id="rpcResults"></p>
+                </div>
             </div>
         </div>
     </body>
