@@ -51,8 +51,8 @@ def seed(auth, config):
         else:
             user_id = auth.add_user(user_token)
 
-        auth.clear_user_groups(user_id)
-        auth.add_user_groups(user_id, user_group_ids)
+        auth.clear_user_groups_by_user(user_id)
+        auth.add_user_groups_by_user(user_id, user_group_ids)
 
 def main():
     if len(sys.argv) < 2:

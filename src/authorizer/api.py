@@ -19,10 +19,15 @@ GET_USER_BY_TOKEN_HASH = "SELECT * FROM users WHERE token_hash=%s"
 ADD_USER = "INSERT INTO users (token_hash) VALUE (%s)"
 REMOVE_USER = "DELETE FROM users WHERE id=%s"
 
-GET_USER_GROUPS = "SELECT groups.id AS id, groups.name AS name FROM groups, user_groups WHERE groups.id=user_groups.group_id AND user_groups.user_id=%s"
+GET_USER_GROUPS_BY_USER_ID = "SELECT groups.id AS id, groups.name AS name FROM groups, user_groups WHERE groups.id=user_groups.group_id AND user_groups.user_id=%s"
 CLEAR_USER_GROUPS_BY_USER_ID = "DELETE FROM user_groups WHERE user_id=%s"
-ADD_USER_GROUP = "INSERT INTO user_groups (user_id, group_id) VALUES (%s, %s)"
-REMOVE_USER_GROUP = "DELETE FROM user_groups WHERE user_id=%s AND group_id=%s"
+ADD_USER_GROUP_BY_USER_ID = "INSERT INTO user_groups (user_id, group_id) VALUES (%s, %s)"
+REMOVE_USER_GROUP_BY_USER_ID = "DELETE FROM user_groups WHERE user_id=%s AND group_id=%s"
+
+GET_USER_GROUPS_BY_GROUP_ID = "SELECT user_id AS id FROM user_groups WHERE user_groups.group_id=%s"
+CLEAR_USER_GROUPS_BY_GROUP_ID = "DELETE FROM user_groups WHERE group_id=%s"
+ADD_USER_GROUP_BY_GROUP_ID = "INSERT INTO user_groups (group_id, user_id) VALUES (%s, %s)"
+REMOVE_USER_GROUP_BY_GROUP_ID = "DELETE FROM user_groups WHERE group_id=%s AND user_id=%s"
 
 def zip_with_id(id, items):
     return zip(itertools.cycle((id,)), items)
@@ -36,71 +41,91 @@ class Authorizer(object):
     def __init__(self, conn):
         self.conn = conn
 
-    def get_all_groups(self): ###
+    def get_all_groups(self): ### Tested
         """Gets all of the groups"""
         return self.conn.query(GET_ALL_GROUPS)
 
-    def get_group_by_id(self, id): ###
+    def get_group_by_id(self, id): ### Tested
         """Gets a group by its ID"""
         return self.conn.get(GET_GROUP_BY_ID, id)
 
-    def get_group_by_name(self, name): ###
+    def get_group_by_name(self, name): ### Tested
         """Gets a group by its unique name"""
         return self.conn.get(GET_GROUP_BY_NAME, name)
 
-    def add_group(self, name): ###
+    def add_group(self, name): ### Tested
         """Adds a new group"""
         return self.conn.execute_lastrowid(ADD_GROUP, name)
 
-    def remove_group(self, id): ###
+    def remove_group(self, id): ### Tested
         """Removes a group"""
+        self.clear_group_permissions(id)
+        self.clear_user_groups_by_group(id)
         self.conn.execute(REMOVE_GROUP, id)
 
-    def get_group_permissions(self, id): ###
+    def get_group_permissions(self, id): ### Tested
         """Gets the permissions associated with a group"""
         return self.conn.query(GET_GROUP_PERMISSIONS, id)
 
-    def add_group_permissions(self, id, permissions): ###
+    def add_group_permissions(self, id, permissions): ### Tested
         """Adds new permissions for a group"""
         self.conn.executemany(ADD_PERMISSION, zip_with_id(id, permissions))
 
-    def remove_group_permissions(self, id, permissions):
+    def remove_group_permissions(self, id, permissions): ### Tested
         """Removes permissions for a group"""
         self.conn.executemany(REMOVE_PERMISSION, zip_with_id(id, permissions))
 
-    def clear_group_permissions(self, id):
+    def clear_group_permissions(self, id): ### Tested
         """Clears the permissions for a group"""
         self.conn.execute(CLEAR_PERMISSIONS_BY_GROUP_ID, id)
 
-    def get_user_by_id(self, id): ####
+    def get_user_by_id(self, id): ### Tested
         """Gets a user by its ID"""
         return self.conn.get(GET_USER_BY_ID, id)
 
-    def get_user_by_token(self, token): ####
+    def get_user_by_token(self, token): ### Tested
         """Gets a user by its authentication token"""
         hash = get_hash(token)
         return self.conn.get(GET_USER_BY_TOKEN_HASH, hash)
 
-    def add_user(self, token):
+    def add_user(self, token): ### Tested
         """Adds a new user"""
-        return self.conn.execute_lastrowid(ADD_USER, token)
+        hash = get_hash(token)
+        return self.conn.execute_lastrowid(ADD_USER, hash)
 
-    def remove_user(self, id):
+    def remove_user(self, id): ### Tested
         """Removes a user"""
+        self.clear_user_groups_by_user(id)
         self.conn.execute(REMOVE_USER, id)
 
-    def get_user_groups(self, id): ####
+    def get_user_groups_by_user(self, id): ### Tested
         """Gets the groups associated with a user"""
-        return self.conn.query(GET_USER_GROUPS, id)
+        return self.conn.query(GET_USER_GROUPS_BY_USER_ID, id)
 
-    def add_user_groups(self, user_id, group_ids):
+    def add_user_groups_by_user(self, user_id, group_ids): ### Tested
         """Adds new groups to associate with a user"""
-        self.conn.executemany(ADD_USER_GROUP, zip_with_id(user_id, group_ids))
+        self.conn.executemany(ADD_USER_GROUP_BY_USER_ID, zip_with_id(user_id, group_ids))
 
-    def remove_user_groups(self, user_id, group_ids):
+    def remove_user_groups_by_user(self, user_id, group_ids): ### Tested
         """Removes groups to associate with a user"""
-        self.conn.executemany(REMOVE_USER_GROUP, zip_with_id(user_id, group_ids))
+        self.conn.executemany(REMOVE_USER_GROUP_BY_USER_ID, zip_with_id(user_id, group_ids))
 
-    def clear_user_groups(self, id):
+    def clear_user_groups_by_user(self, id): ### Tested
         """Clears the groups associated with a user"""
         self.conn.execute(CLEAR_USER_GROUPS_BY_USER_ID, id)
+
+    def get_user_groups_by_group(self, id): ### Tested
+        """Gets the groups associated with a user"""
+        return self.conn.query(GET_USER_GROUPS_BY_GROUP_ID, id)
+
+    def add_user_groups_by_group(self, group_id, user_ids):
+        """Adds new groups to associate with a user"""
+        self.conn.executemany(ADD_USER_GROUP_BY_GROUP_ID, zip_with_id(group_id, user_ids))
+
+    def remove_user_groups_by_group(self, group_id, user_ids):
+        """Removes groups to associate with a user"""
+        self.conn.executemany(REMOVE_USER_GROUP_BY_GROUP_ID, zip_with_id(group_id, user_ids))
+
+    def clear_user_groups_by_group(self, id): ### Tested
+        """Clears the groups associated with a user"""
+        self.conn.execute(CLEAR_USER_GROUPS_BY_GROUP_ID, id)

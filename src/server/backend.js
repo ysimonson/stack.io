@@ -19,6 +19,7 @@ function ZeroRPCBackend(config) {
         self.emit("error", error);
     });
 
+    //TODO: do not allow duplicate service names
     self._registrar.expose({
         services: function(cb) {
             cb(null, self._services, false);

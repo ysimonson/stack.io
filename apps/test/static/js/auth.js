@@ -19,13 +19,13 @@ function testAuth() {
         });
     });
 
-    asyncTest("Get groups", 9, function() {
+    asyncTest("Get groups and associated users", 13, function() {
         ainvoke("get_group_by_name", ["test"], function(error, res, more) {
             equal(error, null);
             equal(res.name, "test");
             equal(more, false);
 
-            var barrier = createBarrier(2, start);
+            var barrier = createBarrier(3, start);
             var groupId = res.id;
 
             ainvoke("get_group_by_id", [groupId], function(error, res, more) {
@@ -41,10 +41,18 @@ function testAuth() {
                 equal(more, false);
                 barrier();
             });
+
+            ainvoke("get_user_groups_by_group", [groupId], function(error, res, more) {
+                equal(error, null);
+                equal(res.length, 1);
+                equal(typeof(res[0].id), 'number');
+                equal(more, false);
+                barrier();
+            });
         });
     });
 
-    asyncTest("Get user and groups", 9, function() {
+    asyncTest("Get user and associated groups", 9, function() {
         ainvoke("get_user_by_token", ["test:test-password"], function(error, res, more) {
             equal(error, null);
             equal(typeof(res.id), 'number');
@@ -60,7 +68,7 @@ function testAuth() {
                 barrier();
             });
 
-            ainvoke("get_user_groups", [userId], function(error, res, more) {
+            ainvoke("get_user_groups_by_user", [userId], function(error, res, more) {
                 equal(error, null);
                 ok(setsEquivalent(res, [{name: "test"}]));
                 equal(more, false);
@@ -68,31 +76,4 @@ function testAuth() {
             });
         });
     });
-
-    asyncTest("Create a new group", 9, function() {
-        ainvoke("add_group", ["temp"], function(error, res, more) {
-            equal(error, null);
-            equal(typeof(res), 'number');
-            equal(more, false);
-
-            var groupId = res;
-
-            ainvoke("add_group_permissions", [groupId, ["_stackio_auth.*"]], function(error, res, more) {
-                equal(error, null);
-                equal(res, null);
-                equal(more, false);
-
-                ainvoke("remove_group", [groupId], function(error, res, more) {
-                    equal(error, null);
-                    equal(res, null);
-                    equal(more, false);
-                    start();
-                });
-            });
-        });
-    });
-}
-
-function testAuthWithNewGroupPermissions(groupId) {
-    //
 }
