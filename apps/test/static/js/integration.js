@@ -1,4 +1,6 @@
 function testIntegration() {
+    module("Integration");
+    
     asyncTest("Normal string method", 3, function() {
         invoke("addMan", ["This is not an error"], function(error, res, more) {
             equal(error, null);

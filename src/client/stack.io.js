@@ -51,6 +51,8 @@ __socket_source__
     }
 
     Engine.prototype.invoke = function(service, method, args, options, callback) {
+        //TODO: validation
+
         if(callback === undefined) {
             callback = options;
             options = {};

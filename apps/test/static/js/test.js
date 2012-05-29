@@ -31,3 +31,48 @@ function ready() {
 function invoke(method, args, callback) {
     client.invoke("test", method, args, callback);
 }
+
+function ainvoke(method, args, callback) {
+    client.invoke("_stackio_auth", method, args, callback);
+}
+
+function objectsEquivalent(actual, expected) {
+    for(var key in expected) {
+        if(!(key in actual)) return false;
+        if(actual[key] != expected[key]) return false;
+    }
+
+    return true;
+}
+
+function setsEquivalent(actual, expected) {
+    if(actual.length != expected.length) return false;
+
+    for(var i=0; i<expected.length; i++) {
+        var curExpected = expected[i];
+        var isObj = typeof(curExpected) == 'object';
+        var found = false;
+
+        for(var j=0; j<actual.length; j++) {
+            var curActual = actual[j];
+
+            if((isObj && objectsEquivalent(curActual, curExpected)) || curActual == curExpected) {
+                found = true;
+                break;
+            }
+        }
+
+        if(!found) return false;
+    }
+
+    return true;
+}
+
+function createBarrier(n, cont) {
+    var count = 0;
+
+    return function() {
+        count++;
+        if(count == n) cont();
+    }
+}

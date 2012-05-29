@@ -19,7 +19,7 @@ GET_USER_BY_TOKEN_HASH = "SELECT * FROM users WHERE token_hash=%s"
 ADD_USER = "INSERT INTO users (token_hash) VALUE (%s)"
 REMOVE_USER = "DELETE FROM users WHERE id=%s"
 
-GET_USER_GROUPS = "SELECT group_id FROM user_groups WHERE user_id=%s"
+GET_USER_GROUPS = "SELECT groups.id AS id, groups.name AS name FROM groups, user_groups WHERE groups.id=user_groups.group_id AND user_groups.user_id=%s"
 CLEAR_USER_GROUPS_BY_USER_ID = "DELETE FROM user_groups WHERE user_id=%s"
 ADD_USER_GROUP = "INSERT INTO user_groups (user_id, group_id) VALUES (%s, %s)"
 REMOVE_USER_GROUP = "DELETE FROM user_groups WHERE user_id=%s AND group_id=%s"
@@ -36,31 +36,31 @@ class Authorizer(object):
     def __init__(self, conn):
         self.conn = conn
 
-    def get_all_groups(self):
+    def get_all_groups(self): ###
         """Gets all of the groups"""
         return self.conn.query(GET_ALL_GROUPS)
 
-    def get_group_by_id(self, id):
+    def get_group_by_id(self, id): ###
         """Gets a group by its ID"""
         return self.conn.get(GET_GROUP_BY_ID, id)
 
-    def get_group_by_name(self, name):
+    def get_group_by_name(self, name): ###
         """Gets a group by its unique name"""
         return self.conn.get(GET_GROUP_BY_NAME, name)
 
-    def add_group(self, name):
+    def add_group(self, name): ###
         """Adds a new group"""
-        return self.conn.execute_lastrowid(add_group, name)
+        return self.conn.execute_lastrowid(ADD_GROUP, name)
 
-    def remove_group(self, id):
+    def remove_group(self, id): ###
         """Removes a group"""
         self.conn.execute(REMOVE_GROUP, id)
 
-    def get_group_permissions(self, id):
+    def get_group_permissions(self, id): ###
         """Gets the permissions associated with a group"""
         return self.conn.query(GET_GROUP_PERMISSIONS, id)
 
-    def add_group_permissions(self, id, permissions):
+    def add_group_permissions(self, id, permissions): ###
         """Adds new permissions for a group"""
         self.conn.executemany(ADD_PERMISSION, zip_with_id(id, permissions))
 
@@ -72,11 +72,11 @@ class Authorizer(object):
         """Clears the permissions for a group"""
         self.conn.execute(CLEAR_PERMISSIONS_BY_GROUP_ID, id)
 
-    def get_user_by_id(self, id):
+    def get_user_by_id(self, id): ####
         """Gets a user by its ID"""
         return self.conn.get(GET_USER_BY_ID, id)
 
-    def get_user_by_token(self, token):
+    def get_user_by_token(self, token): ####
         """Gets a user by its authentication token"""
         hash = get_hash(token)
         return self.conn.get(GET_USER_BY_TOKEN_HASH, hash)
@@ -89,9 +89,9 @@ class Authorizer(object):
         """Removes a user"""
         self.conn.execute(REMOVE_USER, id)
 
-    def get_user_groups(self, id):
+    def get_user_groups(self, id): ####
         """Gets the groups associated with a user"""
-        self.conn.query(GET_USER_GROUPS, id)
+        return self.conn.query(GET_USER_GROUPS, id)
 
     def add_user_groups(self, user_id, group_ids):
         """Adds new groups to associate with a user"""
