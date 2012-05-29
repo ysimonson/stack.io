@@ -2,7 +2,7 @@ var zpcServer = require("./lib/zerorpc/server"),
     zpcClient = require("./lib/zerorpc/client"),
     util = require("util"),
     events = require("events"),
-    etc = require("./etc"),
+    model = require("./model"),
     _ = require("underscore");
 
 function ZeroRPCBackend(config) {
@@ -19,7 +19,6 @@ function ZeroRPCBackend(config) {
         self.emit("error", error);
     });
 
-    //TODO: do not allow duplicate service names
     self._registrar.expose({
         services: function(cb) {
             cb(null, self._services, false);
@@ -27,8 +26,14 @@ function ZeroRPCBackend(config) {
 
         register: function(cb, service, endpoint) {
             //TODO: validation
-            self._services[service] = endpoint;
-            cb(null, undefined, false);
+
+            if(service in self._services) {
+                var error = model.createSyntheticError("ServiceRegisteredError", "Service already registered");
+                cb(error, undefined, false);
+            } else {
+                self._services[service] = endpoint;    
+                cb(null, undefined, false);
+            }
         }
     });
 }
@@ -69,7 +74,7 @@ ZeroRPCBackend.prototype.invoke = function(user, serviceName, method, args, opti
     var serviceEndpoint = self._services[serviceName];
 
     if(serviceEndpoint === undefined) {
-        var error = etc.createSyntheticError("ServiceDoesNotExist", "Service does not exist");
+        var error = model.createSyntheticError("ServiceDoesNotExistError", "Service does not exist");
         return callback(error, undefined, false);
     }
 

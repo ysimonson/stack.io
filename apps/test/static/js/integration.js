@@ -83,8 +83,8 @@ function testIntegration() {
     });
 
     asyncTest("Bad client", 3, function() {
-        client.invoke("bad-test", "add42", [30], function(error, res, more) {
-            equal(error.name, "ServiceDoesNotExist");
+        client.invoke("bad_test", "add42", [30], function(error, res, more) {
+            equal(error.name, "ServiceDoesNotExistError");
             equal(res, null);
             equal(more, false);
             start();

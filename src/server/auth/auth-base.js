@@ -1,5 +1,6 @@
 var _ = require("underscore"),
-    util = require("util");
+    util = require("util"),
+    events = require("events");
 
 function quoteRegex(str) {
     return (str+'').replace(/([.?+^$[\]\\(){}|-])/g, "\\$1");
@@ -8,6 +9,8 @@ function quoteRegex(str) {
 function Authorizer(config) {
     this.config = config;
 }
+
+util.inherits(Authorizer, events.EventEmitter);
 
 Authorizer.prototype.authenticate = function(token, callback) {
     callback(null, new RootUser());

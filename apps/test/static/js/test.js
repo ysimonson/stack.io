@@ -26,6 +26,7 @@ function ready() {
         testIntegration();
         testAuth();
         testAccounts();
+        testValidation();
     }
 }
 

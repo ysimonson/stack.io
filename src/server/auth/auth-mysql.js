@@ -1,5 +1,3 @@
-//TODO: remove console.errors
-
 var mysql = require("mysql"),
     base = require("./auth-base"),
     util = require("util"),
@@ -44,7 +42,7 @@ Authorizer.prototype.authenticate = function(token, callback) {
             setInterval(function() {
                 updatePermissions(user, function(error) {
                     if(error) {
-                        console.error("Could not update user permissions:", error);
+                        self.emit("error", error);
                     }
                 });
             }, self.config.permissionsSleepTime);
@@ -55,7 +53,7 @@ Authorizer.prototype.authenticate = function(token, callback) {
 
     self._client.query(GET_USER_ID_QUERY, [hash], function(error, results) {
         if(error) {
-            console.error("Could not fetch user data:", error);
+            self.emit("error", error);
             callback("Could not fetch user data", self.unauthenticated());
         } else if(!results || results.length == 0) {
             callback("Authentication failed", self.unauthenticated());

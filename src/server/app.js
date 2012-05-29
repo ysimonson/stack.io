@@ -16,6 +16,14 @@ var authModule = require("./auth/auth-" + config.auth.type),
     authorizer = new authModule.Authorizer(config.auth),
     service = new backend.ZeroRPCBackend(config.backend);
 
+authorizer.on("error", function(error) {
+    console.error("Authorizer error:", error);
+});
+
+service.on("error", function(error) {
+    console.error("Backend error:", error);
+});
+
 app.use(express.bodyParser());
 
 for(var pluginName in config.plugins) {
