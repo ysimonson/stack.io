@@ -3,3 +3,4 @@ node_modules
 /Makefile
 /run
 /bin
+.DS_Store
