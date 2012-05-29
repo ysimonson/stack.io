@@ -1,8 +1,9 @@
-#header {
+.header {
     height: 40px;
     background-image: url(../img/bar.png);
     background-repeat: repeat-x;
     background-position: left bottom;
+    margin-bottom: 1em;
 }
 
 #loading {
