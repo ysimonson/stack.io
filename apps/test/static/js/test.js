@@ -23,7 +23,7 @@ function ready() {
     readyCount++;
 
     if(readyCount == 2) {
-        testIntegration();
+        testInvocation();
         testAuth();
         testAccounts();
         testValidation();

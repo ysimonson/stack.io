@@ -2,37 +2,39 @@ import itertools
 import hashlib
 import base64
 
-GET_GROUP_BY_ID = "SELECT * FROM groups WHERE id=%s"
-GET_GROUP_BY_NAME = "SELECT * FROM groups WHERE name=%s"
-ADD_GROUP = "INSERT INTO groups (name) VALUE (%s)"
-REMOVE_GROUP = "DELETE FROM groups WHERE id=%s"
+GET_GROUP_BY_ID = "SELECT * FROM groups WHERE id=?"
+GET_GROUP_BY_NAME = "SELECT * FROM groups WHERE name=?"
+ADD_GROUP = "INSERT INTO groups (name) VALUE (?)"
+REMOVE_GROUP = "DELETE FROM groups WHERE id=?"
 
 GET_ALL_GROUPS = "SELECT * FROM groups"
 
-GET_GROUP_PERMISSIONS = "SELECT pattern FROM permissions WHERE group_id=%s"
-CLEAR_PERMISSIONS_BY_GROUP_ID = "DELETE FROM permissions WHERE group_id=%s"
-ADD_PERMISSION = "INSERT INTO permissions (group_id, pattern) VALUES (%s, %s)"
-REMOVE_PERMISSION = "DELETE FROM permissions WHERE group_id=%s AND pattern=%s"
+GET_GROUP_PERMISSIONS = "SELECT pattern FROM permissions WHERE group_id=?"
+CLEAR_PERMISSIONS_BY_GROUP_ID = "DELETE FROM permissions WHERE group_id=?"
+ADD_PERMISSION = "INSERT INTO permissions (group_id, pattern) VALUES (?, ?)"
+REMOVE_PERMISSION = "DELETE FROM permissions WHERE group_id=? AND pattern=?"
 
-GET_USER_BY_ID = "SELECT * FROM users WHERE id=%s"
-GET_USER_BY_TOKEN_HASH = "SELECT * FROM users WHERE token_hash=%s"
-ADD_USER = "INSERT INTO users (token_hash) VALUE (%s)"
-REMOVE_USER = "DELETE FROM users WHERE id=%s"
+GET_USER_BY_ID = "SELECT * FROM users WHERE id=?"
+GET_USER_BY_TOKEN_HASH = "SELECT * FROM users WHERE token_hash=?"
+ADD_USER = "INSERT INTO users (token_hash) VALUE (?)"
+REMOVE_USER = "DELETE FROM users WHERE id=?"
 
-GET_USER_GROUPS_BY_USER_ID = "SELECT groups.id AS id, groups.name AS name FROM groups, user_groups WHERE groups.id=user_groups.group_id AND user_groups.user_id=%s"
-CLEAR_USER_GROUPS_BY_USER_ID = "DELETE FROM user_groups WHERE user_id=%s"
-ADD_USER_GROUP_BY_USER_ID = "INSERT INTO user_groups (user_id, group_id) VALUES (%s, %s)"
-REMOVE_USER_GROUP_BY_USER_ID = "DELETE FROM user_groups WHERE user_id=%s AND group_id=%s"
+GET_USER_GROUPS_BY_USER_ID = "SELECT groups.id AS id, groups.name AS name FROM groups, user_groups WHERE groups.id=user_groups.group_id AND user_groups.user_id=?"
+CLEAR_USER_GROUPS_BY_USER_ID = "DELETE FROM user_groups WHERE user_id=?"
+ADD_USER_GROUP_BY_USER_ID = "INSERT INTO user_groups (user_id, group_id) VALUES (?, ?)"
+REMOVE_USER_GROUP_BY_USER_ID = "DELETE FROM user_groups WHERE user_id=? AND group_id=?"
 
-GET_USER_GROUPS_BY_GROUP_ID = "SELECT user_id AS id FROM user_groups WHERE user_groups.group_id=%s"
-CLEAR_USER_GROUPS_BY_GROUP_ID = "DELETE FROM user_groups WHERE group_id=%s"
-ADD_USER_GROUP_BY_GROUP_ID = "INSERT INTO user_groups (group_id, user_id) VALUES (%s, %s)"
-REMOVE_USER_GROUP_BY_GROUP_ID = "DELETE FROM user_groups WHERE group_id=%s AND user_id=%s"
+GET_USER_GROUPS_BY_GROUP_ID = "SELECT user_id AS id FROM user_groups WHERE user_groups.group_id=?"
+CLEAR_USER_GROUPS_BY_GROUP_ID = "DELETE FROM user_groups WHERE group_id=?"
+ADD_USER_GROUP_BY_GROUP_ID = "INSERT INTO user_groups (group_id, user_id) VALUES (?, ?)"
+REMOVE_USER_GROUP_BY_GROUP_ID = "DELETE FROM user_groups WHERE group_id=? AND user_id=?"
 
 def zip_with_id(id, items):
+    """Zips the items list with a cycle of id"""
     return zip(itertools.cycle((id,)), items)
 
 def get_hash(str):
+    """Gets the SHA-256 hex string of an input"""
     m = hashlib.sha256()
     m.update(str)
     return base64.b64encode(m.digest())

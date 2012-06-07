@@ -11,10 +11,14 @@ except:
 AUTH_ENDPOINT = "tcp://0.0.0.0:27616"
 
 def exit(message):
+    """
+    Exits the program with a -1 return code and a message printed to stderr
+    """
     print >> sys.stderr, message
     sys.exit(-1)
 
 def get_json_content(path):
+    """Gets the JSON content of a path"""
     try:
         with open(path) as f:
             return json.load(f)
@@ -22,6 +26,9 @@ def get_json_content(path):
         exit("Could not read JSON file %s: %s" % (path, e))
 
 def seed(auth, config):
+    """Inserts data from a seed JSON file"""
+
+    #Insert each group
     for group_name, group_permissions in config['groups'].iteritems():
         group_data = auth.get_group_by_name(group_name)
 
@@ -30,14 +37,17 @@ def seed(auth, config):
         else:
             group_id = auth.add_group(group_name)
 
+        #Add the permissions
         auth.clear_group_permissions(group_id)
         auth.add_group_permissions(group_id, group_permissions)
 
+    #Insert each user
     for user in config['users']:
         user_groups = user['groups']
         user_token = user['token']
         user_data = auth.get_user_by_token(user_token)
 
+        #Get the group IDs to add to user groups
         user_group_ids = []
         for user_group in user_groups:
             try:
@@ -51,6 +61,7 @@ def seed(auth, config):
         else:
             user_id = auth.add_user(user_token)
 
+        #Insert the user groups
         auth.clear_user_groups_by_user(user_id)
         auth.add_user_groups_by_user(user_id, user_group_ids)
 
@@ -61,8 +72,9 @@ def main():
     config = get_json_content(sys.argv[1])
     auth_config = config['auth']
 
+    #Do not run this if the authorization engine is not mysql
     if auth_config['type'] != 'mysql':
-        exit('Authentication not configured to use mysql; bailing')
+        exit('Authorization not configured to use mysql; bailing')
 
     host = "%s:%s" % (auth_config.get('host', 'localhost'), auth_config.get('port', 3306))
     db_name = auth_config['database']
@@ -76,11 +88,13 @@ def main():
         seed_config = get_json_content(sys.argv[2])
         seed(auth, seed_config)
 
+    #Register the API
     registrar = zerorpc.Client()
     registrar.connect("tcp://127.0.0.1:27615")
     registrar.register("_stackio_auth", AUTH_ENDPOINT)
     registrar.close()
 
+    #Run the API
     server = zerorpc.Server(auth)
     server.bind(AUTH_ENDPOINT)
     server.run()

@@ -10,6 +10,8 @@ module.exports = function(app, backend, authorizer, config) {
         socket.backend = backend;
         socket.authorizer = authorizer;
 
+        //Helper method to reply to a request, or create an error event if
+        //that fails
         socket.reply = function(callback, args) {
             if(typeof(callback) == "function") {
                 callback.apply(this, args);
@@ -24,12 +26,20 @@ module.exports = function(app, backend, authorizer, config) {
     });
 };
 
+//Initializes a new session
+//token : string
+//      The authentication token
+//callback : function(error : object, user_id : number, permissions : array of
+//           strings, services : array of strings)
+//      The callback to call when the initialization is complete
 function init(token, callback) {
     var self = this;
 
     try {
+        //Validate the request
         model.validateAuthentication(token);
 
+        //Perform authentication
         self.authorizer.authenticate(token, function(error, user) {
             self.user = user;
 
@@ -48,6 +58,20 @@ function init(token, callback) {
     }
 }
 
+//Invokes a method
+//channel : anything
+//      Used to ensure the client calls the correct callback when a response
+//      occurs. We use this instead of socket.io's first class support for
+//      response callbacks because socket.io only allows you to call a
+//      response callback once.
+//service : string
+//      The service name
+//method : string
+//      The method name
+//args : array
+//      The method arguments
+//options : object
+//      ZeroRPC arguments
 function invoke(channel, service, method, args, options) {
     var self = this;
 
@@ -73,6 +97,7 @@ function invoke(channel, service, method, args, options) {
     }
 }
 
+//Removes pending user requests when the socket is disconnected
 function disconnect() {
     this.backend.removeUser(this.user);
 }

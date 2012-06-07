@@ -17,10 +17,12 @@ util.inherits(Authorizer, base.Authorizer);
 Authorizer.prototype.authenticate = function(token, callback) {
     var self = this;
 
+    //Gets the hash of the token
     var sha = crypto.createHash('sha256');
     sha.update(token);
     var hash = sha.digest('base64');
 
+    //Updates the user's permissions
     var updatePermissions = function(user, callback) {
         self._client.query(GET_PERMISSIONS_QUERY, [user.id], function(error, results) {
             if(error) {
@@ -33,12 +35,14 @@ Authorizer.prototype.authenticate = function(token, callback) {
         });
     };
 
+    //Get the initial permissions
     var initialUpdatePermissions = function(user) {
         updatePermissions(user, function(error) {
             if(error) {
                 return callback(error, self.unauthenticated());
             }
 
+            //Update the user's permissions every few seconds
             setInterval(function() {
                 updatePermissions(user, function(error) {
                     if(error) {
@@ -51,6 +55,7 @@ Authorizer.prototype.authenticate = function(token, callback) {
         });
     }
 
+    //Look up the user in the mysql database
     self._client.query(GET_USER_ID_QUERY, [hash], function(error, results) {
         if(error) {
             self.emit("error", error);
