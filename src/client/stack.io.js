@@ -9,14 +9,15 @@ __socket_source__
     }
 
     //Creates a new stack.io engine
-    function Engine() {
+    function Engine(host, username, password, callback) {
         var self = this;
 
         //Get the input configuration
-        self.host = arguments.length > 1 ? arguments[0] : defaultHost();
-        self.token = arguments.length > 2 ? arguments[1] : null;
+        self.host = host || defaultHost();
+        self.username = username;
+        self.password = password;
 
-        var callback = arguments.length > 0 ? arguments[arguments.length - 1] : function(error) {
+        callback = callback || function(error) {
             if(error) console.error(error);
         };
 
@@ -24,7 +25,6 @@ __socket_source__
             self.host = window.location.protocol + "//" + self.host;
         }
 
-        self.userId = null;
         self.permissions = [];
         self._channelCounter = 0;
         self._channels = {};
@@ -32,7 +32,7 @@ __socket_source__
         self._socket = io.connect(self.host);
 
         //If an error occurs and there is no callback, this event will be fired
-        self._socket.on("error", function(error, userId, permissions) {
+        self._socket.on("error", function(error) {
             console.error(error);
         });
 
@@ -49,8 +49,7 @@ __socket_source__
         });
 
         //Initialize the socket
-        self._socket.emit("init", self.token, function(error, userId, permissions, services) {
-            self.userId = userId;
+        self._socket.emit("init", self.username, password, function(error, permissions, services) {
             self.permissions = permissions;
             self.services = services;
             callback(error);
@@ -81,5 +80,5 @@ __socket_source__
         this._socket.emit("invoke", channel, service, method, args, options);
     };
 
-    this.stack = { io: Engine };
+    this.stack = { IO: Engine };
 })(this);

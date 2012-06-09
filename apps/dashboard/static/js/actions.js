@@ -1,5 +1,6 @@
 function logout() {
-    $.cookie("token", null);
+    $.cookie("username", null);
+    $.cookie("password", null);
     window.location.reload();
 }
 

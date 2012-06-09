@@ -2,14 +2,13 @@ var client = null;
 var services = {};
 
 $(function() {
-    var token = $.cookie("token");
+    var username = $.cookie("username");
+    var password = $.cookie("password");
 
     $("#loginForm").submit(function(e) {
         e.preventDefault();
-        var username = $("#loginUsername").val();
-        var password = $("#loginPassword").val();
-        var token = username + ":" + password;
-        $.cookie("token", token);
+        $.cookie("username", $("#loginUsername").val());
+        $.cookie("password", $("#loginPassword").val());
         window.location.reload();
     });
 
@@ -80,8 +79,8 @@ $(function() {
         }
     };
 
-    if(token) {
-        client = new stack.io("http://localhost:8080", token, ready);
+    if(username && password) {
+        client = new stack.IO("http://localhost:8080", username, password, ready);
     } else {
         showLogin();
     }

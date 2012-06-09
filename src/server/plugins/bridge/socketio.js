@@ -27,27 +27,31 @@ module.exports = function(app, backend, authorizer, config) {
 };
 
 //Initializes a new session
-//token : string
-//      The authentication token
+//username : string
+//      The authentication username
+//password : string
+//      The authentication password
 //callback : function(error : object, user_id : number, permissions : array of
 //           strings, services : array of strings)
 //      The callback to call when the initialization is complete
-function init(token, callback) {
+function init(username, password, callback) {
     var self = this;
 
     try {
         //Validate the request
-        model.validateAuthentication(token);
+        model.validateUsername(username);
+        model.validatePassword(password);
 
         //Perform authentication
-        self.authorizer.authenticate(token, function(error, user) {
+
+        self.authorizer.authenticate(username, password, function(error, user) {
             self.user = user;
 
             if(error) {
                 var errorObj = model.createSyntheticError("NotAuthenticatedError", error);
-                self.reply(callback, [errorObj, null, null, null]);
+                self.reply(callback, [errorObj, null, null]);
             } else {
-                var args = [undefined, user.id, user.permissions, self.backend.services()];
+                var args = [undefined, user.permissions, self.backend.services()];
                 self.reply(callback, args);
             }
         });

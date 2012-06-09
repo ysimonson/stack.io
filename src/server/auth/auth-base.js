@@ -17,11 +17,13 @@ function Authorizer(config) {
 util.inherits(Authorizer, events.EventEmitter);
 
 //Performs authentication
-//token : string
-//      The authentication token
+//username : string
+//      The authenticating username
+//password : string
+//      The authenticating password
 //callback : function(error : string, user : object)
 //      The function to call after authentication completes
-Authorizer.prototype.authenticate = function(token, callback) {
+Authorizer.prototype.authenticate = function(username, password, callback) {
     callback(null, new RootUser());
 };
 

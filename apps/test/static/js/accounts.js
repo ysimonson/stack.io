@@ -1,59 +1,56 @@
 function testAccounts() {
     module("Account Manipulation");
 
-    function setupAccounts(userToken, groupName, callback) {
-        ainvoke("add_group", [groupName], function(error, res, more) {
+    function setupAccounts(group, username, password, callback) {
+        ainvoke("add_group", [group], function(error, res, more) {
             equal(error, null);
-            equal(typeof(res), 'number');
+            equal(res, null);
             equal(more, false);
 
-            var groupId = res;
-
-            ainvoke("add_user", [userToken], function(error, res, more) {
+            ainvoke("add_user", [username, password], function(error, res, more) {
                 equal(error, null);
-                equal(typeof(res), 'number');
+                equal(res, null);
                 equal(more, false);
-
-                callback(res, groupId);
+                callback();
             });
         });
     }
 
-    function teardownAccounts(userId, groupId) {
+    function teardownAccounts(group, username) {
         var barrier = createBarrier(2, start);
 
-        ainvoke("remove_user", [userId], function(error, res, more) {
+        ainvoke("remove_user", [username], function(error, res, more) {
             equal(error, null);
-            equal(res, null);
+            equal(res, true);
             equal(more, false);
             barrier();
         });
 
-        ainvoke("remove_group", [groupId], function(error, res, more) {
+        ainvoke("remove_group", [group], function(error, res, more) {
             equal(error, null);
-            equal(res, null);
+            equal(res, true);
             equal(more, false);
             barrier();
         }); 
     }
 
     asyncTest("Manipulating group permissions", 21, function() {
-        setupAccounts("test0:pwd", "test0-group", function(userId, groupId) {
-            ainvoke("add_group_permissions", [groupId, ["_stackio_auth.*", "temp.*"]], function(error, res, more) {
+        setupAccounts("test0-group", "test0", "pwd", function() {
+            ainvoke("add_group_permissions", ["test0-group", ["_stackio_auth.*", "temp.*"]], function(error, res, more) {
                 equal(error, null);
-                equal(res, null);
+                equal(res, true);
                 equal(more, false);
 
-                ainvoke("remove_group_permissions", [groupId, ["temp.*"]], function(error, res, more) {
+                ainvoke("remove_group_permissions", ["test0-group", ["temp.*"]], function(error, res, more) {
                     equal(error, null);
-                    equal(res, null);
+                    equal(res, true);
                     equal(more, false);
 
-                    ainvoke("clear_group_permissions", [groupId], function(error, res, more) {
+                    ainvoke("clear_group_permissions", ["test0-group"], function(error, res, more) {
                         equal(error, null);
-                        equal(res, null);
+                        equal(res, true);
                         equal(more, false);
-                        teardownAccounts(userId, groupId);
+                        teardownAccounts("test0-group", "test0");
                     });
                 });
             }); 
@@ -61,27 +58,27 @@ function testAccounts() {
     });
 
     asyncTest("Adding/removing user groups by user ID", 24, function() {
-        setupAccounts("test1:pwd", "test1-group", function(userId, groupId) {
-            ainvoke("add_user_groups_by_user", [userId, [groupId]], function(error, res, more) {
+        setupAccounts("test1-group", "test1", "pwd", function() {
+            ainvoke("add_user_groups_by_user", ["test1", ["test1-group"]], function(error, res, more) {
                 equal(error, null);
-                equal(res, null);
+                equal(res, true);
                 equal(more, false);
 
-                ainvoke("get_user_groups_by_user", [userId], function(error, res, more) {
+                ainvoke("get_user_groups_by_user", ["test1"], function(error, res, more) {
                     equal(error, null);
-                    ok(setsEquivalent(res, [{id: groupId}]));
+                    deepEqual(res, [{name: "test1-group"}]);
                     equal(more, false);
 
-                    ainvoke("remove_user_groups_by_user", [userId, [groupId]], function(error, res, more) {
+                    ainvoke("remove_user_groups_by_user", ["test1", ["test1-group"]], function(error, res, more) {
                         equal(error, null);
-                        equal(res, null);
+                        equal(res, true);
                         equal(more, false);
 
-                        ainvoke("get_user_groups_by_user", [userId], function(error, res, more) {
+                        ainvoke("get_user_groups_by_user", ["test1"], function(error, res, more) {
                             equal(error, null);
                             ok(setsEquivalent(res, []));
                             equal(more, false);
-                            teardownAccounts(userId, groupId);
+                            teardownAccounts("test1-group", "test1");
                         });
                     });
                 });
@@ -90,27 +87,27 @@ function testAccounts() {
     });
 
     asyncTest("Adding/removing user groups by group ID", 24, function() {
-        setupAccounts("test2:pwd", "test2-group", function(userId, groupId) {
-            ainvoke("add_user_groups_by_group", [groupId, [userId]], function(error, res, more) {
+        setupAccounts("test2-group", "test2", "pwd", function() {
+            ainvoke("add_user_groups_by_group", ["test2-group", ["test2"]], function(error, res, more) {
                 equal(error, null);
-                equal(res, null);
+                equal(res, true);
                 equal(more, false);
 
-                ainvoke("get_user_groups_by_group", [groupId], function(error, res, more) {
+                ainvoke("get_user_groups_by_group", ["test2-group"], function(error, res, more) {
                     equal(error, null);
-                    ok(setsEquivalent(res, [{id: userId}]));
+                    ok(setsEquivalent(res, [{username: "test2"}]));
                     equal(more, false);
 
-                    ainvoke("remove_user_groups_by_group", [groupId, [userId]], function(error, res, more) {
+                    ainvoke("remove_user_groups_by_group", ["test2-group", ["test2"]], function(error, res, more) {
                         equal(error, null);
-                        equal(res, null);
+                        equal(res, true);
                         equal(more, false);
 
-                        ainvoke("get_user_groups_by_group", [groupId], function(error, res, more) {
+                        ainvoke("get_user_groups_by_group", ["test2-group"], function(error, res, more) {
                             equal(error, null);
                             ok(setsEquivalent(res, []));
                             equal(more, false);
-                            teardownAccounts(userId, groupId);
+                            teardownAccounts("test2-group", "test2");
                         });
                     });
                 });

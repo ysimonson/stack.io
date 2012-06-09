@@ -1,11 +1,15 @@
 {
-    "users": [{
-        "groups": ["test"],
-        "token": "test:test-password"
-    },{
-        "groups": ["demo"],
-        "token": "demo:demo-password"
-    }],
+    "users": {
+        "test": {
+            "password": "test-password",
+            "groups": ["test"]
+        },
+
+        "demo": {
+            "password": "demo-password",
+            "groups": ["demo"]
+        }
+    },
 
     "groups": {
         "test": [

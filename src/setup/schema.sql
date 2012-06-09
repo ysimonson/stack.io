@@ -1,6 +1,8 @@
 CREATE TABLE users (
     id INT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
-    token_hash CHAR(44) NOT NULL
+    username VARCHAR(128) NOT NULL,
+    password_hash CHAR(44) NOT NULL,
+    UNIQUE (username)
 );
 
 CREATE TABLE groups (
@@ -11,10 +13,12 @@ CREATE TABLE groups (
 
 CREATE TABLE user_groups (
     user_id INT UNSIGNED REFERENCES users(id),
-    group_id SMALLINT UNSIGNED REFERENCES groups(id)
+    group_id SMALLINT UNSIGNED REFERENCES groups(id),
+    PRIMARY KEY (user_id, group_id)
 );
 
 CREATE TABLE permissions (
     group_id SMALLINT UNSIGNED REFERENCES groups(id),
-    pattern TEXT NOT NULL
+    pattern VARCHAR(128) NOT NULL,
+    PRIMARY KEY (group_id, pattern)
 );

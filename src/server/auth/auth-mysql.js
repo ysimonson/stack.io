@@ -5,7 +5,7 @@ var mysql = require("mysql"),
     _ = require("underscore");
 
 var GET_PERMISSIONS_QUERY = "SELECT permissions.pattern AS pattern FROM permissions, user_groups WHERE permissions.group_id=user_groups.group_id AND user_groups.user_id=?";
-var GET_USER_ID_QUERY = "SELECT id FROM users WHERE token_hash=? LIMIT 1";
+var GET_USER_ID_QUERY = "SELECT id FROM users WHERE username=? AND password_hash=? LIMIT 1";
 
 function Authorizer(config) {
     base.Authorizer.call(this, config);
@@ -14,12 +14,12 @@ function Authorizer(config) {
 
 util.inherits(Authorizer, base.Authorizer);
 
-Authorizer.prototype.authenticate = function(token, callback) {
+Authorizer.prototype.authenticate = function(username, password, callback) {
     var self = this;
 
-    //Gets the hash of the token
+    //Gets the hash of the password
     var sha = crypto.createHash('sha256');
-    sha.update(token);
+    sha.update(password);
     var hash = sha.digest('base64');
 
     //Updates the user's permissions
@@ -56,7 +56,7 @@ Authorizer.prototype.authenticate = function(token, callback) {
     }
 
     //Look up the user in the mysql database
-    self._client.query(GET_USER_ID_QUERY, [hash], function(error, results) {
+    self._client.query(GET_USER_ID_QUERY, [username, hash], function(error, results) {
         if(error) {
             self.emit("error", error);
             callback("Could not fetch user data", self.unauthenticated());

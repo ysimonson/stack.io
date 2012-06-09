@@ -20,7 +20,7 @@
         "type": "mysql",
         "host": "localhost",
         "port": 3306,
-        "database": "stackio_auth",
+        "database": "stackio_auth2",
         "user": "stackio_auth",
         "password": "volkswagon",
         "rounds": 10,

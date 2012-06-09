@@ -1,5 +1,6 @@
 var MAX_IDENTIFIER_LENGTH = 1024,
-    MAX_TOKEN_LENGTH = 4096,
+    MAX_USERNAME_LENGTH = 128,
+    MAX_PASSWORD_LENGTH = 128,
     IDENTIFIER_VALIDATOR = /^[a-zA-Z_][a-zA-Z_0-9]+$/;
 
 //Validates an identifier
@@ -9,10 +10,16 @@ function checkIdentifier(identifier, name) {
     if(!IDENTIFIER_VALIDATOR.test(identifier)) throw "invalid " + name;
 }
 
-//Validates an authentication token
-function validateAuthentication(token) {
-    if(typeof(token) !== 'string') throw "expected token to be a string";
-    if(token.length > MAX_TOKEN_LENGTH) throw "token is too long";
+//Validates a username
+function validateUsername(username) {
+    if(typeof(username) !== 'string') throw "expected username to be a string";
+    if(username.length > MAX_USERNAME_LENGTH) throw "username is too long";
+}
+
+//Validates a password
+function validatePassword(password) {
+    if(typeof(password) !== 'string') throw "expected password to be a string";
+    if(password.length > MAX_PASSWORD_LENGTH) throw "password is too long";
 }
 
 //Validates an invocation request
@@ -53,6 +60,7 @@ function createSyntheticError(name, message) {
     };
 }
 
-exports.validateAuthentication = validateAuthentication;
+exports.validateUsername = validateUsername;
+exports.validatePassword = validatePassword;
 exports.validateInvocation = validateInvocation;
 exports.createSyntheticError = createSyntheticError;

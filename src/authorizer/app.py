@@ -29,41 +29,28 @@ def seed(auth, config):
     """Inserts data from a seed JSON file"""
 
     #Insert each group
-    for group_name, group_permissions in config['groups'].iteritems():
-        group_data = auth.get_group_by_name(group_name)
-
-        if group_data:
-            group_id = group_data['id']
+    for name, permissions in config['groups'].iteritems():
+        if auth.has_group(name):
+            auth.clear_group_permissions(name)
         else:
-            group_id = auth.add_group(group_name)
+            auth.add_group(name)
 
-        #Add the permissions
-        auth.clear_group_permissions(group_id)
-        auth.add_group_permissions(group_id, group_permissions)
+        auth.add_group_permissions(name, permissions)
 
     #Insert each user
-    for user in config['users']:
-        user_groups = user['groups']
-        user_token = user['token']
-        user_data = auth.get_user_by_token(user_token)
+    for username, data in config['users'].iteritems():
+        password = data['password']
+        groups = data['groups']
 
-        #Get the group IDs to add to user groups
-        user_group_ids = []
-        for user_group in user_groups:
-            try:
-                user_group_ids.append(auth.get_group_by_name(user_group)['id'])
-            except Exception, e:
-                error_template = "Tried to add user identified by '%s' to the group '%s', but the group does not exist: %s"
-                exit(error_template % (user_token, user_group, e))
+        if auth.has_user(username):
+            if not auth.authenticate_user(username, password):
+                raise Exception, "Could not authenticate user %s" % username
 
-        if user_data:
-            user_id = user_data['id']
+            auth.clear_user_groups_by_user(username)
         else:
-            user_id = auth.add_user(user_token)
+            auth.add_user(username, password)
 
-        #Insert the user groups
-        auth.clear_user_groups_by_user(user_id)
-        auth.add_user_groups_by_user(user_id, user_group_ids)
+        auth.add_user_groups_by_user(username, groups)
 
 def main():
     if len(sys.argv) < 2:
