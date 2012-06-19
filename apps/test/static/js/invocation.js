@@ -74,7 +74,7 @@ function testInvocation() {
     });
 
     asyncTest("Timeouts", 3, function() {
-        client.invoke("test", "quiet", [], {timeout: 5}, function(error, res, more) {
+        client.invoke("test", "quiet", function(error, res, more) {
             equal(error.name, "TimeoutExpired");
             equal(res, null);
             equal(more, false);
@@ -83,7 +83,7 @@ function testInvocation() {
     });
 
     asyncTest("Bad client", 3, function() {
-        client.invoke("bad_test", "add42", [30], function(error, res, more) {
+        client.invoke("bad_test", "add42", 30, function(error, res, more) {
             equal(error.name, "ServiceDoesNotExistError");
             equal(res, null);
             equal(more, false);

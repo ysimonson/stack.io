@@ -23,27 +23,9 @@ function validatePassword(password) {
 }
 
 //Validates an invocation request
-function validateInvocation(service, method, args, options) {
+function validateInvocation(service, method, args) {
     checkIdentifier(service, "service");
     checkIdentifier(method, "method");
-    
-    if(!(args instanceof Array)) throw "expected args to be an array";
-    if(typeof(options) !== 'object' || options instanceof Array) throw "expected options to be an object";
-
-    for(var key in options) {
-        if(key !== 'timeout' && key !== 'heartbeat') {
-            throw "Unexpected key in options: " + key;
-        }
-    }
-
-
-    if('timeout' in options && typeof(options.timeout) !== 'number') {
-        throw "Invalid timeout";
-    }
-
-    if('heartbeat' in options && typeof(options.heartbeat) !== 'number') {
-        throw "Invalid heartbeat";
-    }
 }
 
 function validateRegistration(service, endpoint) {

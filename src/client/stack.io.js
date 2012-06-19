@@ -61,23 +61,19 @@ __socket_source__
     //      The service name
     //method : string
     //      The method name
-    //args : array
+    //args... : array
     //      The method arguments
-    //options : object
-    //      ZeroRPC arguments. Legal members:
-    //      * hearbeat : number - sets the heartbeat, in seconds (default 10)
-    //      * timeout : number - Sets the timeout, in seconds (default 30)
     //callback : function(error : object, result : anything, more : boolean)
     //      The function to call when a result is received
-    Engine.prototype.invoke = function(service, method, args, options, callback) {
-        if(callback === undefined) {
-            callback = options;
-            options = {};
-        }
+    Engine.prototype.invoke = function(service, method /*, args..., callback*/) {
+        if(arguments.length < 3) throw new Error("No callback specified");
+
+        var args = Array.prototype.slice.call(arguments, 2, arguments.length - 1);
+        var callback = arguments[arguments.length - 1];
 
         var channel = this._channelCounter++;
         this._channels[channel] = callback;
-        this._socket.emit("invoke", channel, service, method, args, options);
+        this._socket.emit("invoke", channel, service, method, args);
     };
 
     this.stack = { IO: Engine };

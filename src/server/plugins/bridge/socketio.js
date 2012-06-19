@@ -74,13 +74,11 @@ function init(username, password, callback) {
 //      The method name
 //args : array
 //      The method arguments
-//options : object
-//      ZeroRPC arguments
-function invoke(channel, service, method, args, options) {
+function invoke(channel, service, method, args) {
     var self = this;
-
+    
     try {
-        model.validateInvocation(service, method, args, options);
+        model.validateInvocation(service, method, args);
 
         if(!self.user) {
             var error = model.createSyntheticError("NotAuthenticatedError", "Not authenticated");
@@ -90,8 +88,7 @@ function invoke(channel, service, method, args, options) {
             return self.emit("response", channel, error, null, false);
         }
 
-        self.backend.invoke(self.user, service, method, args, options, function(error, result, more) {
-            //if(error) console.log("ASDASDA", error, result, more);
+        self.backend.invoke(self.user, service, method, args, function(error, result, more) {
             self.emit("response", channel, error, result, more);
         }); 
     } catch(e) {

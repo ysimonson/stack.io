@@ -15,7 +15,7 @@ function rpcMethod(service, method) {
 
     $("#rpcArgs form").submit(function(e) {
         e.preventDefault();
-        rpcInvoke(service, method);
+        rpcInvoke(service, method, function() {});
         return false;
     });
 }
@@ -44,12 +44,15 @@ function rpcInvoke(service, method) {
         var container = $("#rpcResults");
         container.empty();
 
-        client.invoke(service, method, args, function(error, res, more) {
+        var callback = function(error, res, more) {
             if(error) {
                 errorMessage(container, error.name, error.message, true);
             } else {
                 container.prepend($("<pre>").text(JSON.stringify(res)));
             }
-        }); 
+        };
+
+        var invokeArgs = [service, method].concat(args).concat([callback]);
+        client.invoke.apply(client, invokeArgs);
     }
 }

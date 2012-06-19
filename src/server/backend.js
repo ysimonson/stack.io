@@ -1,5 +1,4 @@
-var zpcServer = require("./lib/zerorpc/server"),
-    zpcClient = require("./lib/zerorpc/client"),
+var zerorpc = require("zerorpc"),
     util = require("util"),
     events = require("events"),
     model = require("./model"),
@@ -15,31 +14,29 @@ function ZeroRPCBackend(config) {
     self._clients = {};
     self._clientConfig = config.clientConfig;
 
-    self._registrar = new zpcServer.Server(config.registrarConfig);
+    self._registrar = new zerorpc.Server({
+        services: function(reply) {
+            reply(null, self._services, false);
+        },
+
+        register: function(service, endpoint, reply) {
+            //TODO: validation
+
+            if(service in self._services) {
+                var error = model.createSyntheticError("ServiceRegisteredError", "Service already registered");
+                reply(error, undefined, false);
+            } else {
+                self._services[service] = endpoint;    
+                reply(null, undefined, false);
+            }
+        }
+    });
+
     self._registrar.bind(config.registrarEndpoint);
 
     //Proxy errors from the registrar service
     self._registrar.on("error", function(error) {
         self.emit("error", error);
-    });
-
-    //Expose the registrar
-    self._registrar.expose({
-        services: function(cb) {
-            cb(null, self._services, false);
-        },
-
-        register: function(cb, service, endpoint) {
-            //TODO: validation
-
-            if(service in self._services) {
-                var error = model.createSyntheticError("ServiceRegisteredError", "Service already registered");
-                cb(error, undefined, false);
-            } else {
-                self._services[service] = endpoint;    
-                cb(null, undefined, false);
-            }
-        }
     });
 }
 
@@ -75,7 +72,7 @@ ZeroRPCBackend.prototype._getClient = function(user, serviceName, serviceEndpoin
 
     //Create a new connection if one is not cached
     if(client === undefined) {
-        client = new zpcClient.Client(self._clientConfig);
+        client = new zerorpc.Client(self._clientConfig);
         client.connect(serviceEndpoint);
 
         client.on("error", function(error) {
@@ -97,11 +94,9 @@ ZeroRPCBackend.prototype._getClient = function(user, serviceName, serviceEndpoin
 //      The name of the method
 //args : array
 //      The method arguments
-//options : object
-//      The ZeroRPC arguments
 //callback : function(error : object, response : anything, more : boolean)
 //      The function to call when there is an update
-ZeroRPCBackend.prototype.invoke = function(user, serviceName, method, args, options, callback) {
+ZeroRPCBackend.prototype.invoke = function(user, serviceName, method, args, callback) {
     var self = this;
     var serviceEndpoint = self._services[serviceName];
 
@@ -111,7 +106,8 @@ ZeroRPCBackend.prototype.invoke = function(user, serviceName, method, args, opti
     }
 
     var client = this._getClient(user, serviceName, serviceEndpoint);
-    client.invoke(method, args, options, callback);
+    var invokeArgs = [method].concat(args).concat([callback]);
+    client.invoke.apply(client, invokeArgs);
 };
 
 //Removes a user's pending requests

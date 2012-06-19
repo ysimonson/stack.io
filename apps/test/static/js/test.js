@@ -30,13 +30,15 @@ function ready() {
     }
 }
 
-function invoke(method, args, callback) {
-    client.invoke("test", method, args, callback);
+function _createInvoker(service) {
+    return function(method, args, callback) {
+        var args = [service, method].concat(args).concat([callback]);
+        client.invoke.apply(client, args);
+    };
 }
 
-function ainvoke(method, args, callback) {
-    client.invoke("_stackio_auth", method, args, callback);
-}
+var invoke = _createInvoker("test");
+var ainvoke = _createInvoker("_stackio_auth");
 
 function objectsEquivalent(actual, expected) {
     for(var key in expected) {

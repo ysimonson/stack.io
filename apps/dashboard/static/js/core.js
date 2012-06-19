@@ -62,7 +62,7 @@ $(function() {
 
             for(var i=0; i<client.services.length; i++) {
                 (function(service) {
-                    client.invoke(service, "_zerorpc_inspect", [], function(error, res, more) {
+                    client.invoke(service, "_zerorpc_inspect", function(error, res, more) {
                         if(error) {
                             console.error("Could not introspect on service " + service + ":", error);
                         }
