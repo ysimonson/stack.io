@@ -9,15 +9,18 @@ __socket_source__
     }
 
     //Creates a new stack.io engine
-    function Engine(host, username, password, callback) {
+    function Engine(options) {
         var self = this;
 
         //Get the input configuration
-        self.host = host || defaultHost();
-        self.username = username;
-        self.password = password;
+        self.host = options.host || defaultHost();
+        self.username = options.username || "root";
+        self.password = options.password || "";
 
-        callback = callback || function(error) {
+        var zeroRpcOptions = {};
+        if(options.timeout) zeroRpcOptions.timeout = options.timeout;
+
+        callback = options.callback || function(error) {
             if(error) console.error(error);
         };
 
@@ -49,7 +52,7 @@ __socket_source__
         });
 
         //Initialize the socket
-        self._socket.emit("init", self.username, password, function(error, permissions, services) {
+        self._socket.emit("init", self.username, self.password, zeroRpcOptions, function(error, permissions, services) {
             self.permissions = permissions;
             self.services = services;
             callback(error);

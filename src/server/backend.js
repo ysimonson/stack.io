@@ -61,18 +61,22 @@ ZeroRPCBackend.prototype._getUserClients = function(user) {
 //Gets or creates a client for ther user to the specified service
 //user : object
 //      The user
+//connectionOptions : object
+//      The connection-specific ZeroRPC options
 //serviceName : string
 //      The name of the service
 //serviceEndpoint : string
 //      The endpoint to the service if a new client connection has to be made
-ZeroRPCBackend.prototype._getClient = function(user, serviceName, serviceEndpoint) {
+ZeroRPCBackend.prototype._getClient = function(user, connectionOptions, serviceName, serviceEndpoint) {
     var self = this;
     var userClients = self._getUserClients(user);
     var client = userClients[serviceName];
 
     //Create a new connection if one is not cached
     if(client === undefined) {
-        client = new zerorpc.Client(self._clientConfig);
+        var allOptions = _.extend(_.clone(self._clientConfig), connectionOptions);
+
+        client = new zerorpc.Client(allOptions);
         client.connect(serviceEndpoint);
 
         client.on("error", function(error) {
@@ -88,6 +92,8 @@ ZeroRPCBackend.prototype._getClient = function(user, serviceName, serviceEndpoin
 //Invokes a method
 //user : object
 //      The user
+//options : object
+//      The ZeroRPC options
 //serviceName : string
 //      The name of the service
 //method : string
@@ -96,7 +102,7 @@ ZeroRPCBackend.prototype._getClient = function(user, serviceName, serviceEndpoin
 //      The method arguments
 //callback : function(error : object, response : anything, more : boolean)
 //      The function to call when there is an update
-ZeroRPCBackend.prototype.invoke = function(user, serviceName, method, args, callback) {
+ZeroRPCBackend.prototype.invoke = function(user, options, serviceName, method, args, callback) {
     var self = this;
     var serviceEndpoint = self._services[serviceName];
 
@@ -105,7 +111,7 @@ ZeroRPCBackend.prototype.invoke = function(user, serviceName, method, args, call
         return callback(error, undefined, false);
     }
 
-    var client = this._getClient(user, serviceName, serviceEndpoint);
+    var client = this._getClient(user, options, serviceName, serviceEndpoint);
     var invokeArgs = [method].concat(args).concat([callback]);
     client.invoke.apply(client, invokeArgs);
 };

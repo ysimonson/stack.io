@@ -80,7 +80,12 @@ $(function() {
     };
 
     if(username && password) {
-        client = new stack.IO("http://localhost:8080", username, password, ready);
+        client = new stack.IO({
+            host: "http://localhost:8080",
+            username: username,
+            password: password,
+            callback: ready
+        });
     } else {
         showLogin();
     }

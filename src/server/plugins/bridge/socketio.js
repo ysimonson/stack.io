@@ -31,21 +31,25 @@ module.exports = function(app, backend, authorizer, config) {
 //      The authentication username
 //password : string
 //      The authentication password
+//options : Object
+//      The ZeroRPC client options
 //callback : function(error : object, user_id : number, permissions : array of
 //           strings, services : array of strings)
 //      The callback to call when the initialization is complete
-function init(username, password, callback) {
+function init(username, password, options, callback) {
     var self = this;
 
     try {
         //Validate the request
         model.validateUsername(username);
         model.validatePassword(password);
+        model.validateOptions(options);
 
         //Perform authentication
 
         self.authorizer.authenticate(username, password, function(error, user) {
             self.user = user;
+            self.zeroRpcOptions = options;
 
             if(error) {
                 var errorObj = model.createSyntheticError("NotAuthenticatedError", error);
@@ -88,7 +92,7 @@ function invoke(channel, service, method, args) {
             return self.emit("response", channel, error, null, false);
         }
 
-        self.backend.invoke(self.user, service, method, args, function(error, result, more) {
+        self.backend.invoke(self.user, self.zeroRpcOptions, service, method, args, function(error, result, more) {
             self.emit("response", channel, error, result, more);
         }); 
     } catch(e) {

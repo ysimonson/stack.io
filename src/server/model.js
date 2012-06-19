@@ -1,7 +1,8 @@
 var MAX_IDENTIFIER_LENGTH = 1024,
     MAX_USERNAME_LENGTH = 128,
     MAX_PASSWORD_LENGTH = 128,
-    IDENTIFIER_VALIDATOR = /^[a-zA-Z_][a-zA-Z_0-9]+$/;
+    IDENTIFIER_VALIDATOR = /^[a-zA-Z_][a-zA-Z_0-9]+$/,
+    ALLOWED_OPTIONS = { timeout: 'number' };
 
 //Validates an identifier
 function checkIdentifier(identifier, name) {
@@ -26,11 +27,23 @@ function validatePassword(password) {
 function validateInvocation(service, method, args) {
     checkIdentifier(service, "service");
     checkIdentifier(method, "method");
+    if(!(args instanceof Array)) throw "expected args to be an array";
 }
 
 function validateRegistration(service, endpoint) {
     checkIdentifier(service, "service");
     //TODO: validate endpoint
+}
+
+function validateOptions(options) {
+    if(typeof(options) != 'object') throw "expected options to be an object";
+
+    for(var key in options) {
+        var expectedType = ALLOWED_OPTIONS[key];
+
+        if(expectedType === undefined) throw "unexpected option";
+        if(typeof(options[key]) != expectedType) throw "option '" + key + "' is of the incorrect type; expected a(n) " + expectedType;
+    }
 }
 
 //Creates an object that mimicks the error objects received from remote ZeroRPC services
@@ -45,4 +58,6 @@ function createSyntheticError(name, message) {
 exports.validateUsername = validateUsername;
 exports.validatePassword = validatePassword;
 exports.validateInvocation = validateInvocation;
+exports.validateRegistration = validateRegistration;
+exports.validateOptions = validateOptions;
 exports.createSyntheticError = createSyntheticError;

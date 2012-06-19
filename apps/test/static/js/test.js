@@ -7,14 +7,21 @@ function randomString(n) {
     return str.join("");
 }
 
-var client = new stack.IO("http://localhost:8080", "test", "test-password", function(error) {
-    module("Basics");
+var client = new stack.IO({
+    host: "http://localhost:8080",
+    username: "test",
+    password: "test-password",
+    timeout: 5,
 
-    test("Created", function() {
-        ok(!error);
-    })
+    callback: function(error) {
+        module("Basics");
 
-    ready();
+        test("Created", function() {
+            ok(!error);
+        })
+
+        ready();
+    }
 });
 
 $(ready);
