@@ -1,3 +1,3 @@
 [submodule "lib/zerorpc-node"]
 	path = lib/shared/zerorpc-node
-	url = git@github.com:ysimonson/zerorpc-node.git
+	url = git@github.com:dotcloud/zerorpc-node.git
