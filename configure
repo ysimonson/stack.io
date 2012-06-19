@@ -1,7 +1,7 @@
 #!/bin/sh
 
 if [ ! -d "node_modules" ]; then
-    npm install underscore mysql socket.io express
+    npm install underscore mysql socket.io express zerorpc
 fi
 
 cp scripts/Makefile Makefile
