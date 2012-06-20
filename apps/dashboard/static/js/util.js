@@ -7,9 +7,6 @@ function cleanMethods(methods) {
 
         var aClone = [];
         for(var j=0; j<args.length; j++) aClone.push(args[j]);
-        console.log(method[0], aClone.join(","));
-
-        args.shift();
 
         methodsObj[method[0]] = {
             args: args,

@@ -34,7 +34,7 @@ $(function() {
     var showContent = function() {
         transition($("#loading"), $("#content"));
 
-        $("#authorizationId").text(client.userId);
+        $("#authorizationUsername").text(client.username);
         $("#authorizationPermissions").text(client.permissions.join("\n"));
 
         $(".serviceSelector").append($("<option>"));
@@ -62,16 +62,13 @@ $(function() {
 
             for(var i=0; i<client.services.length; i++) {
                 (function(service) {
-                    client.invoke(service, "_zerorpc_inspect", function(error, res, more) {
+                    client.invoke(service, "_zerorpc_inspect", null, true, function(error, res, more) {
                         if(error) {
                             console.error("Could not introspect on service " + service + ":", error);
                         }
+
                         introspectedCount++;
-
-                        if(res) {
-                            services[service] = cleanMethods(res.methods);
-                        }
-
+                        if(res) services[service] = cleanMethods(res.methods);
                         if(introspectedCount == client.services.length) showContent();
                     });
                 })(client.services[i]);
