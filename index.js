@@ -62,12 +62,12 @@ stackio.prototype.expose = function (service, obj) {
             };
             self._replyTransport.emit(self.rpcChannel, m, keepOpen);
         });
-        method.apply(this, data.args);
+        method.apply(data.ctx, data.args);
     });
     this.emit('_new_rpc_service', service);
 };
 
-stackio.prototype.call = function (service, method) {
+stackio.prototype.call = function (service, method, ctx) {
     var self = this;
     return function () {
         var responseCallback = arguments[arguments.length - 1];
@@ -79,7 +79,8 @@ stackio.prototype.call = function (service, method) {
         var data = {
             method: method,
             args: args,
-            id : g_nextId()
+            id: g_nextId(),
+            ctx: ctx
         };
         if (responseCallback) {
             // In case the callback never used the response channel, we set a
@@ -112,6 +113,7 @@ stackio.prototype.call = function (service, method) {
 stackio.prototype.browser = function (app) {
     // App is a webserver or a port number
     var browser = require('./lib/browser');
+    stackio.prototype.addMiddleware = browser.addMiddleware;
     browser.serve(this, app);
 }
 
