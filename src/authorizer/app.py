@@ -30,27 +30,27 @@ def seed(auth, config):
 
     #Insert each group
     for name, permissions in config['groups'].iteritems():
-        if auth.has_group(name):
-            auth.clear_group_permissions(name)
+        if auth.has_group(None, name):
+            auth.clear_group_permissions(None, name)
         else:
-            auth.add_group(name)
+            auth.add_group(None, name)
 
-        auth.add_group_permissions(name, permissions)
+        auth.add_group_permissions(None, name, permissions)
 
     #Insert each user
     for username, data in config['users'].iteritems():
         password = data['password']
         groups = data['groups']
 
-        if auth.has_user(username):
-            if not auth.authenticate_user(username, password):
+        if auth.has_user(None, username):
+            if not auth.authenticate_user(None, username, password):
                 raise Exception, "Could not authenticate user %s" % username
 
-            auth.clear_user_groups_by_user(username)
+            auth.clear_user_groups_by_user(None, username)
         else:
-            auth.add_user(username, password)
+            auth.add_user(None, username, password)
 
-        auth.add_user_groups_by_user(username, groups)
+        auth.add_user_groups_by_user(None, username, groups)
 
 def main():
     if len(sys.argv) < 2:

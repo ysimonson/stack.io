@@ -47,6 +47,10 @@ function User(id, permissions) {
     this.updatePermissions(permissions);
 }
 
+User.prototype.toJSON = function() {
+    return { type: "basic", id: this.id };
+};
+
 //Updates the user permissions
 //permissions : array of strings
 //      The permissions allowed for the user

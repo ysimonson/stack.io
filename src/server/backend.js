@@ -112,7 +112,12 @@ ZeroRPCBackend.prototype.invoke = function(user, options, serviceName, method, a
     }
 
     var client = this._getClient(user, options, serviceName, serviceEndpoint);
-    var invokeArgs = [method].concat(args).concat([callback]);
+    var context = { user: user.toJSON() };
+
+    var invokeArgs = [method, context];
+    invokeArgs = invokeArgs.concat(args);
+    invokeArgs.push(callback);
+    
     client.invoke.apply(client, invokeArgs);
 };
 
