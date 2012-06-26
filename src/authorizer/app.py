@@ -2,6 +2,7 @@ import zerorpc
 import database
 import sys
 import api
+import optparse
 
 try:
     import json
@@ -9,6 +10,12 @@ except:
     import simplejson as json
 
 AUTH_ENDPOINT = "tcp://0.0.0.0:27616"
+
+parser = optparse.OptionParser()
+parser.add_option("-o", "--dbhost", dest="dbhost", default="localhost:3306", help="The database host:port")
+parser.add_option("-n", "--dbname", dest="dbname", default="stackio_auth2", help="The database name")
+parser.add_option("-u", "--dbuser", dest="dbuser", default="stackio_auth", help="The database user")
+parser.add_option("-p", "--dbpass", dest="dbpass", default="volkswagon", help="The database password")
 
 def exit(message):
     """
@@ -30,55 +37,42 @@ def seed(auth, config):
 
     #Insert each group
     for name, permissions in config['groups'].iteritems():
-        if auth.has_group(None, name):
-            auth.clear_group_permissions(None, name)
+        if auth.has_group(name):
+            auth.clear_group_permissions(name)
         else:
-            auth.add_group(None, name)
+            auth.add_group(name)
 
-        auth.add_group_permissions(None, name, permissions)
+        auth.add_group_permissions(name, permissions)
 
     #Insert each user
     for username, data in config['users'].iteritems():
         password = data['password']
         groups = data['groups']
 
-        if auth.has_user(None, username):
-            if not auth.authenticate_user(None, username, password):
+        if auth.has_user(username):
+            if not auth.authenticate_user(username, password):
                 raise Exception, "Could not authenticate user %s" % username
 
-            auth.clear_user_groups_by_user(None, username)
+            auth.clear_user_groups_by_user(username)
         else:
-            auth.add_user(None, username, password)
+            auth.add_user(username, password)
 
-        auth.add_user_groups_by_user(None, username, groups)
+        auth.add_user_groups_by_user(username, groups)
 
 def main():
-    if len(sys.argv) < 2:
-        exit("No config file specified")
+    options, args = parser.parse_args()
 
-    config = get_json_content(sys.argv[1])
-    auth_config = config['auth']
-
-    #Do not run this if the authorization engine is not mysql
-    if auth_config['type'] != 'mysql':
-        exit('Authorization not configured to use mysql; bailing')
-
-    host = "%s:%s" % (auth_config.get('host', 'localhost'), auth_config.get('port', 3306))
-    db_name = auth_config['database']
-    user = auth_config['user']
-    password = auth_config['password']
-
-    conn = database.Connection(host, db_name, user=user, password=password)
+    conn = database.Connection(options.dbhost, options.dbname, user=options.dbuser, password=options.dbpass)
     auth = api.Authorizer(conn)
 
-    if len(sys.argv) > 2:
-        seed_config = get_json_content(sys.argv[2])
+    if len(args) > 0:
+        seed_config = get_json_content(args[0])
         seed(auth, seed_config)
 
     #Register the API
     registrar = zerorpc.Client()
     registrar.connect("tcp://127.0.0.1:27615")
-    registrar.register("_stackio_auth", AUTH_ENDPOINT)
+    registrar.register("authorizer", AUTH_ENDPOINT)
     registrar.close()
 
     #Run the API

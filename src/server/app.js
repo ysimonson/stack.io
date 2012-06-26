@@ -1,7 +1,8 @@
 var express = require("express"),
-    backend = require("./backend"),
-    fs = require("fs");
+    fs = require("fs"),
+    _ = require("underscore");
 
+//Read the config file
 var configSource = process.argv[process.argv.length - 1];
 
 try {
@@ -11,24 +12,45 @@ try {
     process.exit(1);
 }
 
-var authModule = require("./auth/auth-" + config.auth.type),
-    app = express.createServer(),
-    authorizer = new authModule.Authorizer(config.auth),
-    service = new backend.ZeroRPCBackend(config.backend);
+//Create the express app
+var app = express.createServer();
 
-authorizer.on("error", function(error) {
-    console.error("Authorizer error:", error);
+app.configure(function() {
+    app.use(express.bodyParser());
 });
 
-service.on("error", function(error) {
-    console.error("Backend error:", error);
+//Load the middleware
+var middleware = _.map(config.middleware, function(config) {
+    var MiddlewareClass = require(config.path);
+    var middleware = new MiddlewareClass(config);
+
+    middleware.on("error", function(error) {
+        console.error("Middleware error:", error);
+    });
+
+    return middleware;
 });
 
-app.use(express.bodyParser());
+//Instantiate the connectors, passing in the middleware
+for(var i=0; i<config.connectors.length; i++) {
+    var connectorConfig = config.connectors[i];
+    var ConnectorClass = require(connectorConfig.path);
+    var connector = new ConnectorClass(app, connectorConfig);
 
-for(var pluginName in config.plugins) {
-    var plugin = require("./plugins/" + pluginName);
-    plugin(app, service, authorizer, config.plugins[pluginName] || {});
+    var relevantMiddleware = _.filter(middleware, function(middleware) {
+        return middleware.connector.test(connectorConfig.path);
+    });
+
+    for(var j=0; j<relevantMiddleware.length; j++) {
+        connector.registerMiddleware(relevantMiddleware[j]);
+    }
+
+    connector.on("error", function(error) {
+        console.error("Connector error:", error);
+    });
+
+    connector.start();
 }
 
+//Start!
 app.listen(config.port);

@@ -15,6 +15,7 @@ build-client:
 
 build-utils:
 	cp -r src/authorizer bin/authorizer
+	cp -r src/registrar bin/registrar
 
 build-apps:
 	cp -r apps bin/apps

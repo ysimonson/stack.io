@@ -1,15 +1,15 @@
 var zerorpc = require("zerorpc");
 
 var server = new zerorpc.Server({
-    addMan: function(context, sentence, reply) {
+    addMan: function(sentence, reply) {
         reply(null, sentence + ", man!", false);
     },
 
-    add42: function(context, n, reply) {
+    add42: function(n, reply) {
         reply(null, n + 42, false);
     },
 
-    iter: function(context, from, to, step, reply) {
+    iter: function(from, to, step, reply) {
         for(i=from; i<to; i+=step) {
             reply(null, i, true);
         }
@@ -17,15 +17,15 @@ var server = new zerorpc.Server({
         reply(null, undefined, false);
     },
 
-    simpleError: function(context, reply) {
+    simpleError: function(reply) {
         reply("This is an error, man!", undefined, false);
     },
 
-    objectError: function(context, reply) {
+    objectError: function(reply) {
         reply(new Error("This is an error object, man!"), undefined, false);
     },
 
-    streamError: function(context, reply) {
+    streamError: function(reply) {
         reply("This is a stream error, man!", undefined, true);
 
         var error = false;
@@ -41,13 +41,13 @@ var server = new zerorpc.Server({
         }
     },
 
-    quiet: function(context, reply) {
+    quiet: function(reply) {
         setTimeout(function() {
             reply(null, "Should not happen", false);
         }, 31 * 1000);
     },
 
-    notAuthorized: function(context, reply) {
+    notAuthorized: function(reply) {
         reply(null, "Should not happen", false);
     }
 });

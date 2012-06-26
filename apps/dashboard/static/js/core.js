@@ -1,7 +1,10 @@
-var client = null;
-var services = {};
+var readyCount = 0;
 
-$(function() {
+function ready() {
+    if(readyCount === 2) start();
+}
+
+function start() {
     var username = $.cookie("username");
     var password = $.cookie("password");
 
@@ -49,7 +52,7 @@ $(function() {
         $("#initErrorMessage").text(message);
     };
 
-    var ready = function(error) {
+    var loggedIn = function(error) {
         if(error) {
             if(error.name == "NotAuthenticated") {
                 showInitializationError("Authentication failed.");
@@ -77,13 +80,12 @@ $(function() {
     };
 
     if(username && password) {
-        client = new stack.IO({
-            host: "http://localhost:8080",
-            username: username,
-            password: password,
-            callback: ready
-        });
+        client.invoke("authorizer", "authenticate", username, password, loggedIn);
     } else {
         showLogin();
     }
-});
+}
+
+var client = new stack.IO("http://localhost:8080", ready);
+var services = {};
+$(ready);

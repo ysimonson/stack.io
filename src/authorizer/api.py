@@ -58,14 +58,14 @@ class Authorizer(object):
         result = self.conn.get(GET_USER_ID, username)
         return result['id'] if result else None
 
-    def has_group(self, context, name):
+    def has_group(self, name):
         return self.conn.get(GET_GROUP_ID, name) != None
 
-    def add_group(self, context, name):
+    def add_group(self, name):
         """Adds a new group"""
         self.conn.execute(ADD_GROUP, name)
 
-    def remove_group(self, context, name):
+    def remove_group(self, name):
         """Removes a group"""
         id = self._get_group_id(name)
         if not id: return False
@@ -75,18 +75,18 @@ class Authorizer(object):
         self.conn.execute(REMOVE_GROUP, id)
         return True
 
-    def get_all_groups(self, context):
+    def get_all_groups(self):
         """Gets all of the groups"""
         return self.conn.query(GET_ALL_GROUPS)
 
-    def get_group_permissions(self, context, name):
+    def get_group_permissions(self, name):
         """Gets the permissions associated with a group"""
         id = self._get_group_id(name)
         if not id: return None
 
         return self.conn.query(GET_GROUP_PERMISSIONS, id)
 
-    def add_group_permissions(self, context, name, permissions):
+    def add_group_permissions(self, name, permissions):
         """Adds new permissions for a group"""
         id = self._get_group_id(name)
         if not id: return False
@@ -94,7 +94,7 @@ class Authorizer(object):
         self.conn.executemany(ADD_PERMISSION, zip_single(id, permissions))
         return True
 
-    def remove_group_permissions(self, context, name, permissions):
+    def remove_group_permissions(self, name, permissions):
         """Removes permissions for a group"""
         id = self._get_group_id(name)
         if not id: return False
@@ -102,7 +102,7 @@ class Authorizer(object):
         self.conn.executemany(REMOVE_PERMISSION, zip_single(id, permissions))
         return True
 
-    def clear_group_permissions(self, context, name):
+    def clear_group_permissions(self, name):
         """Clears the permissions for a group"""
         id = self._get_group_id(name)
         if not id: return False
@@ -110,18 +110,18 @@ class Authorizer(object):
         self.conn.execute(CLEAR_PERMISSIONS, id)
         return True
 
-    def has_user(self, context, username):
+    def has_user(self, username):
         return self.conn.get(GET_USER_ID, username) != None
 
-    def authenticate_user(self, context, username, password):
+    def authenticate_user(self, username, password):
         """Checks if a user is authenticated"""
         return self.conn.get(AUTHENTICATE_USER, username, get_hash(password)) != None
 
-    def add_user(self, context, username, password):
+    def add_user(self, username, password):
         """Adds a new user"""
         self.conn.execute(ADD_USER, username, get_hash(password))
 
-    def remove_user(self, context, username):
+    def remove_user(self, username):
         """Removes a user"""
         id = self._get_user_id(username)
         if not id: return False
@@ -130,42 +130,42 @@ class Authorizer(object):
         self.conn.execute(REMOVE_USER, id)
         return True
 
-    def get_user_groups_by_user(self, context, username):
+    def get_user_groups_by_user(self, username):
         """Gets the groups associated with a user"""
         id = self._get_user_id(username)
         if not id: return None
 
         return self.conn.query(GET_USER_GROUPS_BY_USER, id)
 
-    def add_user_groups_by_user(self, context, username, groups):
+    def add_user_groups_by_user(self, username, groups):
         """Adds new groups to associate with a user"""
         return self._bulk(ADD_USER_GROUP_BY_USER, self._get_user_id, self._get_group_id, username, groups)
 
-    def remove_user_groups_by_user(self, context, username, groups):
+    def remove_user_groups_by_user(self, username, groups):
         """Removes groups to associate with a user"""
         return self._bulk(REMOVE_USER_GROUP_BY_USER, self._get_user_id, self._get_group_id, username, groups)
 
-    def clear_user_groups_by_user(self, context, username):
+    def clear_user_groups_by_user(self, username):
         """Clears the groups associated with a user"""
         id = self._get_user_id(username)
         self.conn.execute(CLEAR_USER_GROUPS_BY_USER, id)
 
-    def get_user_groups_by_group(self, context, name):
+    def get_user_groups_by_group(self, name):
         """Gets the groups associated with a user"""
         id = self._get_group_id(name)
         if not id: return None
 
         return self.conn.query(GET_USER_GROUPS_BY_GROUP, id)
 
-    def add_user_groups_by_group(self, context, group, usernames):
+    def add_user_groups_by_group(self, group, usernames):
         """Adds new groups to associate with a user"""
         return self._bulk(ADD_USER_GROUP_BY_GROUP, self._get_group_id, self._get_user_id, group, usernames)
 
-    def remove_user_groups_by_group(self, context, group, usernames):
+    def remove_user_groups_by_group(self, group, usernames):
         """Removes groups to associate with a user"""
         return self._bulk(REMOVE_USER_GROUP_BY_GROUP, self._get_group_id, self._get_user_id, group, usernames)
 
-    def clear_user_groups_by_group(self, context, group):
+    def clear_user_groups_by_group(self, group):
         """Clears the groups associated with a user"""
         id = self._get_group_id(group)
         self.conn.execute(CLEAR_USER_GROUPS_BY_GROUP, id)
