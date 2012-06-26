@@ -53,6 +53,11 @@ class Authorizer(object):
         result = self.conn.get(GET_GROUP_ID, name)
         return result['id'] if result else None
 
+    def _get_user_id(self, username):
+        """Gets a user ID by its username"""
+        result = self.conn.get(GET_USER_ID, username)
+        return result['id'] if result else None
+
     def has_group(self, name):
         return self.conn.get(GET_GROUP_ID, name) != None
 
@@ -104,11 +109,6 @@ class Authorizer(object):
 
         self.conn.execute(CLEAR_PERMISSIONS, id)
         return True
-
-    def _get_user_id(self, username):
-        """Gets a user ID by its username"""
-        result = self.conn.get(GET_USER_ID, username)
-        return result['id'] if result else None
 
     def has_user(self, username):
         return self.conn.get(GET_USER_ID, username) != None

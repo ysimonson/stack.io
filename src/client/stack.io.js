@@ -9,29 +9,23 @@ __socket_source__
     }
 
     //Creates a new stack.io engine
-    function Engine(options) {
+    function Engine(host, options, callback) {
         var self = this;
 
-        //Get the input configuration
-        self.host = options.host || defaultHost();
-        self.username = options.username || "root";
-        self.password = options.password || "";
-
-        var zeroRpcOptions = {};
-        if(options.timeout) zeroRpcOptions.timeout = options.timeout;
-
-        callback = options.callback || function(error) {
-            if(error) console.error(error);
-        };
-
+        self.host = host || defaultHost();
         if(self.host.indexOf("http://") != 0 && self.host.indexOf("https://") != 0) {
             self.host = window.location.protocol + "//" + self.host;
         }
 
+        self.options = options || {};
+
+        callback = callback || function(error) {
+            if(error) console.error(error);
+        };
+
         self.permissions = [];
         self._channelCounter = 0;
         self._channels = {};
-
         self._socket = io.connect(self.host);
 
         //If an error occurs and there is no callback, this event will be fired
@@ -52,9 +46,7 @@ __socket_source__
         });
 
         //Initialize the socket
-        self._socket.emit("init", self.username, self.password, zeroRpcOptions, function(error, permissions, services) {
-            self.permissions = permissions;
-            self.services = services;
+        self._socket.emit("init", self.options, function(error) {
             callback(error);
         });
     }

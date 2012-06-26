@@ -1,7 +1,8 @@
 #!/bin/sh
 
-function seed {
-    python bin/authorizer/app.py bin/server/config.json bin/apps/seed.json &
+function utils {
+    python bin/authorizer/app.py bin/apps/seed.json &
+    python bin/registrar/app.py &
 }
 
 function server {
@@ -9,7 +10,7 @@ function server {
 }
 
 function dashboard {
-    server; seed
+    server; utils
     node bin/apps/dashboard/server/app.js &
 
     pushd bin/apps/dashboard/static
@@ -18,7 +19,7 @@ function dashboard {
 }
 
 function test {
-    server; seed
+    server; utils
     node bin/apps/test/server/app.js &
     
     pushd bin/apps/test/static
