@@ -36,12 +36,16 @@ function testAccounts() {
 
     asyncTest("Manipulating group permissions", 21, function() {
         setupAccounts("test0-group", "test0", "pwd", function() {
-            ainvoke("add_group_permissions", ["test0-group", ["_stackio_auth.*", "temp.*"]], function(error, res, more) {
+            var additions = [{service: "auth", method: ".+"}, {service: "temp", method: ".+"}];
+
+            ainvoke("add_group_permissions", ["test0-group", additions], function(error, res, more) {
                 equal(error, null);
                 equal(res, true);
                 equal(more, false);
 
-                ainvoke("remove_group_permissions", ["test0-group", ["temp.*"]], function(error, res, more) {
+                var removals = [{service: "temp", method: ".+"}];
+
+                ainvoke("remove_group_permissions", ["test0-group", removals], function(error, res, more) {
                     equal(error, null);
                     equal(res, true);
                     equal(more, false);

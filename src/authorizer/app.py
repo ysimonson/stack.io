@@ -13,7 +13,7 @@ AUTH_ENDPOINT = "tcp://0.0.0.0:27616"
 
 parser = optparse.OptionParser()
 parser.add_option("-o", "--dbhost", dest="dbhost", default="localhost:3306", help="The database host:port")
-parser.add_option("-n", "--dbname", dest="dbname", default="stackio_auth2", help="The database name")
+parser.add_option("-n", "--dbname", dest="dbname", default="stackio_auth", help="The database name")
 parser.add_option("-u", "--dbuser", dest="dbuser", default="stackio_auth", help="The database user")
 parser.add_option("-p", "--dbpass", dest="dbpass", default="volkswagon", help="The database password")
 
@@ -36,13 +36,16 @@ def seed(auth, config):
     """Inserts data from a seed JSON file"""
 
     #Insert each group
-    for name, permissions in config['groups'].iteritems():
+    for name, service_permissions in config['groups'].iteritems():
         if auth.has_group(name):
             auth.clear_group_permissions(name)
         else:
             auth.add_group(name)
 
-        auth.add_group_permissions(name, permissions)
+        for service_permission, method_permissions in service_permissions.iteritems():
+            permissions = [{"service": service_permission, "method": method_permission}
+                for method_permission in method_permissions]
+            auth.add_group_permissions(name, permissions)
 
     #Insert each user
     for username, data in config['users'].iteritems():
@@ -50,7 +53,7 @@ def seed(auth, config):
         groups = data['groups']
 
         if auth.has_user(username):
-            if not auth.authenticate_user(username, password):
+            if not auth.check_auth(username, password):
                 raise Exception, "Could not authenticate user %s" % username
 
             auth.clear_user_groups_by_user(username)
@@ -72,7 +75,7 @@ def main():
     #Register the API
     registrar = zerorpc.Client()
     registrar.connect("tcp://127.0.0.1:27615")
-    registrar.register("authorizer", AUTH_ENDPOINT)
+    registrar.register("auth", AUTH_ENDPOINT)
     registrar.close()
 
     #Run the API

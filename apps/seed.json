@@ -12,18 +12,14 @@
     },
 
     "groups": {
-        "test": [
-            "test.addMan",
-            "test.add42",
-            "test.iter",
-            "test.simpleError",
-            "test.objectError",
-            "test.streamError",
-            "test.quiet",
-            "bad_test.*",
-            "_stackio_auth.*"
-        ],
+        "test": {
+            "test": ["addMan", "add42", "iter", "simpleError", "objectError", "streamError", "quiet"],
+            "bad_test": [".+"],
+            "auth": [".+"]
+        },
 
-        "demo": ["*"]
+        "demo": {
+            ".+": [".+"]
+        }
     }
 }

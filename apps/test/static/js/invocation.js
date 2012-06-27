@@ -73,8 +73,9 @@ function testInvocation() {
         });
     });
 
-    asyncTest("Timeouts", 3, function() {
+    asyncTest("Timeouts", 4, function() {
         client.invoke("test", "quiet", function(error, res, more) {
+            ok(error);
             equal(error.name, "TimeoutExpired");
             equal(res, null);
             equal(more, false);

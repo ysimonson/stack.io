@@ -1,6 +1,7 @@
 var events = require("events"),
     util = require("util"),
-    _ = require("underscore");
+    _ = require("underscore"),
+    model = require("../model");
 
 function Connector(app, config) {
     var self = this;
@@ -34,8 +35,15 @@ Connector.prototype._runMiddleware = function(middlewareCandidates, method, requ
 };
 
 Connector.prototype._invoke = function(session, options, service, method, args, callback) {
-    var request = {session: session, options: options, service: service, method: method, args: args};
-    var response = {error: null, result: null, more: null};
+    var request = new model.ListenableModel({
+        session: session,
+        options: options,
+        service: service,
+        method: method,
+        args: args
+    });
+
+    var response = new model.ListenableModel({error: null, result: null, more: null});
 
     var middlewareCandidates = _.filter(this.middleware, function(middleware) {
         return middleware.service.test(request.service) && middleware.method.test(request.method);
@@ -45,14 +53,14 @@ Connector.prototype._invoke = function(session, options, service, method, args, 
 };
 
 Connector.prototype._setupSession = function(session, callback) {
-    var request = {session: session};
-    var response = {};
+    var request = new model.ListenableModel({session: session});
+    var response = new model.ListenableModel({});
     this._runMiddleware(this.middleware, "setupSession", request, response, callback);
 };
 
 Connector.prototype._teardownSession = function(session, callback) {
-    var request = {session: session};
-    var response = {};
+    var request = new model.ListenableModel({session: session});
+    var response = new model.ListenableModel({});
     this._runMiddleware(this.middleware, "teardownSession", request, response, callback);
 };
 

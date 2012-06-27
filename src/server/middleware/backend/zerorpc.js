@@ -88,15 +88,19 @@ ZeroRPCBackend.prototype.invoke = function(request, response, next) {
             var invokeArgs = [request.method].concat(request.args);
 
             invokeArgs.push(function(error, result, more) {
-                response.error = error;
-                response.result = result;
-                response.more = more;
+                response.updateMulti({
+                    error: error,
+                    result: result,
+                    more: more
+                });
+
                 next();
             });
 
             client.invoke.apply(client, invokeArgs);
         } else {
-            response.error = model.createSyntheticError("ServiceDoesNotExistError", "Service does not exist");
+            var error = model.createSyntheticError("ServiceDoesNotExistError", "Service does not exist");
+            response.update('error', error);
             next();
         }
     };

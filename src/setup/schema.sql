@@ -19,6 +19,7 @@ CREATE TABLE user_groups (
 
 CREATE TABLE permissions (
     group_id SMALLINT UNSIGNED REFERENCES groups(id),
-    pattern VARCHAR(128) NOT NULL,
-    PRIMARY KEY (group_id, pattern)
+    service VARCHAR(128) NOT NULL,
+    method VARCHAR(128) NOT NULL,
+    PRIMARY KEY (group_id, service, method)
 );

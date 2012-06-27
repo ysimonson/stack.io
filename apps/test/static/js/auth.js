@@ -11,7 +11,7 @@ function testAuth() {
     });
 
     asyncTest("Good API-based authentication", 3, function() {
-        ainvoke("authenticate_user", ["test", "test-password"], function(error, res, more) {
+        ainvoke("check_auth", ["test", "test-password"], function(error, res, more) {
             equal(error, null);
             equal(res, true);
             equal(more, false);
@@ -20,7 +20,7 @@ function testAuth() {
     });
 
     asyncTest("Bad API-based authentication", 3, function() {
-        ainvoke("authenticate_user", ["test", "bad"], function(error, res, more) {
+        ainvoke("check_auth", ["test", "bad"], function(error, res, more) {
             equal(error, null);
             equal(res, false);
             equal(more, false);

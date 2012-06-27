@@ -7,7 +7,15 @@
     }],
 
     "middleware": [{
-        "path": "./middleware/auth/normalAuth"
+        "path": "./middleware/debug/print.js",
+        "connector": ".+",
+        "service": ".+",
+        "method": "get_user_groups_by_group"
+    },{
+        "path": "./middleware/auth/normalAuth",
+        "connector": ".+",
+        "service": ".+",
+        "method": ".+"
     }, {
         "path": "./middleware/backend/zerorpc",
         "connector": ".+",

@@ -7,16 +7,20 @@ function randomString(n) {
     return str.join("");
 }
 
-var options = { timeout: 5, username: "test", password: "test-password" };
-
-var client = new stack.IO("http://localhost:8080", options, function(error) {
+var client = new stack.IO("http://localhost:8080", {timeout : 5}, function(error) {
     module("Basics");
 
     test("Created", function() {
         ok(!error);
     })
 
-    ready();
+    asyncTest("Authenticated for testing", function() {
+        client.invoke("auth", "auth", "test", "test-password", function(error) {
+            ok(!error);
+            start();
+            ready();
+        });
+    });
 });
 
 $(ready);
@@ -26,8 +30,8 @@ function ready() {
 
     if(readyCount == 2) {
         testInvocation();
-        //testAuth();
-        //testAccounts();
+        testAuth();
+        testAccounts();
         testValidation();
     }
 }
@@ -40,7 +44,7 @@ function _createInvoker(service) {
 }
 
 var invoke = _createInvoker("test");
-var ainvoke = _createInvoker("_stackio_auth");
+var ainvoke = _createInvoker("auth");
 
 function objectsEquivalent(actual, expected) {
     for(var key in expected) {
