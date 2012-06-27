@@ -12,17 +12,23 @@ __socket_source__
     function Engine(host, options, callback) {
         var self = this;
 
+        if(arguments.length === 1) {
+            options = {};
+
+            callback = function(error) {
+                if(error) console.error(error);
+            };
+        } else if(arguments.length === 2) {
+            callback = options;
+            options = {};
+        }
+
         self.host = host || defaultHost();
         if(self.host.indexOf("http://") != 0 && self.host.indexOf("https://") != 0) {
             self.host = window.location.protocol + "//" + self.host;
         }
 
-        self.options = options || {};
-
-        callback = callback || function(error) {
-            if(error) console.error(error);
-        };
-
+        self.options = options;
         self.permissions = [];
         self._channelCounter = 0;
         self._channels = {};
