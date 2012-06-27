@@ -1,6 +1,7 @@
 var readyCount = 0;
 
 function ready() {
+    readyCount++;
     if(readyCount === 2) start();
 }
 
@@ -79,13 +80,23 @@ function start() {
         }
     };
 
+    console.log("ASDASD");
+
     if(username && password) {
-        client.invoke("authorizer", "authenticate", username, password, loggedIn);
+        client.invoke("auth", "auth", username, password, loggedIn);
     } else {
         showLogin();
     }
 }
 
-var client = new stack.IO("http://localhost:8080", ready);
 var services = {};
+
+var client = new stack.IO("http://localhost:8080", function(error) {
+    if(error) {
+        console.error(error);
+    } else {
+        ready();
+    }
+});
+
 $(ready);
