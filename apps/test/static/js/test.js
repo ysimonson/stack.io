@@ -15,36 +15,40 @@ var client = new stack.IO("http://localhost:8080", {timeout : 5}, function(error
     })
 
     asyncTest("Authenticated for testing", function() {
-        client.invoke("auth", "auth", "test", "test-password", function(error) {
+        client.auth("test", "test-password", function(error) {
             ok(!error);
-            start();
-            ready();
+
+            client.use("test", function(error, service) {
+                equal(error, null);
+                testService = service;
+                ready();
+            });
+
+            client.use("auth", function(error, service) {
+                equal(error, null);
+                authService = service;
+                ready();
+            });
         });
     });
 });
+
+var testService = null;
+var authService = null;
 
 $(ready);
 
 function ready() {
     readyCount++;
 
-    if(readyCount == 2) {
+    if(readyCount == 3) {
+        start();
         testInvocation();
         testAuth();
         testAccounts();
         testValidation();
     }
 }
-
-function _createInvoker(service) {
-    return function(method, args, callback) {
-        var args = [service, method].concat(args).concat([callback]);
-        client.invoke.apply(client, args);
-    };
-}
-
-var invoke = _createInvoker("test");
-var ainvoke = _createInvoker("auth");
 
 function objectsEquivalent(actual, expected) {
     for(var key in expected) {

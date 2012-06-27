@@ -80,10 +80,8 @@ function start() {
         }
     };
 
-    console.log("ASDASD");
-
     if(username && password) {
-        client.invoke("auth", "auth", username, password, loggedIn);
+        client.auth(username, password, loggedIn);
     } else {
         showLogin();
     }

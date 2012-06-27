@@ -11,9 +11,12 @@ class Registrar(object):
         self._services = {}
 
     def service(self, name):
-        return self._servies.get(name)
+        return self._services.get(name)
 
     def services(self):
+        return self._services.keys()
+
+    def services_verbose(self):
         return self._services
 
     def register(self, name, endpoint):

@@ -13,7 +13,7 @@
 
     "groups": {
         "test": {
-            "test": ["addMan", "add42", "iter", "simpleError", "objectError", "streamError", "quiet"],
+            "test": ["addMan", "add42", "iter", "simpleError", "objectError", "streamError", "quiet", "_zerorpc_inspect"],
             "bad_test": [".+"],
             "auth": [".+"]
         },

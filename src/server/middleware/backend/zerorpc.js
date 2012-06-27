@@ -33,11 +33,12 @@ ZeroRPCBackend.prototype._createClient = function(endpoint, options) {
 ZeroRPCBackend.prototype._refreshServices = function(callback) {
     var self = this;
 
-    self._registrarConnection.invoke("services", function(error, res, more) {
+    self._registrarConnection.invoke("services_verbose", function(error, res, more) {
         if(error) {
             self.emit("error", error);
         } else {
             self._services = res;
+            self._services.registrar = self.config.registrarEndpoint;
             callback();
         }
     });

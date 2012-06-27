@@ -7,7 +7,7 @@
     }],
 
     "middleware": [{
-        "path": "./middleware/debug/print.js",
+        "path": "./middleware/debug/print",
         "connector": ".+",
         "service": ".+",
         "method": "get_user_groups_by_group"

@@ -11,6 +11,17 @@ function NormalAuthenticator(config) {
 
 util.inherits(NormalAuthenticator, MiddlewareBase);
 
+var WHITELIST = [
+    {service: "registrar", method: "_zerorpc_inspect"},
+    {service: "registrar", method: "services"}
+];
+
+function inWhitelist(request) {
+    return _.any(WHITELIST, function(item) {
+        return request.service === item.service && request.method === item.method;
+    });
+}
+
 NormalAuthenticator.prototype.invoke = function(request, response, next) {
     var self = this;
 
@@ -27,7 +38,7 @@ NormalAuthenticator.prototype.invoke = function(request, response, next) {
                 });
             }
         });
-    } else {
+    } else if(!inWhitelist(request)) {
         var permissions = self._authenticated[request.session] || [];
 
         var canInvoke = _.any(permissions, function(permission) {
