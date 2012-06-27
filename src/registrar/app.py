@@ -7,8 +7,9 @@ parser.add_option("-e", "--endpoint", dest="endpoint", default="tcp://0.0.0.0:27
 #TODO: validation?
 
 class Registrar(object):
-    def __init__(self):
+    def __init__(self, endpoint):
         self._services = {}
+        self.register("registrar", endpoint)
 
     def service(self, name):
         return self._services.get(name)
@@ -27,7 +28,7 @@ class Registrar(object):
 
 def main():
     options, args = parser.parse_args()
-    server = zerorpc.Server(Registrar())
+    server = zerorpc.Server(Registrar(options.endpoint))
     server.bind(options.endpoint)
     server.run()
 

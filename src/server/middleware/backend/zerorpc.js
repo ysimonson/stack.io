@@ -38,7 +38,6 @@ ZeroRPCBackend.prototype._refreshServices = function(callback) {
             self.emit("error", error);
         } else {
             self._services = res;
-            self._services.registrar = self.config.registrarEndpoint;
             callback();
         }
     });
