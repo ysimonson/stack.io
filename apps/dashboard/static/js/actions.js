@@ -9,7 +9,10 @@ function introspectService(service) {
     container.empty();
 
     if(service) {
-        var content = tmpl("introspectorResultsTemplate", { methods: services[service] });    
+        var content = tmpl("introspectorResultsTemplate", {
+            methods: client.services[service].introspected.methods
+        });
+        
         container.append($(content));
     }
 }

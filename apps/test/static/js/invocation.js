@@ -74,11 +74,11 @@ function testInvocation() {
         });
     });
 
-    asyncTest("Bad service", 2, function() {
-        client.use("bad_test", function(error, service) {
-            ok(error);
-            equal(service, null);
-            start();
-        });
+    test("Bad service", 1, function() {
+        try {
+            client.use("bad_test");
+        } catch(e) {
+            ok(e);
+        }
     });
 }

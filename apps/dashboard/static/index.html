@@ -18,13 +18,29 @@
         <script type="text/javascript" src="js/rpc.js"></script>
 
         <script id="introspectorResultsTemplate" type="text/html">
-            <%for(var method in methods) {%>
+            <%for(var methodName in methods) {%>
+                <% var method = methods[methodName]; %>
+
                 <div class="well">
                     <div>
-                        <span style="font-weight:bold"><%=method%></span>
-                        (<%=methods[method].args.join(", ")%>)
+                        <span style="font-weight:bold"><%=methodName%></span>
+                        (
+                            <%var hasPrevious = false;%>
+                            <%for(var i=0; i<method.args.length; i++) {%>
+                                <%if(hasPrevious) {%>
+                                    ,
+                                <%} else {%>
+                                    <%hasPrevious = true;%>
+                                <%}%>
+
+                                <%=method.args[i].name%>
+                                <%if(method.args[i].default) {%>
+                                    =<%=method.args[i].default%>
+                                <%}%>
+                            <%}%>
+                        )
                     </div>
-                    <div><%=methods[method].doc%></div>
+                    <div><%=method.doc%></div>
                 </div>
             <%}%>
         </script>
@@ -47,11 +63,12 @@
                 <fieldset>
                     <%for(var i=0; i<args.length; i++) {%>
                         <%var arg = args[i];%>
+                        <%if(i === 0 && arg.name === "self") continue;%>
 
                         <div class="control-group">
-                            <label class="control-label" for="input-<%=arg%>"><%=arg%></label>
+                            <label class="control-label" for="input-<%=arg.name%>"><%=arg.name%></label>
                             <div class="controls">
-                                <input type="text" class="input-xlarge" id="input-<%=arg%>" />
+                                <input type="text" class="input-xlarge" id="input-<%=arg.name%>" value="<%=arg.default%>" />
                                 <span class="help-inline"></span>
                             </div>
                         </div>
@@ -62,6 +79,15 @@
                     </div>
                 </fieldset>
             </form>
+        </script>
+
+        <script id="authorizationPermissionsTemplate" type="text/html">
+            <%for(var i=0; i<permissions.length; i++) {%>
+                <tr>
+                    <td><%=permissions[i].service%></td>
+                    <td><%=permissions[i].method%></td>
+                </tr>
+            <%}%>
         </script>
     </head>
     <body>
@@ -128,7 +154,12 @@
                     <p>Username: <span id="authorizationUsername"></span></p>
                     <p>
                         <div>Permissions:</div>
-                        <pre id="authorizationPermissions"></pre>
+                        <table id="authorizationPermissions" class="table table-bordered table-striped">
+                            <tr>
+                                <th>Service</th>
+                                <th>Method</th>
+                            </tr>
+                        </table>
                     </p>
                 </div>
                 <div id="introspector" class="tab-pane">

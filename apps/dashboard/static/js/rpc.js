@@ -3,13 +3,16 @@ function rpcService(service) {
     container.empty();
 
     if(service) {
-        var content = tmpl("rpcMethodsTemplate", { methods: services[service] });    
+        var content = tmpl("rpcMethodsTemplate", {
+            methods: client.services[service].introspected.methods
+        });    
+
         container.append($(content));
     }
 }
 
 function rpcMethod(service, method) {
-    var args = services[service][method].args;
+    var args = client.services[service].introspected.methods[method].args;
     var content = tmpl("rpcArgsTemplate", { args: args });
     $("#rpcArgs").empty().append($(content));
 
@@ -44,15 +47,20 @@ function rpcInvoke(service, method) {
         var container = $("#rpcResults");
         container.empty();
 
-        var callback = function(error, res, more) {
+        args.push(function(error, res, more) {
             if(error) {
                 errorMessage(container, error.name, error.message, true);
             } else {
                 container.prepend($("<pre>").text(JSON.stringify(res)));
             }
-        };
+        });
 
-        var invokeArgs = [service, method].concat(args).concat([callback]);
-        client.invoke.apply(client, invokeArgs);
+        client.use(service, function(error, service) {
+            if(error) {
+                errorMessage(container, error.name, error.message, true);
+            } else {
+                service[method].apply(client, args);
+            }
+        });
     }
 }
