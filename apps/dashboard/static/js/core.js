@@ -1,3 +1,4 @@
+var services = {};
 var readyCount = 0;
 
 function ready() {
@@ -35,15 +36,19 @@ function start() {
         transition($("#loading"), $("#login"));
     };
 
-    var showContent = function() {
+    var showContent = function(permissions) {
         transition($("#loading"), $("#content"));
 
-        $("#authorizationUsername").text(client.username);
-        $("#authorizationPermissions").text(client.permissions.join("\n"));
+        var permissionsTable = tmpl("authorizationPermissionsTemplate", {
+            permissions: permissions
+        });
+
+        $("#authorizationUsername").text(username);
+        $("#authorizationPermissions").append($(permissionsTable));
 
         $(".serviceSelector").append($("<option>"));
 
-        for(var service in services) {
+        for(var service in client.services) {
             $(".serviceSelector").append($("<option>").text(service));
         }
     };
@@ -53,7 +58,7 @@ function start() {
         $("#initErrorMessage").text(message);
     };
 
-    var loggedIn = function(error) {
+    var loggedIn = function(error, permissions) {
         if(error) {
             if(error.name == "NotAuthenticated") {
                 showInitializationError("Authentication failed.");
@@ -63,19 +68,17 @@ function start() {
             }
         } else {
             var introspectedCount = 0;
+            var services = client.services();
 
-            for(var i=0; i<client.services.length; i++) {
-                (function(service) {
-                    client.invoke(service, "_zerorpc_inspect", null, true, function(error, res, more) {
-                        if(error) {
-                            console.error("Could not introspect on service " + service + ":", error);
-                        }
+            for(var i=0; i<services.length; i++) {
+                client.use(services[i], function(error) {
+                    if(error) {
+                        console.error("Could not use service " + service + ":", error);
+                    }
 
-                        introspectedCount++;
-                        if(res) services[service] = cleanMethods(res.methods);
-                        if(introspectedCount == client.services.length) showContent();
-                    });
-                })(client.services[i]);
+                    introspectedCount++;
+                    if(introspectedCount == services.length) showContent(permissions);
+                });
             }
         }
     };
@@ -86,8 +89,6 @@ function start() {
         showLogin();
     }
 }
-
-var services = {};
 
 var client = new stack.IO("http://localhost:8080", function(error) {
     if(error) {
