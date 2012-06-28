@@ -28,9 +28,9 @@ __socket_source__
             self.host = window.location.protocol + "//" + self.host;
         }
 
+        
         self.options = options;
-        self.services = [];
-        self.permissions = null;
+        self._services = {};
         self._channelCounter = 0;
         self._channels = {};
         self._socket = io.connect(self.host);
@@ -57,7 +57,14 @@ __socket_source__
             if(error) return callback(error);
 
             self._invoke("registrar", "services", function(error, result, more) {
-                self.services = result;
+                for(var i=0; i<result.length; i++) {
+                    self._services[result[i]] = {
+                        ready: false,
+                        context: null,
+                        introspected: null
+                    };
+                }
+
                 callback(error);
             });
         });
@@ -97,6 +104,40 @@ __socket_source__
         this._invoke.apply(this, args);
     };
 
+    //Gets a list of services that are available
+    //return : array of string
+    //      A list of available services
+    Engine.prototype.services = function() {
+        var services = [];
+        for(var service in this._services) services.push(service);
+        return services;
+    };
+
+    //Introspects on a service
+    //service : string
+    //      The service name
+    //callback : function(error : object, result : object)
+    //      The function to call when the service is ready to be used; result
+    //      contains the introspection data
+    Engine.prototype.introspect = function(service, callback) {
+        var self = this;
+        var cached = self._services[service];
+
+        //Try to fetch the cached result if possible
+        if(!cached) {
+            throw new Error("Unknown service");
+        } else if(cached.ready) {
+            callback(null, cached.context);
+        } else {
+            //Otherwise get the service, which will also fetch the
+            //introspection data
+            self.use(service, function(error) {
+                if(error) return callback(error);
+                callback(null, self._services[service].introspected);
+            });
+        }
+    };
+
     //Provides an interface for a service
     //service : string
     //      The service name
@@ -105,23 +146,52 @@ __socket_source__
     //      contains the callable methods
     Engine.prototype.use = function(service, callback) {
         var self = this;
+        var cached = self._services[service];
 
-        this._invoke(service, "_zerorpc_inspect", null, null, function(error, result, more) {
-            if(error) return callback(error);
-            var context = {};
+        //Try to fetch the cached result if possible
+        if(!cached) {
+            throw new Error("Unknown service");
+        } else if(cached.ready) {
+            callback(null, cached.context);
+        } else {
+            //Otherwise introspect on the service
+            this._invoke(service, "_zerorpc_inspect", null, null, function(error, result, more) {
+                if(error) return callback(error);
+                var context = {};
 
-            for(var i=0; i<result.methods.length; i++) {
-                (function(method) {
-                    context[method] = function() {
-                        var args = [service, method].concat(Array.prototype.slice.call(arguments));
-                        self._invoke.apply(self, args);
-                    };
-                })(result.methods[i][0]);
-            }
+                //Create the stub context
+                for(var i=0; i<result.methods.length; i++) {
+                    var methodName = result.methods[i][0];
+                    context[methodName] = createStubMethod(self, service, methodName);
+                }
 
-            callback(error, context);
-        });
+                //Cache the results
+                self.services[service] = {
+                    ready: true,
+                    context: context,
+                    introspected: result
+                };
+                
+                callback(error, context);
+            });
+        }
     };
+
+    //Creates a stub method for a context that actually invokes the remote process
+    //engine : object
+    //      The stack.io engine
+    //service : string
+    //      The service name
+    //method : string
+    //      The method name
+    //returns : function
+    //      The stub method
+    function createStubMethod(engine, service, method) {
+        return function() {
+            var args = [service, method].concat(Array.prototype.slice.call(arguments));
+            engine._invoke.apply(engine, args);
+        };
+    }
 
     this.stack = { IO: Engine };
 })(this);
