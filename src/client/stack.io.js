@@ -155,14 +155,13 @@ __socket_source__
             callback(null, cached.context);
         } else {
             //Otherwise introspect on the service
-            this._invoke(service, "_zerorpc_inspect", null, null, function(error, result, more) {
+            this._invoke(service, "_zerorpc_inspect", function(error, result, more) {
                 if(error) return callback(error);
                 var context = {};
 
                 //Create the stub context
-                for(var i=0; i<result.methods.length; i++) {
-                    var methodName = result.methods[i][0];
-                    context[methodName] = createStubMethod(self, service, methodName);
+                for(var method in result.methods) {
+                    context[method] = createStubMethod(self, service, method);
                 }
 
                 //Cache the results
