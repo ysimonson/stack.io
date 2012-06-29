@@ -10,12 +10,14 @@ function createSyntheticError(name, message) {
     };
 }
 
+//An object that can emit `finish` events
 function Finishable() {
     this.finished = false;
 }
 
 util.inherits(Finishable, events.EventEmitter);
 
+//Emits a `finish` event
 Finishable.prototype.finish = function() {
     if(this.finished) {
         throw new Error("Response already finished");
@@ -25,6 +27,9 @@ Finishable.prototype.finish = function() {
     }
 };
 
+//A user session
+//initial : object
+//      Map of initial session values
 function Session(initial) {
     for(var key in initial) {
         this[key] = initial[key];
@@ -33,6 +38,15 @@ function Session(initial) {
 
 util.inherits(Session, Finishable);
 
+//A user request
+//service : string
+//      The service name
+//method : string
+//      The method name
+//args : array of anything
+//      The invocation arguments
+//session : object
+//      The user session
 function Request(service, method, args, session) {
     this.service = service;
     this.method = method;
@@ -40,9 +54,11 @@ function Request(service, method, args, session) {
     this.session = session;
 }
 
+//A user response
 function Response() {}
 util.inherits(Response, Finishable);
 
+//Emits a response update
 Response.prototype.update = function(error, result, more) {
     this.emit("update", error, result, more);
     if(!more) this.finish();

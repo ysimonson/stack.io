@@ -4,6 +4,9 @@ var io = require("socket.io"),
     util = require("util"),
     events = require("events");
 
+//Creates a new socket.io connector
+//expressApp : object
+//      The express application to attach to
 function SocketIOConnector(expressApp) {
     this.expressApp = expressApp;
     this._sessionIdCounter = 0;
@@ -11,8 +14,10 @@ function SocketIOConnector(expressApp) {
 
 util.inherits(SocketIOConnector, events.EventEmitter);
 
+//The connector name
 SocketIOConnector.prototype.name = "socketio";
 
+//Starts the socket.io connector
 SocketIOConnector.prototype.listen = function() {
     var self = this;
     var sio = io.listen(self.expressApp, {log: false});
@@ -33,9 +38,9 @@ SocketIOConnector.prototype.listen = function() {
 }
 
 //Initializes a new session
-//socket : Object
+//socket : object
 //      The socket.io socket
-//options : Object
+//options : object
 //      The ZeroRPC client options
 //callback : function(error : object, user_id : number, permissions : array of
 //           strings, services : array of strings)
@@ -51,6 +56,7 @@ SocketIOConnector.prototype._doInit = function(socket, options, callback) {
         return;
     }
     
+    //Attach a session to the socket
     socket.socketioSession = new model.Session({
         id: "socket.io:" + (this._sessionIdCounter++),
         zerorpcOptions: options
@@ -60,7 +66,7 @@ SocketIOConnector.prototype._doInit = function(socket, options, callback) {
 }
 
 //Invokes a method
-//socket : Object
+//socket : object
 //      The socket.io socket
 //channel : anything
 //      Used to ensure the client calls the correct callback when a response
@@ -96,6 +102,9 @@ SocketIOConnector.prototype._doInvoke = function(socket, channel, service, metho
     self.emit("invoke", request, response);
 }
 
+//Called on socket disconnect
+//socket : object
+//      The socket.io socket
 SocketIOConnector.prototype._doDisconnect = function(socket) {
     socket.socketioSession.finish();
 };
