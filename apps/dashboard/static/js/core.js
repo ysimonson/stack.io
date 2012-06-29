@@ -84,7 +84,7 @@ function start() {
     };
 
     if(username && password) {
-        client.auth(username, password, loggedIn);
+        client.login(username, password, loggedIn);
     } else {
         showLogin();
     }

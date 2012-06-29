@@ -44,7 +44,7 @@ function createNormalAuthenticator(client) {
                 }
             } else if(req.method === "logout") {
                 delete req.session.auth;
-                next();
+                res.update(undefined, undefined, false);
             } else {
                 next();
             }

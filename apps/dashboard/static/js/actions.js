@@ -1,7 +1,10 @@
 function logout() {
     $.cookie("username", null);
     $.cookie("password", null);
-    window.location.reload();
+
+    client.logout(function() {
+        window.location.reload();
+    });
 }
 
 function introspectService(service) {
