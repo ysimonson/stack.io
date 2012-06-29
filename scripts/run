@@ -1,16 +1,17 @@
 #!/bin/sh
 
 function utils {
-    python bin/authorizer/app.py bin/apps/seed.json &
     python bin/registrar/app.py &
+    python bin/authorizer/app.py bin/apps/seed.json &
+    sleep 1s
 }
 
 function server {
-    node bin/server/app bin/server/config.json &
+    node bin/server-app/app bin/server-app/config.json &
 }
 
 function dashboard {
-    server; utils
+    utils; server
     node bin/apps/dashboard/server/app.js &
 
     pushd bin/apps/dashboard/static
@@ -19,7 +20,7 @@ function dashboard {
 }
 
 function test {
-    server; utils
+    utils; server
     node bin/apps/test/server/app.js &
     
     pushd bin/apps/test/static

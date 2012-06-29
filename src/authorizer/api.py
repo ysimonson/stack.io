@@ -70,7 +70,7 @@ class Authorizer(object):
     def check_auth(self, username, password):
         return self.conn.get(AUTHENTICATE_USER, username, get_hash(password)) != None
 
-    def auth(self, username, password):
+    def login(self, username, password):
         """Checks if a user is authenticated"""
         if self.check_auth(username, password):
             return self.get_user_permissions(username)

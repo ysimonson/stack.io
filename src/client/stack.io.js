@@ -56,7 +56,7 @@ __socket_source__
         self._socket.emit("init", self.options, function(error) {
             if(error) return callback(error);
 
-            self._invoke("registrar", "services", function(error, result, more) {
+            self._invoke("_stackio", "services", function(error, result, more) {
                 for(var i=0; i<result.length; i++) {
                     self._services[result[i]] = {
                         ready: false,
@@ -90,19 +90,25 @@ __socket_source__
         this._socket.emit("invoke", channel, service, method, args);
     };
 
-    //Performs authentication
-    //Shorthand for:
-    //  client.use("auth", function(error, service) {
-    //    service.auth(...);
-    //  });
+    //Logs a user in
     //args... : array
     //      The method arguments
     //callback : function(error : object, result : anything, more : boolean)
     //      The function to call when a result is received
-    Engine.prototype.auth = function(/*args..., callback*/) {
-        var args = ["auth", "auth"].concat(Array.prototype.slice.call(arguments));
+    Engine.prototype.login = function(/*args..., callback*/) {
+        var args = ["_stackio", "login"].concat(Array.prototype.slice.call(arguments));
         this._invoke.apply(this, args);
     };
+
+    //Logs a user out
+    //args... : array
+    //      The method arguments
+    //callback : function(error : object, result : anything, more : boolean)
+    //      The function to call when a result is received
+    Engine.prototype.logout = function(/*args..., callback*/) {
+        var args = ["_stackio", "logout"].concat(Array.prototype.slice.call(arguments));
+        this._invoke.apply(this, args);
+    }
 
     //Gets a list of services that are available
     //return : array of string
@@ -155,7 +161,7 @@ __socket_source__
             callback(null, cached.context);
         } else {
             //Otherwise introspect on the service
-            this._invoke(service, "_zerorpc_inspect", function(error, result, more) {
+            this._invoke("_stackio", "inspect", service, function(error, result, more) {
                 if(error) return callback(error);
                 var context = {};
 

@@ -1,18 +1,21 @@
 var io = require("socket.io"),
+    validation = require("../validation"),
     model = require("../model"),
     util = require("util"),
-    BaseConnector = require("./base");
+    events = require("events");
 
-function SocketIOConnector(app, config) {
-    BaseConnector.call(this, app, config);
+function SocketIOConnector(expressApp) {
+    this.expressApp = expressApp;
+    this._sessionIdCounter = 0;
 }
 
-util.inherits(SocketIOConnector, BaseConnector);
+util.inherits(SocketIOConnector, events.EventEmitter);
 
-SocketIOConnector.prototype.start = function() {
+SocketIOConnector.prototype.name = "socketio";
+
+SocketIOConnector.prototype.listen = function() {
     var self = this;
-    self._sessionIdCounter = 0;
-    var sio = io.listen(self.app, {log: false});
+    var sio = io.listen(self.expressApp, {log: false});
 
     var socketEventProxy = function(callback) {
         return function() {
@@ -39,18 +42,21 @@ SocketIOConnector.prototype.start = function() {
 //      The callback to call when the initialization is complete
 SocketIOConnector.prototype._doInit = function(socket, options, callback) {
     try {
-        if(socket.sessionId) throw "session already initialized";
-        model.validateOptions(options);
-        model.validateCallback(callback);
+        if(socket.socketioSession) throw "session already initialized";
+        validation.validateOptions(options);
+        validation.validateCallback(callback);
     } catch(e) {
         var errorObj = model.createSyntheticError("RequestError", e.message);
         if(typeof(callback) == 'function') callback(errorObj);
         return;
     }
+    
+    socket.socketioSession = new model.Session({
+        id: "socket.io:" + (this._sessionIdCounter++),
+        zerorpcOptions: options
+    });
 
-    socket.sessionId = "socket.io:" + (this._sessionIdCounter++);
-    socket.sessionOptions = options;
-    this._setupSession(socket.sessionId, callback);
+    callback();
 }
 
 //Invokes a method
@@ -68,27 +74,30 @@ SocketIOConnector.prototype._doInit = function(socket, options, callback) {
 //args : array
 //      The method arguments
 SocketIOConnector.prototype._doInvoke = function(socket, channel, service, method, args) {
+    var self = this;
+
     try {
-        if(!socket.sessionId) throw "session not initialized";
-        model.validateNumber("channel", channel);
-        model.validateInvocation(service, method, args);
+        if(!socket.socketioSession) throw new Error("session not initialized");
+        validation.validateNumber("channel", channel);
+        validation.validateInvocation(service, method, args);
     } catch(e) {
         var errorObj = model.createSyntheticError("RequestError", e.message);
+        console.log("ERROR", errorObj);
         return socket.emit("response", channel, errorObj, undefined, false);
     }
 
-    this._invoke(socket.sessionId, socket.sessionOptions, service, method, args, function(error, result, more) {
+    var request = new model.Request(service, method, args, socket.socketioSession);
+    var response = new model.Response();
+
+    response.on("update", function(error, result, more) {
         socket.emit("response", channel, error, result, more);
     });
+
+    self.emit("invoke", request, response);
 }
 
-//Removes pending user requests when the socket is disconnected
-//socket : Object
-//      The socket.io socket
 SocketIOConnector.prototype._doDisconnect = function(socket) {
-    if(socket.sessionId) {
-        this._teardownSession(socket.sessionId, function() {});
-    }
-}
+    socket.socketioSession.finish();
+};
 
 module.exports = SocketIOConnector;

@@ -15,7 +15,7 @@ var client = new stack.IO("http://localhost:8080", {timeout : 5}, function(error
     })
 
     asyncTest("Authenticated for testing", function() {
-        client.auth("test", "test-password", function(error) {
+        client.login("test", "test-password", function(error) {
             ok(!error);
 
             client.use("test", function(error, service) {

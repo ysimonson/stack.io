@@ -1,7 +1,3 @@
-var events = require("events"),
-    util = require("util"),
-    _ = require("underscore");
-
 var MAX_IDENTIFIER_LENGTH = 1024,
     MAX_USERNAME_LENGTH = 128,
     MAX_PASSWORD_LENGTH = 128,
@@ -42,37 +38,7 @@ function validateOptions(options) {
     }
 }
 
-//Creates an object that mimicks the error objects received from remote ZeroRPC services
-function createSyntheticError(name, message) {
-    return {
-        name: name,
-        message: message,
-        traceback: null
-    };
-}
-
-function ListenableModel(initial) {
-    this.updateMulti(initial);
-}
-
-util.inherits(ListenableModel, events.EventEmitter);
-
-ListenableModel.prototype.updateMulti = function(obj) {
-    for(var key in obj) {
-        this[key] = obj[key];
-    }
-
-    this.emit("update", _.keys(obj));
-}
-
-ListenableModel.prototype.update = function(key, value) {
-    this[key] = value;
-    this.emit("update", [key]);
-};
-
 exports.validateCallback = validateCallback;
 exports.validateNumber = validateNumber;
 exports.validateInvocation = validateInvocation;
 exports.validateOptions = validateOptions;
-exports.createSyntheticError = createSyntheticError;
-exports.ListenableModel = ListenableModel;
