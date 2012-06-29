@@ -1,7 +1,5 @@
 var stack = require("./stack"),
-    express = require("express"),
-    fs = require("fs"),
-    _ = require("underscore");
+    express = require("express");
 
 var REGISTRAR_ENDPOINT = "tcp://127.0.0.1:27615";
 
