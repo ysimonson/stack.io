@@ -14,26 +14,13 @@ expressApp.configure(function() {
 
 //Create the stack.io server
 var server = new stack.IOServer();
+
 server.connector(new stack.SocketIOConnector(expressApp));
 
-function addRegistrarConfiguredMiddleware(module, callback) {
-    module.createFromRegistrar(REGISTRAR_ENDPOINT, function(error, middleware) {
-        if(error) {
-            console.error(error);
-            process.exit(-1);
-        } else {
-            server.middleware(/.+/, /.+/, /.+/, middleware);
-            callback();
-        }
-    });
-}
+server.middleware(/.+/, /.+/, /.+/, stack.normalAuthMiddleware(REGISTRAR_ENDPOINT));
+server.middleware(/.+/, /_stackio/, /.+/, stack.builtinsMiddleware);
+server.middleware(/.+/, /.+/, /.+/, stack.printMiddleware);
+server.middleware(/.+/, /.+/, /.+/, stack.zerorpcMiddleware(REGISTRAR_ENDPOINT));
 
-addRegistrarConfiguredMiddleware(stack.normalAuthMiddleware, function() {
-    server.middleware(/.+/, /_stackio/, /.+/, stack.builtinsMiddleware);
-    server.middleware(/.+/, /.+/, /.+/, stack.printMiddleware);
-
-    addRegistrarConfiguredMiddleware(stack.zerorpcMiddleware, function() {
-        expressApp.listen(8080);
-        server.listen();
-    });
-});
+expressApp.listen(8080);
+server.listen();

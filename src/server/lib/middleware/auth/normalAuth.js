@@ -1,33 +1,23 @@
-var zerorpc = require("zerorpc"),
+var zerorpc = require("../util/zerorpc"),
     _ = require("underscore"),
     model = require("../../model");
 
 var SESSION_TIMEOUT = 30 * 60 * 1000;
 
-function createClient(endpoint, options) {
-    var self = this;
-    var client = new zerorpc.Client(options);
-
-    client.on("error", function(error) {
-        console.error("error", error);
-    });
-
-    client.connect(endpoint);
-    return client;
-}
-
 function compilePermissions(permissions) {
-    return _.map(permissions, function(permission) {
+    return permissions ? _.map(permissions, function(permission) {
         return {
             service: new RegExp(permission.service),
             method: new RegExp(permission.method),
         };
-    });
+    }) : [];
 }
 
-function create(client) {
-    return function(req, res, next) {
+module.exports = function(registrarEndpoint) {
+    return zerorpc.createRegistrarBasedMiddleware(registrarEndpoint, function(serviceEndpoints, req, res, next) {
         if(req.service === "_stackio") {
+            var client = zerorpc.createClient(serviceEndpoints.auth);
+
             if(req.method === "login") {
                 if(req.args.length !== 2) {
                     var error = model.createSyntheticError("BadArgumentsError", "Bad arguments");
@@ -36,12 +26,10 @@ function create(client) {
                     var username = req.args[0], password = req.args[1];
 
                     client.invoke("login", username, password, function(error, permissions, more) {
-                        if(!error) {
-                            req.session.auth = {
-                                username: username,
-                                permissions: compilePermissions(permissions)
-                            };
-                        }
+                        req.session.auth = {
+                            username: username,
+                            permissions: compilePermissions(permissions)
+                        };
 
                         res.update(error, permissions, more);
                     });
@@ -66,21 +54,5 @@ function create(client) {
                 res.update(error, undefined, false);
             }
         }
-    };
-}
-
-function createFromRegistrar(registrarEndpoint, readyCallback) {
-    var registrarClient = createClient(registrarEndpoint);
-
-    registrarClient.invoke("service", "auth", function(error, authEndpoint) {
-        if(error) {
-            readyCallback(error);
-        } else {
-            var authClient = createClient(authEndpoint);
-            readyCallback(undefined, create(authClient));
-        }
     });
 };
-
-exports.create = create;
-exports.createFromRegistrar = createFromRegistrar;
