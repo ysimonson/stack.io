@@ -133,7 +133,7 @@ __socket_source__
         if(!cached) {
             throw new Error("Unknown service");
         } else if(cached.ready) {
-            callback(null, cached.context);
+            callback(null, cached.introspected);
         } else {
             //Otherwise get the service, which will also fetch the
             //introspection data
