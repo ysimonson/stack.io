@@ -7,7 +7,7 @@ function utils {
 }
 
 function server {
-    node bin/server-app/app bin/server-app/config.json &
+    node bin/server-app/app &
 }
 
 function dashboard {

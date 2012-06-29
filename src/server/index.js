@@ -2,23 +2,22 @@ var model = require("./lib/model"),
     server = require("./lib/server");
 
 var connectors = {
-    socketio: "socketio"
+    "SocketIOConnector": "socketio"
 };
 
 var middleware = {
-    normalAuth: "auth/normalAuth",
-    zerorpc: "backend/zerorpc",
-    print: "debug/print"
+    normalAuthMiddleware: "auth/normalAuth",
+    zerorpcMiddleware: "backend/zerorpc",
+    printMiddleware: "debug/print",
+    builtinsMiddleware: "etc/builtins"
 };
 
-exports.connectors = {};
 for(var connectorName in connectors) {
-    exports.connectors[connectorName] = require("./lib/connectors/" + connectors[connectorName])
+    exports[connectorName] = require("./lib/connectors/" + connectors[connectorName])
 }
 
-exports.middleware = {};
 for(var middlewareName in middleware) {
-    exports.middleware[middlewareName] = require("./lib/middleware/" + middleware[middlewareName])
+    exports[middlewareName] = require("./lib/middleware/" + middleware[middlewareName])
 }
 
 exports.createSyntheticError = model.createSyntheticError;

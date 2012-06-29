@@ -14,9 +14,18 @@ function createClient(endpoint, options) {
 
     client.connect(endpoint);
     return client;
-};
+}
 
-function createNormalAuthenticator(client) {
+function compilePermissions(permissions) {
+    return _.map(permissions, function(permission) {
+        return {
+            service: new RegExp(permission.service),
+            method: new RegExp(permission.method),
+        };
+    });
+}
+
+function create(client) {
     return function(req, res, next) {
         if(req.service === "_stackio") {
             if(req.method === "login") {
@@ -30,12 +39,7 @@ function createNormalAuthenticator(client) {
                         if(!error) {
                             req.session.auth = {
                                 username: username,
-                                permissions: _.map(permissions, function(permission) {
-                                    return {
-                                        service: new RegExp(permission.service),
-                                        method: new RegExp(permission.method),
-                                    };
-                                })
+                                permissions: compilePermissions(permissions)
                             };
                         }
 
@@ -65,7 +69,7 @@ function createNormalAuthenticator(client) {
     };
 }
 
-module.exports = function(registrarEndpoint, readyCallback) {
+function createFromRegistrar(registrarEndpoint, readyCallback) {
     var registrarClient = createClient(registrarEndpoint);
 
     registrarClient.invoke("service", "auth", function(error, authEndpoint) {
@@ -73,7 +77,10 @@ module.exports = function(registrarEndpoint, readyCallback) {
             readyCallback(error);
         } else {
             var authClient = createClient(authEndpoint);
-            readyCallback(undefined, createNormalAuthenticator(authClient));
+            readyCallback(undefined, create(authClient));
         }
     });
 };
+
+exports.create = create;
+exports.createFromRegistrar = createFromRegistrar;
