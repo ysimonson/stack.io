@@ -36,7 +36,73 @@ To use the dashboard:
 
 ## Client ##
 
-TODO
+The client is a library webapps can use for making stack.io calls. It uses
+socket.io to communicate with the server, which in turn makes the actual
+ZeroRPC requests.
+
+For a complete example, checkout the dashboard, located in `apps/dashboard`.
+
+### Client API ###
+
+To create a new client, include the script in ./bin/client/stack.io.js in your
+webapp. Then instantiate a new client:
+
+    var client = new stack.IO(host, function(error) {
+        console.error(error);
+    });
+
+Where `host` is the location of the stack.io server
+(default `http://localhost:8080`). The second argument is a callback when the
+initialization is complete, and it may include a fatal `error` message.
+
+An example usage of the client:
+
+    client.use("test", function(error, service) {
+        test.sayHello("Joe", function(error, res) {
+            console.log(res);
+        });
+    });
+
+Methods:
+ * `use(serviceName, callback)` - Prepares a service to be used. `serviceName`
+   is the name of a service and `callback` is a function to call when the
+   service is ready. `callback` should be of the form
+   `function(error, context)` where `context` is the service's object on which
+   you can make calls.
+ * `login(credentials..., callback)` - Logs a user in. Credentials vary
+   depending on the authentication middleware used. The default authenticator
+   middleware requires a username and password. This is almost equivalent to:
+
+       client.use("_stackio", function(error, context) {
+            if(error) {
+                callback(error);
+            } else {
+                context.login(credentials..., function(error, result) {
+                    callback(error, result);
+                });
+            }
+       });
+
+   Where `_stackio` is a magic service that exposes built-in functions exposed
+   by middleware, such as authentication.
+
+ * `logout(callback)` - Logs the user out. `callback` is called when logout
+   completes. This is almost equivalent to:
+
+       client.use("_stackio", function(error, context) {
+            if(error) {
+                callback(error);
+            } else {
+                context.logout(function(error) {
+                    callback(error);
+                });
+            }
+       });
+
+ * `services()` - Returns a list of services available.
+ * `introspect(service, callback)` - Introspects on the methods available
+   for a given `service`. `callback` is called when introspection is complete,
+   and must be of the form `function(error, res)` where `res` is the result.
 
 ## Server ##
 
@@ -100,13 +166,22 @@ Full example:
     expressApp.listen(8080);
     server.listen();
 
-### Connector API ###
+### Connectors ###
+
+Connectors are objects that plug into the stack.io server to expose the
+stack.io interface. Currently, we only have one connector, which exposes
+stack.io via [socket.io](http://socket.io/), a library for real-time
+communication with webapps that supports graceful degradation.
+
+#### Connector API ####
 
 TODO
 
-### Middleware API ###
+### Middleware ###
 
 TODO
+
+#### Middleware API ####
 
 ## Registrar ##
 
