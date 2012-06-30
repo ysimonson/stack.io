@@ -94,7 +94,8 @@ This will run stack.io on port 8080.
 
 ### Server API ###
 
-To create a new server:
+If the built-in server app does not fulfill your needs, you can create a
+server programmatically. To create a new server:
 
     var stack = require("./stack");
     var server = new stack.IOServer();
@@ -105,7 +106,7 @@ Events:
 
 Methods:
 
- * `connector(connector)` - Adds a new connector
+ * `connector(connector)` - Adds a new connector.
  * `middleware(connectorPattern, servicePattern, methodPattern, middleware)` -
    Adds a new middleware. When a new request comes in, `connectorPattern` is
    matched against the source request's connector, `servicePattern` is matched
@@ -114,7 +115,7 @@ Methods:
    of the form `function(req, res, next)`, where `req` is a request object,
    `res` is a response object, and `next` is the next middleware to call when
    a request is complete.
- * `listen()` - Starts the server
+ * `listen()` - Starts the server.
 
 Full example:
 
