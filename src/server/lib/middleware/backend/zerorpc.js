@@ -34,8 +34,7 @@ module.exports = function(registrarEndpoint) {
             res.update(error, undefined, false);
         } else {
             //Invokes the call if possible
-            var clientsContainer = clients[req.session.id] || newSession(req.session);
-            var client = clientsContainer[req.service] || newClient(serviceEndpoints, req);
+            var client = clients[req.service] || newClient(serviceEndpoints, req);
             var invokeArgs = [req.method].concat(req.args);
 
             invokeArgs.push(function(error, zerorpcRes, more) {
