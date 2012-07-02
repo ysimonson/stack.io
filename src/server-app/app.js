@@ -17,7 +17,7 @@ server.connector(new stack.SocketIOConnector(expressApp));
 
 server.middleware(/.+/, /.+/, /.+/, stack.normalAuthMiddleware(REGISTRAR_ENDPOINT));
 server.middleware(/.+/, /_stackio/, /.+/, stack.builtinsMiddleware);
-server.middleware(/.+/, /.+/, /.+/, stack.printMiddleware);
+//server.middleware(/.+/, /.+/, /.+/, stack.printMiddleware);
 server.middleware(/.+/, /.+/, /.+/, stack.zerorpcMiddleware(REGISTRAR_ENDPOINT));
 
 expressApp.listen(8080);

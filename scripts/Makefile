@@ -27,3 +27,6 @@ build-apps:
 
 	cp -r lib/apps bin/apps/test/static/lib
 	cp -r bin/client/stack.io.js bin/apps/test/static/stack.io.js
+
+	cp -r lib/apps bin/apps/meece/static/lib
+	cp -r bin/client/stack.io.js bin/apps/meece/static/stack.io.js
