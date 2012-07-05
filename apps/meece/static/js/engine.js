@@ -18,14 +18,13 @@ var client = new stack.IO("http://localhost:8080", {timeout : 5}, function(error
                 return;
             }
 
+            var myClientId = null;
+
             context.listen(function(error, event) {
-                console.log("MSG", event);
-
-                var myClientId = null;
-
                 if(error) {
                     console.error(error);
                 } else if(event.type === "initial") {
+                    console.log("INIT", event, event.id);
                     myClientId = event.id;
                     updateCount(event.count);
                     startUpdating(context, myClientId);
@@ -34,8 +33,9 @@ var client = new stack.IO("http://localhost:8080", {timeout : 5}, function(error
                         var update = event.payload[i];
 
                         if(update.type === "move") {
-                            //TODO: if(myClientId !== update.id)
-                            moveMouse(update.value.id, update.value.pos);
+                            if(myClientId !== update.value.id) {
+                                moveMouse(update.value.id, update.value.pos);
+                            }
                         } else if(update.type === "stats") {
                             updateCount(update.value);
                         } else if(update.type === "unlisten") {

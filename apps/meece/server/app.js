@@ -27,7 +27,6 @@ Meece.prototype._sendUpdate = function() {
         try {
             this.clients[clientId].listener(undefined, message, true);
         } catch(e) {
-            console.error("*********", e);
             this._enqueueUpdate("unlisten", clientId);
             delete this.clients[clientId];
         }
@@ -41,9 +40,8 @@ Meece.prototype._enqueueUpdate = function(type, value) {
 };
 
 Meece.prototype.move = function(clientId, x, y, reply) {
-    var state = this.clients[clientId].state;
-    state.pos = [x, y];
-    this._enqueueUpdate("move", state);
+    this.clients[clientId].pos = [x, y];
+    this._enqueueUpdate("move", { id: clientId, pos: [x, y] });
     reply(null, null, false);
 };
 
@@ -57,7 +55,8 @@ Meece.prototype.listen = function(reply) {
 
     this.clients[myClientId] = {
         listener: reply,
-        state: { id: myClientId, pos: [0, 0] }
+        id: myClientId,
+        pos: [0, 0]
     };
 
     reply(undefined, {
