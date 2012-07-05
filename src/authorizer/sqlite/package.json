@@ -1,0 +1,14 @@
+{
+    "name": "sqlite-authorizer",
+    "version": "0.1.1",
+    "dependencies": {
+        "sqlite3": "2.1.x",
+        "nopt": "1.0.x",
+        "zerorpc": "0.8.4",
+        "underscore": "1.x.x"
+    },
+    "author": "Joffrey Fuhrer <joffrey@dotcloud.com>",
+    "contributors": [
+        "Yusuf Simonson <yusuf@dotcloud.com"
+    ]
+}

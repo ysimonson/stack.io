@@ -7,7 +7,10 @@ function randomString(n) {
     return str.join("");
 }
 
-var client = new stack.IO("http://localhost:8080", {timeout : 5}, function(error) {
+var client;
+
+stack.io("http://localhost:8080", {timeout : 5}, function(error, clt) {
+    client = clt;
     module("Basics");
 
     test("Created", function() {
