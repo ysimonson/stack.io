@@ -12,8 +12,7 @@ build-server-app:
 	cp -r bin/server bin/server-app/stack
 
 build-client:
-	cp -r src/client bin/client
-	scripts/inject lib/client/socket.io.js '' bin/client/stack.io.js
+	node scripts/r.js -o scripts/client-build.cfg.js
 
 build-utils:
 	cp -r src/authorizer bin/authorizer

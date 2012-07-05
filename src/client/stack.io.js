@@ -1,6 +1,4 @@
-__socket_source__
-
-(function() {
+define(['socket.io'], function() {
     //Gets the default host
     function defaultHost() {
         var host = window.location.protocol + "//" + window.location.hostname;
@@ -10,6 +8,10 @@ __socket_source__
 
     //Creates a new stack.io engine
     function Engine(host, options, callback) {
+        if (!(this instanceof Engine)) {
+            return new Engine(host, options, callback);
+        }
+
         var self = this;
 
         if(arguments.length === 1) {
@@ -65,7 +67,7 @@ __socket_source__
                     };
                 }
 
-                callback(error);
+                callback(error, self);
             });
         });
     }
@@ -198,5 +200,5 @@ __socket_source__
         };
     }
 
-    this.stack = { IO: Engine };
-})(this);
+    return { IO: Engine, io: Engine };
+});
