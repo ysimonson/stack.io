@@ -5,26 +5,30 @@ module.exports = function(registrarEndpoint) {
     //Cached ZeroRPC connections
     var clients = {};
 
-    //Creates a new session
-    var newSession = function(session) {
-        var newSession = clients[session.id] = {};
+    //Gets a connection to a given service for a user
+    var getConnection = function(serviceEndpoints, session, service) {
+        var connections = clients[session.id];
 
-        session.on("finish", function() {
-            for(var service in clients[session.id]) {
-                clients[session.id][service].close();
-            }
+        if(connections === undefined) {
+            clients[session.id] = connections = {};
 
-            delete clients[session.id];
-        });
+            session.on("finish", function() {
+                for(var service in clients[session.id]) {
+                    clients[session.id][service].close();
+                }
 
-        return newSession;
-    };
+                delete clients[session.id];
+            });
+        }
 
-    //Creates a new client
-    var newClient = function(serviceEndpoints, req) {
-        var client = zerorpc.createClient(serviceEndpoints[req.service], req.session.zerorpcOptions);
-        clients[req.service] = client;
-        return client;
+        var connection = connections[service];
+
+        if(!connection) {
+            connection = zerorpc.createClient(serviceEndpoints[service], session.zerorpcOptions);
+            connections[service] = connection;
+        }
+
+        return connection;
     };
 
     return zerorpc.createRegistrarBasedMiddleware(registrarEndpoint, function(serviceEndpoints, req, res, next) {
@@ -34,7 +38,7 @@ module.exports = function(registrarEndpoint) {
             res.update(error, undefined, false);
         } else {
             //Invokes the call if possible
-            var client = clients[req.service] || newClient(serviceEndpoints, req);
+            var client = getConnection(serviceEndpoints, req.session, req.service);
             var invokeArgs = [req.method].concat(req.args);
 
             invokeArgs.push(function(error, zerorpcRes, more) {
