@@ -4,3 +4,4 @@ node_modules
 /run
 /bin
 .DS_Store
+/src/authorizer/sqlite/stackio_auth

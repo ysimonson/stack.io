@@ -1,6 +1,6 @@
 var MOUSE_UPDATE_RATE = 10;
 
-var client = new stack.IO("http://localhost:8080", {timeout : 5}, function(error) {
+stack.io("http://localhost:8080", {timeout : 5}, function(error, client) {
     if(error) {
         console.error(error);
         return;
