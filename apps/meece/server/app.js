@@ -1,5 +1,5 @@
 var zerorpc = require("zerorpc");
-var UPDATE_RATE = 10;
+var UPDATE_RATE = 0;
 
 function Meece() {
     var self = this;
