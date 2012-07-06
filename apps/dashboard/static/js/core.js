@@ -1,5 +1,6 @@
 var services = {};
 var readyCount = 0;
+var client = null;
 
 function ready() {
     readyCount++;
@@ -90,7 +91,9 @@ function start() {
     }
 }
 
-var client = new stack.IO("http://localhost:8080", function(error) {
+stack.io("http://localhost:8080", function(error, clt) {
+    client = clt;
+
     if(error) {
         console.error(error);
     } else {
