@@ -106,7 +106,9 @@ SocketIOConnector.prototype._doInvoke = function(socket, channel, service, metho
 //socket : object
 //      The socket.io socket
 SocketIOConnector.prototype._doDisconnect = function(socket) {
-    socket.socketioSession.finish();
+    if(socket.socketioSession) {
+        socket.socketioSession.finish();
+    }
 };
 
 module.exports = SocketIOConnector;
