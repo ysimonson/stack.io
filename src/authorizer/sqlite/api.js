@@ -22,6 +22,12 @@ module.exports = function(dbName) {
         return seq + res;
     }
 
+    function proxy(fn) {
+        return function(err, result) {
+            fn(err, result, false);
+        }
+    }
+
     return {
         _getGroupId: function(name, cb) {
             db.selectOne('groups', null, ['id'], 'name=?', [name], cb);
@@ -31,16 +37,23 @@ module.exports = function(dbName) {
         },
         checkAuth: function(user, password, cb) {
             db.selectOne('users', null, ['id'], 
-                'username=? AND password_hash=?', [user, hash(password)], cb);
+                'username=? AND password_hash=?', [user, hash(password)], function(err, result) {
+                    if (err) {
+                        cb(err, null, false);
+                    } else {
+                        cb(err, !!result, false);
+                    }
+                });
         },
         login: function(user, password, cb) {
+            var self = this;
             this.checkAuth(user, password, function(err, result) {
                 if (err) {
                     cb(err);
                 } else if (!result) {
                     cb(null, []);
                 } else {
-                    this.getUserPermissions(user, cb);
+                    self.getUserPermissions(user, cb);
                 }
             });
         },
@@ -48,49 +61,46 @@ module.exports = function(dbName) {
             this._getGroupId(name, function(err, result) {
                 console.log(result);
                 if (err) {
-                    return cb(err);
+                    return cb(err, null, false);
                 }
-                cb(null, !!result);
+                cb(null, !!result, false);
             });
         },
         addGroup: function(name, cb) {
-            db.insert('groups', { name: name }, cb);
+            db.insert('groups', { name: name }, proxy(cb));
         },
         removeGroup: function(name, cb) {
             this._getGroupId(name, function(err, result) {
                 if (err) {
-                    cb(err);
+                    cb(err, null, false);
                 } else if (!result) {
-                    cb(null, false);
+                    cb(null, false, false);
                 } else {
                     db.removeById('groups', result.id, function(err) {
-                        cb(err, !err);
+                        cb(err, !err, false);
                     });
                 }
             });
         },
         getAllGroups: function(cb) {
-            db.list('groups', cb);
+            db.list('groups', proxy(cb));
         },
         getGroupPermissions: function(name, cb) {
             this._getGroupId(name, function(err, result) {
                 if (err) {
-                    cb(err);
+                    cb(err, null, false);
                 } else if (!result) {
-                    cb(null, false);
+                    cb(null, null, false);
                 } else {
                     db.select('permissions', null, ['service', 'method'], 
-                        'group_id=?', [result.id], cb);
+                        'group_id=?', [result.id], proxy(cb));
                 }
             });
         },
         addGroupPermissions: function(name, permissions, cb) {
-            var callback = _(cb).after(permissions.length);
             this._getGroupId(name, function(err, result) {
-                if (err) {
-                    cb(err);
-                } else if (!result) {
-                    cb(null, false);
+                if (err || !result) {
+                    cb(err, null, false);
                 } else {
                     // Validate regexes
                     var valid = true;
@@ -99,14 +109,14 @@ module.exports = function(dbName) {
                             new RegExp(item.service);
                         } catch (e) {
                             valid = false;
-                            return cb(e);
+                            return cb(e, null, false);
                         }
 
                         try {
                             new RegExp(item.method);
                         } catch (e) {
                             valid = false;
-                            return cb(e);
+                            return cb(e, null, false);
                         }
                     });
                     if (!valid) {
@@ -114,36 +124,32 @@ module.exports = function(dbName) {
                     }
                     var errors = [];
                     permissions.forEach(function(item) {
-                        db.insert('permissions', {
-                            service: item.service,
-                            group_id: result.id,
-                            method: item.method
-                        }, function(err) {
-                            if (err) errors.push(err);
-                            callback(errors.length > 0 ? errors : null, errors.length == 0);
-                        });
+                        item.group_id = result.id;
                     });
+                    db.insertAll('permissions', permissions, function(err) {
+                        cb(err, !err, false);
+                    })
                 }
             });
         },
         removeGroupPermissions: function(name, permissions, cb) {
             function couples(n) {
-                return repeat('(?,?)', ',', n);
+                return repeat('(service=? AND method=?)', ' OR ', n);
             }
-            var clause = 'group_id=? AND (service, method) IN (' + 
+            var clause = 'group_id=? AND (' + 
                 couples(permissions.length) + ')';
 
             this._getGroupId(name, function(err, result) {
                 if (err) {
-                    cb(err);
+                    cb(err, null, false);
                 } else if (!result) {
-                    cb(null, false);
+                    cb(null, false, false);
                 } else {
-                    db.remove('groups', clause, permissions.reduce(function(prev, item) {
-                        prev.push(items.service, item.method);
+                    db.remove('permissions', clause, permissions.reduce(function(prev, item) {
+                        prev.push(item.service, item.method);
                         return prev;
                     }, [result.id]), function(err) {
-                        return cb(err, !err);
+                        return cb(err, !err, false);
                     });
                 }
             });
@@ -152,38 +158,38 @@ module.exports = function(dbName) {
         clearGroupPermissions: function(name, cb) {
             this._getGroupId(name, function(err, result) {
                 if (err) {
-                    return cb(err);
+                    return cb(err, null, false);
                 } else if (!result) {
-                    return cb(null, false)
+                    return cb(null, false, false)
                 }
                 db.remove('permissions', 'group_id=?', [result.id], function(err) {
-                    cb(err, !err);
+                    cb(err, !err, false);
                 });
             });
         },
         hasUser: function(name, cb) {
             this._getUserId(name, function(err, result) {
                 if (err) {
-                    return cb(err);
+                    return cb(err, null, false);
                 }
-                cb(null, !!result);
+                cb(null, !!result, false);
             });
         },
         addUser: function(user, password, cb) {
             db.insert('users', {
                 username: user,
                 password_hash: hash(password)
-            }, cb);
+            }, proxy(cb));
         },
         removeUser: function(name, cb) {
             this._getUserId(name, function(err, result) {
                 if (err) {
-                    cb(err);
+                    cb(err, null, false);
                 } else if (!result) {
-                    cb(null, false);
+                    cb(null, false, false);
                 } else {
                     db.removeById('users', result.id, function(err) {
-                        cb(err, !err);
+                        cb(err, !err, false);
                     });
                 }
             });
@@ -196,39 +202,37 @@ module.exports = function(dbName) {
             }, {
                 'permissions.service': 'service',
                 'permissions.method': 'method'
-            }, 'users.username=?', [name], cb, null, null, true);
+            }, 'users.username=?', [name], proxy(cb), null, null, true);
         },
         getUserGroups: function(name, cb) {
             this._getUserId(name, function(err, result) {
                 if (err) {
-                    return cb(err);
+                    return cb(err, null, false);
                 } else if (!result) {
-                    return cb(null, false);
+                    return cb(null, null, false);
                 }
                 db.select('groups, user_groups', null, { 
                     'groups.name': 'name' 
                 }, 'groups.id=user_groups.group_id AND user_groups.user_id=?',
-                    [result.id], cb);
+                    [result.id], proxy(cb), null, null, true);
             });
         },
         clearUserGroups: function(name, cb) {
             this._getUserId(name, function(err, result) {
                 if (err) {
-                    return cb(err);
+                    return cb(err, null, false);
                 } else if (!result) {
-                    return cb(null, false);
+                    return cb(null, false, false);
                 }
-                db.remove('user_groups', 'user_id=?', [result.id], cb);
+                db.remove('user_groups', 'user_id=?', [result.id], proxy(cb));
             });
         },
         addUserGroups: function(name, groups, cb) {
-            var callback = _.after(cb, groups.length);
-
             this._getUserId(name, function(err, result) {
                 if (err) {
-                    return cb(err);
+                    return cb(err, null, false);
                 } else if (!result) {
-                    return cb(null, false);
+                    return cb(null, false, false);
                 }
                 var userId = result.id;
 
@@ -236,21 +240,17 @@ module.exports = function(dbName) {
                     repeat('?', ',', groups.length) + ')', groups,
                     function(err, rows) {
                         if (err) {
-                            return cb(err);
+                            return cb(err, null, false);
                         }
-                        var ids = rows.reduce(function(prev, item) {
-                            prev.push(item.id);
+                        var links = rows.reduce(function(prev, item) {
+                            prev.push({
+                                group_id: item.id,
+                                user_id: userId
+                            });
                             return prev;
                         }, []);
-                        var errors = [];
-                        ids.forEach(function(id) {
-                            db.insert('user_groups', {
-                                group_id: id,
-                                user_id: userId
-                            }, function(err) {
-                                if (err) errors.push(err);
-                                callback(errors.length > 0 ? errors : null, errors.length == 0);
-                            });
+                        db.insertAll('user_groups', links, function(err) {
+                            cb(err, !err, false);
                         });
                     }
                 );
@@ -259,73 +259,76 @@ module.exports = function(dbName) {
         removeUserGroups: function(name, groups, cb) {
             this._getUserId(name, function(err, result) {
                 if (err) {
-                    return cb(err);
+                    return cb(err, null, false);
                 } else if (!result) {
-                    return cb(null, false);
+                    return cb(null, false, false);
                 }
                 db.remove('user_groups', 'group_id IN (SELECT id FROM groups WHERE name IN (' + 
-                    repeat('?', ',', groups.length) + ')', groups, function(err) {
-                        return cb(err, !err);
+                    repeat('?', ',', groups.length) + '))', groups, function(err) {
+                        return cb(err, !err, false);
                     }
                 );
             });
         },
         getGroupMembers: function(name, cb) {
             this._getGroupId(name, function(err, result) {
-                if (err) {
-                    return cb(err);
-                } else if (!result) {
-                    return cb(null, false);
+                if (err || !result) {
+                    return cb(err, null, false);
                 }
-                db.select('groups g, user_groups ug', null, 
-                    { 'g.name': 'name' }, 
-                    'g.id=ug.group_id AND g.id=?', [result.id], cb);
+
+                db.select('groups g, user_groups ug, users u', null, 
+                    { 'u.username': 'username' }, 
+                    'ug.user_id=u.id AND g.id=ug.group_id AND g.id=?', [result.id], proxy(cb), null, null, true);
             });
         },
         clearGroupMembers: function(name, cb) {
             this._getGroupId(name, function(err, result) {
                 if (err) {
-                    return cb(err);
+                    return cb(err, null, false);
                 } else if (!result) {
-                    return cb(null, false);
+                    return cb(null, false, false);
                 }
-                db.remove('user_groups', 'group_id=?', [result.id], cb);
+                db.remove('user_groups', 'group_id=?', [result.id], proxy(cb));
             });
         },
         addGroupMembers: function(name, users, cb) {
-            var callback = _.after(cb, users.length);
+            var callback = _.after(proxy(cb), users.length);
             this._getGroupId(name, function(err, result) {
                 if (err) {
-                    return cb(err);
+                    return cb(err, null, false);
                 } else if (!result) {
-                    return cb(null, false);
+                    return cb(null, false, false);
                 }
                 var gid = result.id,
                     errors = [];
                 db.select('users', null, ['id'], 'username IN (' + 
                     repeat('?', ',', users.length) + ')', users, function(err, ids) {
-                    ids.forEach(function(user) {
-                        db.insert('user_groups', {
-                            group_id: gid,
-                            user_id: user.id
-                        }, function(err) {
-                            if (err) errors.push(err);
-                            callback(errors.length == 0 ? null : errors, errors.length == 0);
+                        if (err) {
+                            return cb(err, null, false);
+                        }
+                        var links = ids.reduce(function(prev, item) {
+                            prev.push({
+                                group_id: item.id,
+                                user_id: gid
+                            });
+                            return prev;
+                        }, []);
+                        db.insertAll('user_groups', links, function(err) {
+                            cb(err, !err, false);
                         });
-                    });
                 });
             });
         },
         removeGroupMembers: function(name, users, cb) {
             this._getGroupId(name, function(err, result) {
                 if (err) {
-                    return cb(err);
+                    return cb(err, null, false);
                 } else if (!result) {
-                    return cb(null, false);
+                    return cb(null, false, false);
                 }
                 db.remove('user_groups', 'user_id IN (SELECT id FROM users WHERE username IN (' + 
-                    repeat('?', ',', users.length) + ')', groups, function(err) {
-                        return cb(err, !err);
+                    repeat('?', ',', users.length) + '))', users, function(err) {
+                        return cb(err, !err, false);
                     }
                 );
             });

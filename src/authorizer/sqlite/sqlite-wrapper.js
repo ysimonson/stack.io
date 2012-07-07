@@ -34,6 +34,19 @@ function cols(columns) {
     return res;
 }
 
+function repeat(seq, sep, n) {
+    var res = '';
+    while (n > 1) {
+        if (n % 2 == 1) {
+            res += sep + seq;
+            n--;
+        }
+        seq += sep + seq;
+        n /= 2;
+    }
+    return seq + res;
+}
+
 /**
  * Init with DB filename, or ':memory:' for in-memory DB, or no argument for 
  * anonymous DB.
@@ -80,6 +93,25 @@ exports.insert = function(table, obj, cb) {
     db.run(query, dissected.values, cb);
 }
 
+exports.insertAll = function(table, objs, cb) {
+    var columns = Object.keys(objs[0]);
+    var firstRow = '';
+    columns.forEach(function(column) {
+        firstRow += (firstRow ? ', ?' : '?') + ' AS ' + column;
+    });
+    var values = objs.reduce(function(prev, item) {
+        for (var i = 0, l = columns.length; i < l; i++) {
+            prev.push(item[columns[i]] != undefined ? item[columns[i]] : null);
+        }
+        return prev;
+    }, []);
+
+    var query = 'INSERT INTO ' + table + ' (' + columns.join(',') + ') SELECT ' + firstRow +
+        repeat(' UNION SELECT ' + repeat('?', ',', columns.length), '', objs.length) + ';';
+    if (DEBUG) console.log(query, '\n', values);
+    db.run(query, values, cb);
+}
+
 /**
  * update('Users', 'username=?', ['foo'], { username : 'bar' }, function(err) {});
  */
@@ -116,7 +148,7 @@ exports.select = function(table, joins, columns, whereClause, whereValues, cb, o
     }
     query += ' WHERE ' + whereClause + (order ? ' ORDER BY ' + order : '') +
         (limit ? ' LIMIT ' + limit : '') + ';';
-    if (DEBUG) console.log(query);
+    if (DEBUG) console.log(query, '\n', whereValues);
     db.all(query, whereValues, cb);
 }
 
@@ -132,7 +164,7 @@ exports.selectOne = function(table, joins, columns, whereClause, whereValues, cb
         }
     }
     query += ' WHERE ' + whereClause + ';';
-    if (DEBUG) console.log(query);
+    if (DEBUG) console.log(query, '\n', whereValues);
     db.get(query, whereValues, cb);
 }
 

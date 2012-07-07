@@ -63,6 +63,7 @@ function objectsEquivalent(actual, expected) {
 }
 
 function setsEquivalent(actual, expected) {
+    if (actual == null && expected != null) return false;
     if(actual.length != expected.length) return false;
 
     for(var i=0; i<expected.length; i++) {
