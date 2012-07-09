@@ -93,7 +93,7 @@ function start() {
 
 stack.io("http://localhost:8080", function(error, clt) {
     client = clt;
-
+    
     if(error) {
         console.error(error);
     } else {

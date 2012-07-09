@@ -11,7 +11,7 @@ function testAuth() {
     });
 
     asyncTest("Good API-based authentication", 3, function() {
-        authService.check_auth("test", "test-password", function(error, res, more) {
+        authService.checkAuth("test", "test-password", function(error, res, more) {
             equal(error, null);
             equal(res, true);
             equal(more, false);
@@ -20,7 +20,7 @@ function testAuth() {
     });
 
     asyncTest("Bad API-based authentication", 3, function() {
-        authService.check_auth("test", "bad", function(error, res, more) {
+        authService.checkAuth("test", "bad", function(error, res, more) {
             equal(error, null);
             equal(res, false);
             equal(more, false);
@@ -29,7 +29,7 @@ function testAuth() {
     });
 
     asyncTest("Has user", 3, function() {
-        authService.has_user("test", function(error, res, more) {
+        authService.hasUser("test", function(error, res, more) {
             equal(error, null);
             equal(res, true);
             equal(more, false);
@@ -38,7 +38,7 @@ function testAuth() {
     });
 
     asyncTest("Has group", 3, function() {
-        authService.has_group("test", function(error, res, more) {
+        authService.hasGroup("test", function(error, res, more) {
             equal(error, null);
             equal(res, true);
             equal(more, false);
@@ -47,7 +47,7 @@ function testAuth() {
     });
 
     asyncTest("Get all groups", 3, function() {
-        authService.get_all_groups(function(error, res, more) {
+        authService.getAllGroups(function(error, res, more) {
             equal(error, null);
             ok(setsEquivalent(res, [{name: "test"}, {name: "demo"}]));
             equal(more, false);
@@ -58,14 +58,14 @@ function testAuth() {
     asyncTest("Get non-existent group permissions and membership", 6, function() {
          var barrier = createBarrier(2, start);
 
-        authService.get_group_permissions("fooo", function(error, res, more) {
+        authService.getGroupPermissions("fooo", function(error, res, more) {
             equal(error, null);
             equal(res, null);
             equal(more, false);
             barrier();
         });
 
-        authService.get_user_groups_by_group("fooo", function(error, res, more) {
+        authService.getGroupMembers("fooo", function(error, res, more) {
             equal(error, null);
             equal(res, null);
             equal(more, false);
@@ -76,14 +76,18 @@ function testAuth() {
     asyncTest("Get group permissions and membership", 6, function() {
         var barrier = createBarrier(2, start);
 
-        authService.get_group_permissions("test", function(error, res, more) {
+        authService.getGroupPermissions("test", function(error, res, more) {
             equal(error, null);
-            equal(res.length, 10);
+            if (res)
+                equal(res.length, 10)
+            else
+                ok(!!res);
+            
             equal(more, false);
             barrier();
         });
 
-        authService.get_user_groups_by_group("test", function(error, res, more) {
+        authService.getGroupMembers("test", function(error, res, more) {
             equal(error, null);
             ok(setsEquivalent(res, [{username: "test"}]));
             equal(more, false);
@@ -92,7 +96,7 @@ function testAuth() {
     });
 
     asyncTest("Get user groups", 3, function() {
-        authService.get_user_groups_by_user("test", function(error, res, more) {
+        authService.getUserGroups("test", function(error, res, more) {
             equal(error, null);
             ok(setsEquivalent(res, [{name: "test"}]));
             equal(more, false);
@@ -101,7 +105,7 @@ function testAuth() {
     });
 
     asyncTest("Get non-existent user groups", 3, function() {
-        authService.get_user_groups_by_user("fooo", function(error, res, more) {
+        authService.getUserGroups("fooo", function(error, res, more) {
             equal(error, null);
             equal(res, null);
             equal(more, false);
