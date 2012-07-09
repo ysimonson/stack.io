@@ -16,6 +16,8 @@ build-client:
 
 build-utils:
 	cp -r src/authorizer bin/authorizer
+	node bin/authorizer/sqlite/init-db.js bin/authorizer/sqlite/authorizer.db
+
 	cp -r src/registrar bin/registrar
 
 build-apps:

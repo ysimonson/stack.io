@@ -2,7 +2,7 @@
 
 function utils {
     python bin/registrar/app.py &
-    python bin/authorizer/app.py bin/apps/seed.json &
+    node bin/authorizer/sqlite/app.js bin/apps/seed.json --dbname bin/authorizer/sqlite/authorizer.db &
     sleep 1s
 }
 
