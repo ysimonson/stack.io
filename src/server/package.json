@@ -1,0 +1,12 @@
+{
+    "name": "stack.io-server",
+    "version": "0.1.0",
+    "dependencies": {
+        "underscore": "*",
+        "socket.io": "0.9.6",
+        "express": "2.5.9",
+        "zerorpc": "*",
+        "oauth": "*"
+    },
+    "author": "Yusuf Simonson <yusuf@dotcloud.com>"
+}
