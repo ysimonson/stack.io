@@ -27,6 +27,7 @@ Meece.prototype._sendUpdate = function() {
         try {
             this.clients[clientId].listener(undefined, message, true);
         } catch(e) {
+            console.error(e);
             this._enqueueUpdate("unlisten", clientId);
             delete this.clients[clientId];
         }

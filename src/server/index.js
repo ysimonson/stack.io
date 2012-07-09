@@ -7,6 +7,7 @@ var connectors = {
 
 var middleware = {
     normalAuthMiddleware: "auth/normalAuth",
+    oauthMiddleware: "auth/oauth",
     zerorpcMiddleware: "backend/zerorpc",
     printMiddleware: "debug/print",
     builtinsMiddleware: "etc/builtins"

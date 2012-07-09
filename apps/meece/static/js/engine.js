@@ -24,7 +24,6 @@ stack.io("http://localhost:8080", {timeout : 5}, function(error, client) {
                 if(error) {
                     console.error(error);
                 } else if(event.type === "initial") {
-                    console.log("INIT", event, event.id);
                     myClientId = event.id;
                     updateCount(event.count);
                     startUpdating(context, myClientId);
@@ -33,9 +32,9 @@ stack.io("http://localhost:8080", {timeout : 5}, function(error, client) {
                         var update = event.payload[i];
 
                         if(update.type === "move") {
-                            if(myClientId !== update.value.id) {
-                                moveMouse(update.value.id, update.value.pos);
-                            }
+                            //if(myClientId !== update.value.id) {
+                            moveMouse(update.value.id, update.value.pos);
+                            //}
                         } else if(update.type === "stats") {
                             updateCount(update.value);
                         } else if(update.type === "unlisten") {
