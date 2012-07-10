@@ -1,13 +1,12 @@
 var model = require("./lib/model"),
-    server = require("./lib/server");
+    server = require("./lib/server"),
+    auth = require("./lib/middleware/auth");
 
 var connectors = {
     "SocketIOConnector": "socketio"
 };
 
 var middleware = {
-    normalAuthMiddleware: "auth/normalAuth",
-    oauthMiddleware: "auth/oauth",
     zerorpcMiddleware: "backend/zerorpc",
     printMiddleware: "debug/print",
     builtinsMiddleware: "etc/builtins"
@@ -26,3 +25,5 @@ exports.Session = model.Session;
 exports.Request = model.Request;
 exports.Response = model.Response;
 exports.IOServer = server.IOServer;
+exports.useOAuth = auth.useOAuth;
+exports.useNormalAuth = auth.useNormalAuth;

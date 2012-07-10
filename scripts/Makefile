@@ -12,7 +12,9 @@ build-server-app:
 	cp -r bin/server bin/server-app/stack
 
 build-client:
-	node scripts/r.js -o scripts/client-build.cfg.js
+	mkdir bin/client
+	node scripts/r.js -o scripts/client-build-prod.cfg.js
+	node scripts/r.js -o scripts/client-build-debug.cfg.js optimize=none
 
 build-utils:
 	cp -r src/authorizer bin/authorizer
@@ -24,13 +26,13 @@ build-apps:
 	cp -r apps bin/apps
 
 	cp -r lib/apps bin/apps/dashboard/static/lib
-	cp -r bin/client/stack.io.js bin/apps/dashboard/static/stack.io.js
+	cp -r bin/client/stack.io.debug.js bin/apps/dashboard/static/stack.io.js
 
 	cp -r lib/apps bin/apps/test/static/lib
-	cp -r bin/client/stack.io.js bin/apps/test/static/stack.io.js
+	cp -r bin/client/stack.io.debug.js bin/apps/test/static/stack.io.js
 
 	cp -r lib/apps bin/apps/oauth/static/lib
-	cp -r bin/client/stack.io.js bin/apps/oauth/static/stack.io.js
+	cp -r bin/client/stack.io.debug.js bin/apps/oauth/static/stack.io.js
 
 	cp -r lib/apps bin/apps/meece/static/lib
-	cp -r bin/client/stack.io.js bin/apps/meece/static/stack.io.js
+	cp -r bin/client/stack.io.debug.js bin/apps/meece/static/stack.io.js

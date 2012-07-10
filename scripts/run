@@ -6,12 +6,16 @@ function utils {
     sleep 1s
 }
 
-function server {
-    node bin/server-app/app &
+function server_oauth {
+    node bin/server-app/oauth-app &
+}
+
+function server_normalauth {
+    node bin/server-app/normalauth-app &
 }
 
 function dashboard {
-    utils; server
+    utils; server_normalauth
     node bin/apps/dashboard/server/app.js &
 
     pushd bin/apps/dashboard/static
@@ -20,7 +24,7 @@ function dashboard {
 }
 
 function test {
-    utils; server
+    utils; server_normalauth
     node bin/apps/test/server/app.js &
     
     pushd bin/apps/test/static
@@ -29,7 +33,7 @@ function test {
 }
 
 function meece {
-    utils; server
+    utils; server_normalauth
     node bin/apps/meece/server/app.js &
     
     pushd bin/apps/meece/static
@@ -38,7 +42,7 @@ function meece {
 }
 
 function oauth {
-    utils; server
+    utils; server_oauth
     node bin/apps/oauth/server/app.js &
     
     pushd bin/apps/oauth/static

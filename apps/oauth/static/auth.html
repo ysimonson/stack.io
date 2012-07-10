@@ -5,6 +5,12 @@
         );
     }
 
-    window.opener.postMessage(getURLParameter("oauth_verifier"), "*");
+    var param = getURLParameter("oauth_verifier");
+
+    if(param === "null") {
+        param = getURLParameter("code");
+    }
+
+    window.opener.postMessage(param, "*");
     window.close();
 </script>
