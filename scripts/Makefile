@@ -14,7 +14,7 @@ build-server-app:
 build-client:
 	mkdir bin/client
 	node scripts/r.js -o scripts/client-build-prod.cfg.js
-	node scripts/r.js -o scripts/client-build-debug.cfg.js optimize=none
+	node scripts/r.js -o scripts/client-build-debug.cfg.js
 
 build-utils:
 	cp -r src/authorizer bin/authorizer

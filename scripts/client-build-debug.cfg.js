@@ -3,6 +3,7 @@
     out: '../bin/client/stack.io.debug.js',
     name: '../../lib/client/almond',
     include: ['stack.io'],
+    optimize: "none",
     paths: {
         'socket.io': '../../lib/client/socket.io'
     },
