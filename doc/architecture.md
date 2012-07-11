@@ -144,15 +144,15 @@ outside of an authenticated session.
 The registrar maintains a mapping of service names to their ZeroRPC endpoints.
 It itself is implemented as a ZeroRPC service, so - like any other service -
 it can be used from the client, provided you have authorization. Usually you
-should not need to use it.
+should not need to use it directly.
 
 ## Authorizer ##
 
 This is another ZeroRPC service that exposes an authentication and
 authorization API for normal username/password-based authentication. Again,
 like any other service, it can be used directly from the client, provided you
-have the authorization. `stack.normalAuthMiddleware` uses this API for checking
-a user's credentials.
+have the authorization. The normal authentication middleware uses this service
+for checking a user's credentials.
 
 The default authorizer includes the notion of users, groups and permissions. A
 user may be a member of zero or more groups. A group may have zero or more
