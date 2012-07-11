@@ -13,10 +13,10 @@ expressApp.configure(function() {
 //Create the stack.io server
 var server = new stack.IOServer();
 
+//Use the socket.io connector
 server.connector(new stack.SocketIOConnector(expressApp));
 
-server.middleware(/.+/, /.+/, /.+/, stack.printMiddleware);
-
+//Use OAuth authentication
 stack.useOAuth(server, /.+/, {
     twitter: {
         version: "1.0",
@@ -42,8 +42,10 @@ stack.useOAuth(server, /.+/, {
     }
 });
 
+//Add middleware necessary for making ZeroRPC calls
 server.middleware(/.+/, /_stackio/, /.+/, stack.builtinsMiddleware);
 server.middleware(/.+/, /.+/, /.+/, stack.zerorpcMiddleware(REGISTRAR_ENDPOINT));
 
+//Start!
 expressApp.listen(8080);
 server.listen();

@@ -13,12 +13,16 @@ expressApp.configure(function() {
 //Create the stack.io server
 var server = new stack.IOServer();
 
+//Use the socket.io connector
 server.connector(new stack.SocketIOConnector(expressApp));
 
+//Use normal (username+password) authentication
 stack.useNormalAuth(server, /.+/, REGISTRAR_ENDPOINT);
+
+//Add middleware necessary for making ZeroRPC calls
 server.middleware(/.+/, /_stackio/, /.+/, stack.builtinsMiddleware);
-//server.middleware(/.+/, /.+/, /.+/, stack.printMiddleware);
 server.middleware(/.+/, /.+/, /.+/, stack.zerorpcMiddleware(REGISTRAR_ENDPOINT));
 
+//Start!
 expressApp.listen(8080);
 server.listen();
