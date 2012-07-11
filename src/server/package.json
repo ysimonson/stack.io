@@ -8,5 +8,8 @@
         "zerorpc": "*",
         "oauth": "*"
     },
-    "author": "Yusuf Simonson <yusuf@dotcloud.com>"
+    "author": "Yusuf Simonson <yusuf@dotcloud.com>",
+    "contributors": [
+        "Joffrey Fuhrer <joffrey@dotcloud.com>"
+    ]
 }
