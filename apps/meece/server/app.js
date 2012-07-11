@@ -71,6 +71,10 @@ Meece.prototype.listen = function(reply) {
 var server = new zerorpc.Server(new Meece());
 server.bind("tcp://0.0.0.0:4242");
 
+server.on("error", function(error) {
+    console.error("Server error:", error);
+});
+
 var client = new zerorpc.Client();
 client.connect("tcp://127.0.0.1:27615");
 
