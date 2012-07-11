@@ -15,7 +15,7 @@ function createClient(endpoint, options) {
 
     client.connect(endpoint);
     return client;
-};
+}
 
 function createRegistrarBasedMiddleware(registrarEndpoint, callback) {
     //Client connected to the registrar
