@@ -12,7 +12,7 @@ stack.io("http://localhost:8080", {timeout : 5}, function(error, client) {
             return;
         }
 
-        client.use("meece", function(error, context) {
+        client.use("mice", function(error, context) {
             if(error) {
                 console.error(error);
                 return;
@@ -66,7 +66,7 @@ function updateCount(count) {
     $("#statsClientConnected").text(count);
 }
 
-function startUpdating(meece, id) {
+function startUpdating(mice, id) {
     var x = null, y = null, updated = false;
 
     $(document).mousemove(function(e) {
@@ -81,7 +81,7 @@ function startUpdating(meece, id) {
         if(updated) {
             updated = false;
 
-            meece.move(id, x, y, function(error) {
+            mice.move(id, x, y, function(error) {
                 if(error) console.error(error);
             });
         }

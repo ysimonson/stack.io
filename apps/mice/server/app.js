@@ -1,7 +1,7 @@
 var zerorpc = require("zerorpc");
 var UPDATE_RATE = 0;
 
-function Meece() {
+function Mice() {
     var self = this;
 
     self.clients = {};
@@ -13,13 +13,13 @@ function Meece() {
     }, UPDATE_RATE);
 }
 
-Meece.prototype._numClients = function() {
+Mice.prototype._numClients = function() {
     var count = 0;
     for(var key in this.clients) count++;
     return count;
 };
 
-Meece.prototype._sendUpdate = function() {
+Mice.prototype._sendUpdate = function() {
     var message = { type: "updates", payload: this.updates };
     this.updates = [];
 
@@ -36,17 +36,17 @@ Meece.prototype._sendUpdate = function() {
     this._enqueueUpdate("stats", this._numClients());
 };
 
-Meece.prototype._enqueueUpdate = function(type, value) {
+Mice.prototype._enqueueUpdate = function(type, value) {
     this.updates.push({ type: type, value: value })
 };
 
-Meece.prototype.move = function(clientId, x, y, reply) {
+Mice.prototype.move = function(clientId, x, y, reply) {
     this.clients[clientId].pos = [x, y];
     this._enqueueUpdate("move", { id: clientId, pos: [x, y] });
     reply(null, null, false);
 };
 
-Meece.prototype.listen = function(reply) {
+Mice.prototype.listen = function(reply) {
     var myClientId = this.clientIdCounter++;
     var otherClientStates = [];
 
@@ -68,7 +68,7 @@ Meece.prototype.listen = function(reply) {
     }, true);
 };
 
-var server = new zerorpc.Server(new Meece());
+var server = new zerorpc.Server(new Mice());
 server.bind("tcp://0.0.0.0:4242");
 
 server.on("error", function(error) {
@@ -78,7 +78,7 @@ server.on("error", function(error) {
 var client = new zerorpc.Client();
 client.connect("tcp://127.0.0.1:27615");
 
-client.invoke("register", "meece", "tcp://127.0.0.1:4242", function(error, res, more) {
+client.invoke("register", "mice", "tcp://127.0.0.1:4242", function(error, res, more) {
     if(error) {
         console.error(error);
         return process.exit(-1);
