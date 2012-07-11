@@ -79,10 +79,8 @@ middleware when it is done.
 
 Examples of middleware are in `./src/server/middleware`.
 
-stack.io includes a number of built-in middleware:
+stack.io includes a few built-in middleware:
 
- * `stack.normalAuthMiddleware` - Adds username/password-based authentication
-   and authorization. This is enabled in the default server application.
  * `stack.zerorpcMiddleware` - Proxies requests out on ZeroRPC. You could
    hypothetically swap this out for something that used another RPC engine,
    but why would you do that? This is obviously enabled in the default server
@@ -93,14 +91,19 @@ stack.io includes a number of built-in middleware:
    application, and is necessary for proper functionality unless you've made
    some interesting hacks to the stack.io client.
 
-If you write a middleware that needs to directly interact with a client, you
-can listen for function calls on the magic service `_stackio`. For example,
-authentication/authorization middleware intercepts calls to `login` and
-`logout` in `_stackio` to perform their functionality. Additionally,
-introspection is exposed as the method `_stackio.introspect`, and service
-listing is exposed as `_stackio.services`. A middleware then converts these
-calls to their actual ones. This is so that the calls are usable even outside
-of an authenticated session.
+There is also authentication/authorization middleware. Because these
+facilities actually install several middleware, we have made the convience
+methods `useNormalAuth` and `useOAuth`. Note that you can only use one
+authentication method per server instance.
+
+A final note on middleware. If you write a middleware that needs to directly
+interact with a client, you can listen for function calls on the magic service
+`_stackio`. For example, authentication/authorization middleware intercepts
+calls to `login` and `logout` in `_stackio` to perform their functionality.
+Additionally, introspection is exposed as the method `_stackio.introspect`, and
+service listing is exposed as `_stackio.services`. A middleware then converts
+these calls to their actual ones. This is so that the calls are usable even
+outside of an authenticated session.
 
 ## Registrar ##
 

@@ -9,10 +9,7 @@ function login(providerName) {
 
         client._invoke("_stackio", "getLoginUrl", providerName, function(error, res) {
             var listener = function(e) {
-                console.log(e.origin, window.location.origin, e);
                 if(e.origin != window.location.origin) return;
-
-                console.log(typeof(e.data), e.data);
 
                 client.login(e.data, "http://localhost:8000/auth.html", function(error, result) {
                     console.log(error, result);

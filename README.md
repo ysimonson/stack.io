@@ -33,15 +33,43 @@ To run the unit tests:
 After you start any of these apps, navigate your browser to
 `http://localhost:8000`.
 
-For full details, checkout the architecture doc, located in `doc/architecture.md`.
+For full details, checkout the architecture doc, located in
+`doc/architecture.md`.
 
 ## Client ##
 
-The client is a library webapps can use for making stack.io calls. It uses
-socket.io to communicate with the server, which in turn makes the actual
-ZeroRPC requests.
+The client is a library that webapps can use for making stack.io calls. To
+create a new client, include the script in ./bin/client/stack.io.js in your
+webapp. Then instantiate a new client:
 
-For a complete example, checkout the dashboard, located in `apps/dashboard`.
+    var client = new stack.IO(host, function(error) {
+        console.error(error);
+    });
+
+From there, you can start using a service, e.g.:
+
+    client.use("service_name", function(error, context) {
+        context.sayHello("World", function(error, response, more) {
+            console.log(error, response, more);
+        });
+    });
+
+If you have authentication setup, you'll want to login before using a service.
+
+An example login using normal (username+password) authentication:
+
+    client.login("username", "password", function(error, permissions) {
+        ...
+    });
+
+You can also do OAuth, if you run the server with OAuth authentication
+middleware. See `apps/oauth` for an example.
+
+To logout, simply call `client.logout(callback)`.
+
+Stack.io clients also have a couple of utility methods. To list available
+services, call `client.services()`. To introspect on the methods of a
+specific service, call `client.introspect("service_name", callback)`.
 
 ## Server ##
 
@@ -69,7 +97,7 @@ Or if you want to use OAuth:
 This will run stack.io on port 8080.
 
 If the built-in server app does not fulfill your needs, you can create a
-server programmatically. To create a new server:
+server programmatically:
 
     var stack = require("./stack");
     var server = new stack.IOServer();
@@ -104,3 +132,6 @@ Here's a full example:
     //Start!
     expressApp.listen(8080);
     server.listen();
+
+For an API reference, check out the architecture doc, located in
+`doc/architecture.md`.
