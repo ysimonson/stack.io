@@ -1,3 +1,5 @@
+# Stack.io Architecture #
+
 Stack.io is composed of:
 
  * A client-side library for webapps.
