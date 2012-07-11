@@ -36,3 +36,6 @@ build-apps:
 
 	cp -r lib/apps bin/apps/mice/static/lib
 	cp -r bin/client/stack.io.debug.js bin/apps/mice/static/stack.io.js
+
+	cp -r lib/apps bin/apps/stress/static/lib
+	cp -r bin/client/stack.io.debug.js bin/apps/stress/static/stack.io.js

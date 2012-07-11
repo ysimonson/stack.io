@@ -50,6 +50,15 @@ function oauth {
     popd
 }
 
+function stress {
+    utils; server_normalauth
+    node bin/apps/stress/server/app.js &
+    
+    pushd bin/apps/stress/static
+    python -m SimpleHTTPServer &
+    popd
+}
+
 function control_c {
     kill `jobs -p`
     exit $?
