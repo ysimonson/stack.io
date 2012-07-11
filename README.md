@@ -39,7 +39,7 @@ For full details, checkout the architecture doc, located in
 ## Client ##
 
 The client is a library that webapps can use for making stack.io calls. To
-create a new client, include the script in ./bin/client/stack.io.js in your
+create a new client, include the script in `./bin/client/stack.io.js` in your
 webapp. Then instantiate a new client:
 
     var client = new stack.IO(host, function(error) {
@@ -63,7 +63,7 @@ An example login using normal (username+password) authentication:
     });
 
 You can also do OAuth, if you run the server with OAuth authentication
-middleware. See `apps/oauth` for an example.
+middleware. See `./apps/oauth` for an example.
 
 To logout, simply call `client.logout(callback)`.
 
@@ -96,42 +96,6 @@ Or if you want to use OAuth:
 
 This will run stack.io on port 8080.
 
-If the built-in server app does not fulfill your needs, you can create a
-server programmatically:
-
-    var stack = require("./stack");
-    var server = new stack.IOServer();
-
-Here's a full example:
-
-    var stack = require("./stack"),
-        express = require("express");
-
-    var REGISTRAR_ENDPOINT = "tcp://127.0.0.1:27615";
-
-    //Create the express app
-    var expressApp = express.createServer();
-
-    expressApp.configure(function() {
-        expressApp.use(express.bodyParser());
-    });
-
-    //Create the stack.io server
-    var server = new stack.IOServer();
-
-    //Use the socket.io connector
-    server.connector(new stack.SocketIOConnector(expressApp));
-
-    //Use normal (username+password) authentication
-    stack.useNormalAuth(server, /.+/, REGISTRAR_ENDPOINT);
-
-    //Add middleware necessary for making ZeroRPC calls
-    server.middleware(/.+/, /_stackio/, /.+/, stack.builtinsMiddleware);
-    server.middleware(/.+/, /.+/, /.+/, stack.zerorpcMiddleware(REGISTRAR_ENDPOINT));
-
-    //Start!
-    expressApp.listen(8080);
-    server.listen();
-
-For an API reference, check out the architecture doc, located in
+If you want to run a server programmatically, e.g. to change the port or add
+custom middleware, check out the architecture doc, located in
 `doc/architecture.md`.
