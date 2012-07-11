@@ -29,7 +29,7 @@ function createRegistrarBasedMiddleware(registrarEndpoint, callback) {
     var queuedRequests = [];
 
     //Pull down the list of services
-    registrarClient.invoke("services_verbose", function(error, res) {
+    registrarClient.invoke("services", true, function(error, res) {
         serviceConfigs = res;
         serviceConfigsLoaded = true;
 
