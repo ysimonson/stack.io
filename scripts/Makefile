@@ -34,5 +34,5 @@ build-apps:
 	cp -r lib/apps bin/apps/oauth/static/lib
 	cp -r bin/client/stack.io.debug.js bin/apps/oauth/static/stack.io.js
 
-	cp -r lib/apps bin/apps/meece/static/lib
-	cp -r bin/client/stack.io.debug.js bin/apps/meece/static/stack.io.js
+	cp -r lib/apps bin/apps/mice/static/lib
+	cp -r bin/client/stack.io.debug.js bin/apps/mice/static/stack.io.js
