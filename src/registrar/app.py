@@ -15,13 +15,13 @@ class Registrar(object):
         """Gets the endpoint of a specific service"""
         return self._services.get(name)
 
-    def services(self, verbose=false):
+    def services(self, verbose=False):
         """Gets the names of all services, or gets a map of service name to 
         endpoint of all services if verbose is true"""
-        if (verbose)
-            return self._services.keys()
-        else
+        if verbose:
             return self._services
+        else:
+            return self._services.keys()
 
     def register(self, name, endpoint):
         """Registers a new service"""
