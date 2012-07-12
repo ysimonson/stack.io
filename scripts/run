@@ -1,19 +1,23 @@
 #!/bin/sh
 
+# Starts the registrar and authorizer
 function utils {
     python bin/registrar/app.py &
     node bin/authorizer/sqlite/app.js bin/apps/seed.json --dbname bin/authorizer/sqlite/authorizer.db &
     sleep 1s
 }
 
+# Starts a server using OAuth authentication
 function server_oauth {
     node bin/server-app/oauth-app &
 }
 
+# Starts a server using normal authentication
 function server_normalauth {
     node bin/server-app/normalauth-app &
 }
 
+# Starts a dashboard
 function dashboard {
     utils; server_normalauth
     node bin/apps/dashboard/server/app.js &
@@ -23,6 +27,7 @@ function dashboard {
     popd
 }
 
+# Starts the unit tests
 function test {
     utils; server_normalauth
     node bin/apps/test/server/app.js &
@@ -32,6 +37,7 @@ function test {
     popd
 }
 
+# Starts the mice app
 function mice {
     utils; server_normalauth
     node bin/apps/mice/server/app.js &
@@ -41,6 +47,7 @@ function mice {
     popd
 }
 
+# Starts the OAuth test app
 function oauth {
     utils; server_oauth
     node bin/apps/oauth/server/app.js &
@@ -50,6 +57,7 @@ function oauth {
     popd
 }
 
+# Starts the stress tester
 function stress {
     utils; server_normalauth
     node bin/apps/stress/server/app.js &
@@ -59,6 +67,7 @@ function stress {
     popd
 }
 
+#Called when the user control+c's, to close background processes
 function control_c {
     kill `jobs -p`
     exit $?

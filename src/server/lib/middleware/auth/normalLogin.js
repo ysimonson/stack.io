@@ -2,6 +2,7 @@ var zerorpc = require("../util/zerorpc"),
     _ = require("underscore"),
     model = require("../../model");
 
+//Compiles a list of permissions to regular expressions
 function compilePermissions(permissions) {
     return permissions ? _.map(permissions, function(permission) {
         return {
@@ -11,6 +12,9 @@ function compilePermissions(permissions) {
     }) : [];
 }
 
+//Creates a normal login middleware
+//registrarEndpoint : string
+//      The ZeroMQ endpoint of the registrar
 module.exports = function(registrarEndpoint) {
     return zerorpc.createRegistrarBasedMiddleware(registrarEndpoint, function(serviceEndpoints, req, res, next) {
         var client = zerorpc.createClient(serviceEndpoints.auth);

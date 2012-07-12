@@ -10,10 +10,13 @@ module.exports = function(req, res, next) {
         var config = req.session.auth.config;
 
         if(config.version === "1.0") {
+            //OAuth 1.0 authentication
+
             var verifier = req.args[0];
             var redirectUrl = req.args[1];
             var oldProvider = req.session.auth.provider;
 
+            //Create a new OAuth object based on the old provider
             var provider = new oauth.OAuth(oldProvider._requestUrl,
                 oldProvider._accessUrl,
                 oldProvider._consumerKey,
@@ -22,6 +25,7 @@ module.exports = function(req, res, next) {
                 oldProvider._authorize_callback,
                 oldProvider._signatureMethod);
 
+            //Grab the access token
             provider.getOAuthAccessToken(req.session.auth.token, req.session.auth.tokenSecret, verifier, function(error, accessToken, accessTokenSecret, oauthResults) {
                 if(error) {
                     util.loginError(req, res, error);
@@ -34,6 +38,8 @@ module.exports = function(req, res, next) {
                 }
             });
         } else {
+            //OAuth 2.0 authentication
+
             var code = req.args[0];
             var redirectUrl = req.args[1];
             var provider = req.session.auth.provider;
@@ -43,6 +49,7 @@ module.exports = function(req, res, next) {
                 "redirect_uri": redirectUrl
             };
 
+            //Grab the access token
             provider.getOAuthAccessToken(code, options, function(error, accessToken, refreshToken, oauthResults) {
                 if(error) {
                     util.loginError(req, res, error);

@@ -22,6 +22,7 @@ stack.useOAuth(server, /.+/, {
         version: "1.0",
         requestUrl: "https://api.twitter.com/oauth/request_token",
         accessUrl: "https://api.twitter.com/oauth/access_token",
+        authorizeUrl: "https://api.twitter.com/oauth/authorize",
         consumerKey: "zUKjO1SWVtFds3FSkwjg",
         consumerSecret: "VEQ8VfTVYPbUv35TLcBvjcEDSU3Bpbwq8hhsSq3Y",
         permissions: [

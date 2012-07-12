@@ -1,6 +1,7 @@
 var util = require("./util"),
     oauth = require("oauth");
 
+//Creates a base object for a new session
 function initSession(serviceName, provider, config) {
     return {
         state: "authenticating",
@@ -14,6 +15,7 @@ function initSession(serviceName, provider, config) {
 module.exports = function(configs) {
     var services = {};
 
+    //Create an OAuth object for each configured provider
     for(var serviceName in configs) {
         var config = configs[serviceName];
 
@@ -39,6 +41,9 @@ module.exports = function(configs) {
             var config = configs[serviceName];
 
             if(config.version === "1.0") {
+                //OAuth 1.0 authentication
+
+                //Grab the request token
                 provider.getOAuthRequestToken(function(error, token, tokenSecret, oauthResults) {
                     if(error) {
                         util.loginError(req, res, error);
@@ -47,11 +52,14 @@ module.exports = function(configs) {
                         req.session.auth.token = token;
                         req.session.auth.tokenSecret = tokenSecret;
 
-                        var url = "https://api.twitter.com/oauth/authorize?oauth_token=" + token;
+                        var url = config.authorizeUrl + "?oauth_token=" + token;
                         res.update(undefined, url, false);
                     }
                 });
             } else {
+                //OAuth 2.0 authentication
+
+                //Grab the authorization url
                 req.session.auth = initSession(serviceName, provider, config);
                 var url = provider.getAuthorizeUrl({ response_type: "code" });
                 res.update(undefined, url, false);

@@ -1,3 +1,4 @@
+//Converts magic methods on _stackio for introspection to their actual names
 module.exports = function(req, res, next) {
     if(req.method === 'inspect') {
         //Service inspection
