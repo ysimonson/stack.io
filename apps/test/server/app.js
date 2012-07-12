@@ -43,7 +43,11 @@ var server = new zerorpc.Server({
 
     quiet: function(reply) {
         setTimeout(function() {
-            reply(null, "Should not happen", false);
+            try {
+                reply(null, "Should not happen", false);
+            } catch (e) {
+                // do nothing
+            }
         }, 31 * 1000);
     },
 
