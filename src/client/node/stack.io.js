@@ -17,10 +17,10 @@ function Engine(options, callback) {
     }
 
     var self = this;
-    self.options = options;
+    self.options = options || {};
     self._services = {};
 
-    var registrarClient = self._createClient(REGISTRAR_ENDPOINT);
+    var registrarClient = self._createClient(self.options.registrar || REGISTRAR_ENDPOINT);
 
     registrarClient.invoke("services", true, function(error, res, more) {
         if(error) {

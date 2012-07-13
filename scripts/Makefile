@@ -1,4 +1,4 @@
-all: clean build-server build-server-app build-client build-utils build-apps
+all: clean build-server build-server-app build-client build-utils build-apps create-index
 
 clean:
 	rm -rf bin/
@@ -28,7 +28,7 @@ build-client:
 
 build-utils:
 	cp -r src/authorizer bin/authorizer
-	node bin/authorizer/sqlite/init-db.js bin/authorizer/sqlite/authorizer.db
+	node bin/authorizer/sqlite/lib/init-db.js bin/authorizer/sqlite/authorizer.db
 
 	cp -r src/registrar bin/registrar
 
@@ -39,3 +39,8 @@ build-apps:
 	./scripts/build_app oauth
 	./scripts/build_app mice
 	./scripts/build_app stress
+
+create-index:
+	echo "module.exports = require('./bin/server');" > index.js
+
+npm-distrib: clean build-server build-client build-utils create-index

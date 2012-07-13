@@ -2,8 +2,8 @@
 
 # Starts the registrar and authorizer
 function utils {
-    node bin/registrar/app.js &
-    node bin/authorizer/sqlite/app.js bin/apps/seed.json --dbname bin/authorizer/sqlite/authorizer.db &
+    node bin/registrar/standalone.js &
+    node bin/authorizer/sqlite/standalone.js bin/apps/seed.json --dbname bin/authorizer/sqlite/authorizer.db &
     sleep 1s
 }
 
