@@ -87,10 +87,12 @@ function seed(auth, config) {
 }
 
 module.exports = function(dbname, jsonCfg) {
+    var auth = api(dbname || 'stackio_auth');
+
     if (jsonCfg) {
         openJSON(jsonCfg, function(err, cfg) {
             seed(auth, cfg);
         });
     }
-    return api(dbname || 'stackio_auth');
+    return auth;
 }
