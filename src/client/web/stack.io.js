@@ -20,23 +20,12 @@ define(['socket.io'], function() {
 
         var self = this;
 
-        if(arguments.length === 1) {
-            options = {};
-
-            callback = function(error) {
-                if(error) console.error(error);
-            };
-        } else if(arguments.length === 2) {
-            callback = options;
-            options = {};
-        }
-
         self.host = host || defaultHost();
         if(self.host.indexOf("http://") != 0 && self.host.indexOf("https://") != 0) {
             self.host = window.location.protocol + "//" + self.host;
         }
         
-        self.options = options;
+        self.options = options || {};
         self._services = {};
         self._channelCounter = 0;
         self._channels = {};
@@ -68,7 +57,6 @@ define(['socket.io'], function() {
 
                 for(var i=0; i<result.length; i++) {
                     self._services[result[i]] = {
-                        ready: false,
                         context: null,
                         introspected: null
                     };
@@ -119,93 +107,18 @@ define(['socket.io'], function() {
         this._invoke.apply(this, args);
     }
 
-    //Gets a list of services that are available
-    //return : array of string
-    //      A list of available services
-    Engine.prototype.services = function() {
-        var services = [];
-        for(var service in this._services) services.push(service);
-        return services;
-    };
-
-    //Introspects on a service
+    //Performs introspection
     //service : string
     //      The service name
     //callback : function(error : object, result : object)
     //      The function to call when the service is ready to be used; result
     //      contains the introspection data
-    Engine.prototype.introspect = function(service, callback) {
-        var self = this;
-        var cached = self._services[service];
-
-        //Try to fetch the cached result if possible
-        if(!cached) {
-            throw new Error("Unknown service");
-        } else if(cached.ready) {
-            callback(null, cached.introspected);
-        } else {
-            //Otherwise get the service, which will also fetch the
-            //introspection data
-            self.use(service, function(error) {
-                if(error) return callback(error);
-                callback(null, self._services[service].introspected);
-            });
-        }
-    };
-
-    //Provides an interface for a service
-    //service : string
-    //      The service name
-    //callback : function(error : object, context : object)
-    //      The function to call when the service is ready to be used; context
-    //      contains the callable methods
-    Engine.prototype.use = function(service, callback) {
-        var self = this;
-        var cached = self._services[service];
-
-        //Try to fetch the cached result if possible
-        if(!cached) {
-            throw new Error("Unknown service");
-        } else if(cached.ready) {
-            callback(null, cached.context);
-        } else {
-            //Otherwise introspect on the service
-            this._invoke("_stackio", "inspect", service, function(error, result, more) {
-                if(error) return callback(error);
-                var context = {};
-
-                //Create the stub context
-                for(var method in result.methods) {
-                    context[method] = createStubMethod(self, service, method);
-                }
-
-                //Cache the results
-                self.services[service] = {
-                    ready: true,
-                    context: context,
-                    introspected: result
-                };
-                
-                callback(error, context);
-            });
-        }
-    };
-
-    //Creates a stub method for a context that actually invokes the remote process
-    //engine : object
-    //      The stack.io engine
-    //service : string
-    //      The service name
-    //method : string
-    //      The method name
-    //returns : function
-    //      The stub method
-    function createStubMethod(engine, service, method) {
-        return function() {
-            var args = [service, method].concat(Array.prototype.slice.call(arguments));
-            engine._invoke.apply(engine, args);
-        };
+    Engine.prototype._introspect = function(service, callback) {
+        this._invoke("_stackio", "inspect", service, callback);
     }
 
-    return { IO: Engine, io: Engine };
+    //--BEGIN SHARED CODE--
+    //--END SHARED CODE--
+
+    return { io: Engine };
 });

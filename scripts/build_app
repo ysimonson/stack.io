@@ -1,0 +1,5 @@
+#!/bin/sh
+set -e
+cp -r lib/apps "bin/apps/$1/static/lib"
+cp -r bin/client/web/stack.io.debug.js "bin/apps/$1/static/stack.io.js"
+cp -r bin/client/node/stack.io.js "bin/apps/$1/server/stack.js"

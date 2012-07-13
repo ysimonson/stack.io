@@ -13,8 +13,18 @@ build-server-app:
 
 build-client:
 	mkdir bin/client
+	mkdir bin/client/python
+	mkdir bin/client/node
+
+	cp src/client/python/stackio.py bin/client/python/stackio.py
+	
+	./scripts/simple_replace src/client/node/stack.io.js src/client/shared/js/shared.js bin/client/node/stack.io.js
+
+	mkdir build
+	./scripts/simple_replace src/client/web/stack.io.js src/client/shared/js/shared.js build/stack.io.js
 	node scripts/r.js -o scripts/client-build-prod.cfg.js
 	node scripts/r.js -o scripts/client-build-debug.cfg.js
+	rm -rf build
 
 build-utils:
 	cp -r src/authorizer bin/authorizer
@@ -24,18 +34,8 @@ build-utils:
 
 build-apps:
 	cp -r apps bin/apps
-
-	cp -r lib/apps bin/apps/dashboard/static/lib
-	cp -r bin/client/stack.io.debug.js bin/apps/dashboard/static/stack.io.js
-
-	cp -r lib/apps bin/apps/test/static/lib
-	cp -r bin/client/stack.io.debug.js bin/apps/test/static/stack.io.js
-
-	cp -r lib/apps bin/apps/oauth/static/lib
-	cp -r bin/client/stack.io.debug.js bin/apps/oauth/static/stack.io.js
-
-	cp -r lib/apps bin/apps/mice/static/lib
-	cp -r bin/client/stack.io.debug.js bin/apps/mice/static/stack.io.js
-
-	cp -r lib/apps bin/apps/stress/static/lib
-	cp -r bin/client/stack.io.debug.js bin/apps/stress/static/stack.io.js
+	./scripts/build_app dashboard
+	./scripts/build_app test
+	./scripts/build_app oauth
+	./scripts/build_app mice
+	./scripts/build_app stress

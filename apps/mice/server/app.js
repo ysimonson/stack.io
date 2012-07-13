@@ -1,4 +1,4 @@
-var zerorpc = require("zerorpc");
+var stack = require("./stack");
 var UPDATE_RATE = 0;
 
 function Mice() {
@@ -68,19 +68,6 @@ Mice.prototype.listen = function(reply) {
     }, true);
 };
 
-var server = new zerorpc.Server(new Mice());
-server.bind("tcp://0.0.0.0:4242");
-
-server.on("error", function(error) {
-    console.error("Server error:", error);
-});
-
-var client = new zerorpc.Client();
-client.connect("tcp://127.0.0.1:27615");
-
-client.invoke("register", "mice", "tcp://127.0.0.1:4242", function(error, res, more) {
-    if(error) {
-        console.error(error);
-        return process.exit(-1);
-    }
+stack.io(null, function(error, client) {
+    client.expose("mice", "tcp://127.0.0.1:4242", new Mice());
 });
