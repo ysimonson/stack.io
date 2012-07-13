@@ -1,22 +1,6 @@
-var AUTH_ENDPOINT = "tcp://0.0.0.0:27616";
-
 var api = require('./api'),
-    nopt = require('nopt'),
     zerorpc = require('zerorpc'),
     fs = require('fs');
-
-var options = nopt(
-    { 'dbname': [String, null] },
-    { '-n': '--dbname' },
-    process.argv,
-    2
-);
-options.dbname = options.dbname || 'stackio_auth';
-
-function exit(msg) {
-    console.error(msg);
-    process.exit(-1);
-}
 
 function openJSON(path, cb) {
     fs.readFile(path, function(err, contents) {
@@ -102,54 +86,11 @@ function seed(auth, config) {
     }
 }
 
-function main() {
-    var auth = api(options.dbname);
-    if (options.argv.remain.length > 0) {
-        openJSON(options.argv.remain[0], function(err, cfg) {
+module.exports = function(dbname, jsonCfg) {
+    if (jsonCfg) {
+        openJSON(jsonCfg, function(err, cfg) {
             seed(auth, cfg);
         });
     }
-    var registrar = new zerorpc.Client();
-    registrar.connect("tcp://127.0.0.1:27615");
-    registrar.invoke("register", "auth", AUTH_ENDPOINT, function(err) {
-        if (err)
-            console.error(err);
-        registrar.close();
-    });
-
-    var server = new zerorpc.Server(auth);
-    server.bind(AUTH_ENDPOINT);
-    server.on('error', function(err) {
-        console.error('Server Error!', err);
-    });
+    return api(dbname || 'stackio_auth');
 }
-
-main();
-
-/*
-
-def seed(auth, config):
-def main():
-    options, args = parser.parse_args()
-
-    conn = database.Connection(options.dbhost, options.dbname, user=options.dbuser, password=options.dbpass)
-    auth = api.Authorizer(conn)
-
-    if len(args) > 0:
-        seed_config = get_json_content(args[0])
-        seed(auth, seed_config)
-
-    #Register the API
-    registrar = zerorpc.Client()
-    registrar.connect("tcp://127.0.0.1:27615")
-    registrar.register("auth", AUTH_ENDPOINT)
-    registrar.close()
-
-    #Run the API
-    server = zerorpc.Server(auth)
-    server.bind(AUTH_ENDPOINT)
-    server.run()
-
-if __name__ == "__main__":
-    main()
-*/

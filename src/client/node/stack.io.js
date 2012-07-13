@@ -20,7 +20,7 @@ function Engine(options, callback) {
     self.options = options;
     self._services = {};
 
-    var registrarClient = self._createClient(REGISTRAR_ENDPOINT);
+    var registrarClient = self._createClient(options.registrar || REGISTRAR_ENDPOINT);
 
     registrarClient.invoke("services", true, function(error, res, more) {
         if(error) {
