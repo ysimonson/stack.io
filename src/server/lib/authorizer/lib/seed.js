@@ -1,21 +1,4 @@
-var api = require('./api'),
-    zerorpc = require('zerorpc'),
-    fs = require('fs');
-
-function openJSON(path, cb) {
-    fs.readFile(path, function(err, contents) {
-        if (err) {
-            return cb(err);
-        }
-        try {
-            return cb(null, JSON.parse(contents));
-        } catch (e) {
-            cb(e);
-        }
-    });
-}
-
-function seed(auth, config) {
+exports.seed = function(auth, config) {
     function addPerms(name) {
         var perms = config.groups[name];
         for (var svc in perms) {
@@ -84,15 +67,4 @@ function seed(auth, config) {
     for (var username in config.users) {
         addUser(username);
     }
-}
-
-module.exports = function(dbname, jsonCfg) {
-    var auth = api(dbname || 'stackio_auth');
-
-    if (jsonCfg) {
-        openJSON(jsonCfg, function(err, cfg) {
-            seed(auth, cfg);
-        });
-    }
-    return auth;
 }

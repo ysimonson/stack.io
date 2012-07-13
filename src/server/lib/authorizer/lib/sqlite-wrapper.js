@@ -1,7 +1,7 @@
-var sqlite = require('sqlite3').verbose()
-var db = null
+var sqlite = require('sqlite3').verbose();
+var db = null;
 
-var DEBUG = true;
+var DEBUG = false;
 
 // Utility functions for constructing queries. Real API is below, move along =)
 
