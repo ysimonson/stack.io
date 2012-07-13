@@ -22,7 +22,7 @@ function Engine(options, callback) {
 
     var registrarClient = self._createClient(REGISTRAR_ENDPOINT);
 
-    registrarClient.invoke("services_verbose", function(error, res, more) {
+    registrarClient.invoke("services", true, function(error, res, more) {
         if(error) {
             self.emit("error", error);
         } else {
