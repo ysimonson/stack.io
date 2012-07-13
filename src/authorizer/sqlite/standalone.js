@@ -1,3 +1,5 @@
+var nopt = require('nopt'),
+    zerorpc = require('zerorpc');
 var AUTH_ENDPOINT = "tcp://0.0.0.0:27616";
 
 var options = nopt(
