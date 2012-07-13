@@ -2,7 +2,8 @@
 
 # Starts the registrar and authorizer
 function utils {
-    python bin/registrar/app.py &
+#    python bin/registrar/app.py &
+    node bin/registrar/app.js &
     node bin/authorizer/sqlite/app.js bin/apps/seed.json --dbname bin/authorizer/sqlite/authorizer.db &
     sleep 1s
 }
