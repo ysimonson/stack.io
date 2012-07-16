@@ -9,7 +9,7 @@ function randomString(n) {
 
 var client;
 
-stack.io("http://localhost:8080", {timeout : 5}, function(error, clt) {
+stack.io({host: "http://localhost:8080", timeout: 5}, function(error, clt) {
     client = clt;
     module("Basics");
 

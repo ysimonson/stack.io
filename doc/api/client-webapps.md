@@ -3,14 +3,14 @@
 To create a new client, include the script in `./bin/client/stack.io.js` in your
 webapp. Then instantiate a new client:
 
-    stack.io(host, function(error, client) {
+    stack.io(host, options, function(error, client) {
         ...
     });
 
 Where `host` is the location of the stack.io server
-(default `http://localhost:8080`). The second argument is a callback when the
-initialization is complete, which will include either a fatal `error` message,
-or the `client` object.
+(default `http://localhost:8080`) and `options` are the ZeroRPC options. The
+final argument is a callback to execute when the initialization is complete,
+which will include either a fatal `error` message, or the `client` object.
 
 Methods:
  * `use(serviceName, callback)` - Prepares a service to be used. `serviceName`

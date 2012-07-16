@@ -8,7 +8,9 @@ var REGISTRAR_ENDPOINT = "tcp://127.0.0.1:27615";
 //options : object
 //      The ZeroRPC options
 //      Allowable options:
-//      * timeout (number) - specifies the timeout in seconds
+//      * registrar (string) - specifies the registrar endpoint
+//        (default 'tcp://127.0.0.1:27615')
+//      * timeout (number) - specifies the timeout in seconds (default 30)
 //callback : function
 //      The function to call when the engine is initialized
 function Engine(options, callback) {
