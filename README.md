@@ -45,7 +45,7 @@ in your webapp. Then instantiate a new client:
 
 From there, you can start using a service, e.g.:
 
-    client.use("service_name", function(error, context) {
+    client.use("test-service", function(error, context) {
         context.sayHello("World", function(error, response, more) {
             console.log(error, response, more);
         });
@@ -72,13 +72,62 @@ specific service, call `client.introspect("service_name", callback)`.
 
 ### Node.js ###
 
-TODO
+To use stack.io from node.js, require the module and instantiate a new client:
+
+    stack.io({}, function(error, client) {
+        ...
+    });
+
+From there, you can start using a service, e.g.:
+
+    client.use("test-service", function(error, context) {
+        context.sayHello("World", function(error, response, more) {
+            console.log(error, response, more);
+        });
+    });
+
+The node.js client can also expose services, e.g.:
+
+    client.expose("test-service", "tcp://127.0.0.1:4242", {
+        sayHello: function(name, reply) {
+            reply("Hello, " + name + "!");
+        }
+    });
+
+This will expose the service `test-service` at the endpoint
+`tcp://127.0.0.1:4242`.
+
+Stack.io clients also have a couple of utility methods. To list available
+services, call `client.services()`. To introspect on the methods of a
+specific service, call `client.introspect("service_name", callback)`.
 
 [See the full API for node.js](https://github.com/ysimonson/stack.io/blob/master/doc/api/client-node.md).
 
 ### Python ###
 
-TODO
+To use stack.io from python, import the module and instantiate a new client:
+
+    client = stackio.StackIO()
+
+From there, you can start using a service, e.g.:
+
+    test = client.use("test-service")
+    print test.say_hello("World")
+
+The python client can also expose services, e.g.:
+
+    class TestService(object):
+        def say_hello(name):
+            return "Hello, %s!" % name
+
+    test.expose("test-service", "tcp://127.0.0.1:4242", TestService())
+
+This will expose the service `test-service` at the endpoint
+`tcp://127.0.0.1:4242`.
+
+Stack.io clients also have a couple of utility methods. To list available
+services, call `client.services()`. To introspect on the methods of a
+specific service, call `client.introspect("service_name")`.
 
 [See the full API for python](https://github.com/ysimonson/stack.io/blob/master/doc/api/client-python.md).
 
