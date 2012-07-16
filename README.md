@@ -3,11 +3,10 @@
 Stack.io is a distributed communication framework for web apps and server-side
 processes.
 
-Processes communicate using the [ZeroRPC](http://zerorpc.dotcloud.com) library.
-We support the same semantics, including simple RPC calls and streamed
-responses. In addition, stack.io provides service discovery, authentication
-and authorization, and an express-like middleware engine for extending
-functionality.
+Communication among processes on the server-side is efficient because there is
+no intermediate broker. From the client-side, requests come into a node.js
+process via socket.io. Express-like middleware then processes these requests
+to add things like authentication and authorization.
 
 To build:
 
@@ -33,14 +32,12 @@ To run the unit tests:
 After you start any of these apps, navigate your browser to
 `http://localhost:8000`.
 
-For full details, checkout the architecture doc, located in
-`doc/architecture.md`.
+## Clients ##
 
-## Client ##
+### Webapps ###
 
-The client is a library that webapps can use for making stack.io calls. To
-create a new client, include the script in `./bin/client/stack.io.js` in your
-webapp. Then instantiate a new client:
+To use stack.io from a webapp, include the script in `./bin/client/stack.io.js`
+in your webapp. Then instantiate a new client:
 
     var client = new stack.IO(host, function(error) {
         console.error(error);
@@ -71,6 +68,20 @@ Stack.io clients also have a couple of utility methods. To list available
 services, call `client.services()`. To introspect on the methods of a
 specific service, call `client.introspect("service_name", callback)`.
 
+[See the full API for webapps](https://github.com/ysimonson/stack.io/blob/master/doc/api/client-webapps.md).
+
+### Node.js ###
+
+TODO
+
+[See the full API for node.js](https://github.com/ysimonson/stack.io/blob/master/doc/api/client-node.md).
+
+### Python ###
+
+TODO
+
+[See the full API for python](https://github.com/ysimonson/stack.io/blob/master/doc/api/client-python.md).
+
 ## Server ##
 
 The stack.io server proxies requests that come from webapps and make the
@@ -97,5 +108,4 @@ Or if you want to use OAuth:
 This will run stack.io on port 8080.
 
 If you want to run a server programmatically, e.g. to change the port or add
-custom middleware, check out the architecture doc, located in
-`doc/architecture.md`.
+custom middleware, check out the [server API](https://github.com/ysimonson/stack.io/blob/master/doc/api/server.md).

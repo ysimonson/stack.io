@@ -1,7 +1,7 @@
 var stack = require("./stack");
 
 stack.io(null, function(error, client) {
-    client.expose("twitter-test", "tcp://127.0.0.1:4242", {
+    client.expose("example-node", "tcp://127.0.0.1:4242", {
         addMan: function(sentence, reply) {
             reply(null, sentence + ", man!", false);
         },

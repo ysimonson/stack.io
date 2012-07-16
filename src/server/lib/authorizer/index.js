@@ -1,3 +1,3 @@
-exports.api = require("./api");
-exports.schema = require("./schema");
-exports.seed = require("./seed");
+exports.api = require("./lib/api");
+exports.schema = require("./lib/schema");
+exports.seed = require("./lib/seed");

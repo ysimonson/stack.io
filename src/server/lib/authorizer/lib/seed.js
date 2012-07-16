@@ -1,4 +1,4 @@
-exports.seed = function(auth, config) {
+module.exports = function(auth, config) {
     function addPerms(name) {
         var perms = config.groups[name];
         for (var svc in perms) {

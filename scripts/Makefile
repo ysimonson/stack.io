@@ -1,11 +1,13 @@
-all: clean build-server build-server-app build-client build-utils build-apps create-index
+all: clean build-client build-server build-server-app build-utils build-apps create-index
 
 clean:
 	rm -rf bin/
+	rm -rf build/
 	mkdir bin
 
 build-server:
 	cp -r src/server bin/server
+	cp bin/client/node/stack.io.js bin/server/lib/middleware/auth/stack.js
 
 build-server-app:
 	cp -r src/server-app bin/server-app
@@ -27,9 +29,6 @@ build-client:
 	rm -rf build
 
 build-utils:
-	cp -r src/authorizer bin/authorizer
-	node bin/authorizer/sqlite/lib/init-db.js bin/authorizer/sqlite/authorizer.db
-
 	cp -r src/registrar bin/registrar
 
 build-apps:
