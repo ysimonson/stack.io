@@ -1,4 +1,4 @@
-all: clean build-client build-server build-server-app build-utils build-apps create-index
+all: clean build-client build-server build-server-app build-apps create-index
 
 clean:
 	rm -rf bin/
@@ -28,9 +28,6 @@ build-client:
 	node scripts/r.js -o scripts/client-build-debug.cfg.js
 	rm -rf build
 
-build-utils:
-	cp -r src/registrar bin/registrar
-
 build-apps:
 	cp -r apps bin/apps
 	./scripts/build_app dashboard
@@ -42,4 +39,4 @@ build-apps:
 create-index:
 	echo "module.exports = require('./bin/server');" > index.js
 
-npm-distrib: clean build-server build-client build-utils create-index
+npm-distrib: clean build-server build-client create-index

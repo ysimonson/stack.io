@@ -1,11 +1,5 @@
 #!/bin/sh
 
-# Starts the registrar and authorizer
-function utils {
-    node bin/registrar/standalone.js &
-    sleep 1s
-}
-
 # Starts a server using OAuth authentication
 function server_oauth {
     node bin/server-app/oauth-app &
@@ -18,7 +12,7 @@ function server_normalauth {
 
 # Starts a dashboard
 function dashboard {
-    utils; server_normalauth
+    server_normalauth
     node bin/apps/dashboard/server/app.js &
     python bin/apps/dashboard/server/app.py &
 
@@ -29,7 +23,7 @@ function dashboard {
 
 # Starts the unit tests
 function test {
-    utils; server_normalauth
+    server_normalauth
     node bin/apps/test/server/app.js &
     
     pushd bin/apps/test/static
@@ -39,7 +33,7 @@ function test {
 
 # Starts the mice app
 function mice {
-    utils; server_normalauth
+    server_normalauth
     node bin/apps/mice/server/app.js &
     
     pushd bin/apps/mice/static
@@ -49,7 +43,7 @@ function mice {
 
 # Starts the OAuth test app
 function oauth {
-    utils; server_oauth
+    server_oauth
     node bin/apps/oauth/server/app.js &
     
     pushd bin/apps/oauth/static
@@ -59,7 +53,7 @@ function oauth {
 
 # Starts the stress tester
 function stress {
-    utils; server_normalauth
+    server_normalauth
     node bin/apps/stress/server/app.js &
     
     pushd bin/apps/stress/static
