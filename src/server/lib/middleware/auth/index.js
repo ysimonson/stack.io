@@ -1,5 +1,5 @@
 var logout = require("./logout"),
-    normalLogin = require("./normalLogin"),
+    normalLogin = require("./normal/login"),
     validator = require("./validator"),
     sessionInitializer = require("./oauth/sessionInitializer"),
     oauthLogin = require("./oauth/login");
@@ -24,9 +24,9 @@ function useOAuth(server, connector, providers) {
 //      The pattern for connector names that this should apply to
 //registrarEndpoint : string
 //      The ZeroMQ endpoint of the registrar
-function useNormalAuth(server, connector, registrarEndpoint, seedConfig) {
+function useNormalAuth(server, connector, seedConfig) {
     applySharedMiddleware(server, connector);
-    server.middleware(connector, /_stackio/, /login/, normalLogin(registrarEndpoint, seedConfig));
+    server.middleware(connector, /_stackio/, /login/, normalLogin(seedConfig));
 }
 
 //Applies shared middleware used by both normal and OAuth mechanisms

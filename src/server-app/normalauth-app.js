@@ -29,7 +29,7 @@ if(options.seed) {
     seedConfig = JSON.parse(fs.readFileSync(options.seed));
 }
 
-stack.useNormalAuth(server, /.+/, REGISTRAR_ENDPOINT, seedConfig);
+stack.useNormalAuth(server, /.+/, seedConfig);
 
 //Add middleware necessary for making ZeroRPC calls
 server.middleware(/.+/, /_stackio/, /.+/, stack.builtinsMiddleware);

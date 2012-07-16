@@ -1,7 +1,8 @@
-var zerorpc = require("../util/zerorpc"),
-    _ = require("underscore"),
-    model = require("../../model"),
-    authorizer = require("../../authorizer"),
+var _ = require("underscore"),
+    model = require("../../../model"),
+    apiCreator = require("./engine/api"),
+    schema = require("./engine/schema"),
+    seed = require("./engine/seed"),
     stack = require("./stack");
 
 var AUTH_DB = "stackio_auth";
@@ -20,14 +21,14 @@ function compilePermissions(permissions) {
 //Creates a normal login middleware
 //registrarEndpoint : string
 //      The ZeroMQ endpoint of the registrar
-module.exports = function(registrarEndpoint, initialConfig) {
-    var api = authorizer.api(AUTH_DB);
+module.exports = function(initialConfig) {
+    var api = apiCreator(AUTH_DB);
 
     if(initialConfig) {
-        authorizer.schema(AUTH_DB, function(error) {
+        schema(AUTH_DB, function(error) {
             console.error(error);
         }, function() {
-            authorizer.seed(api, initialConfig);
+            seed(api, initialConfig);
         });
     }
 

@@ -7,7 +7,7 @@ clean:
 
 build-server:
 	cp -r src/server bin/server
-	cp bin/client/node/stack.io.js bin/server/lib/middleware/auth/stack.js
+	cp bin/client/node/stack.io.js bin/server/lib/middleware/auth/normal/stack.js
 
 build-server-app:
 	cp -r src/server-app bin/server-app
