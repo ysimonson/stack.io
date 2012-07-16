@@ -1,17 +1,17 @@
-all: clean build-client build-server build-server-app build-apps create-index
+all: clean build-client build-stack build-server-app build-apps create-index
 
 clean:
 	rm -rf bin/
 	rm -rf build/
 	mkdir bin
 
-build-server:
-	cp -r src/server bin/server
-	./scripts/simple_replace src/server/lib/client.js src/shared/client.js bin/server/lib/client.js
+build-stack:
+	cp -r src/stack.io bin/stack.io
+	./scripts/simple_replace src/stack.io/lib/client.js src/shared/client.js bin/stack.io/lib/client.js
 
 build-server-app:
 	cp -r src/server-app bin/server-app
-	cp -r bin/server bin/server-app/stack
+	cp -r bin/stack.io bin/server-app/stack
 
 build-client:
 	mkdir bin/client
@@ -35,4 +35,4 @@ build-apps:
 create-index:
 	echo "module.exports = require('./bin/server');" > index.js
 
-npm-distrib: clean build-server build-client create-index
+npm-distrib: clean build-stack build-client create-index
