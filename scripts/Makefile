@@ -1,4 +1,4 @@
-all: clean build-server build-server-app build-client build-utils build-apps create-index
+all: clean build-client build-server build-server-app build-utils build-apps create-index
 
 clean:
 	rm -rf bin/
@@ -7,6 +7,7 @@ clean:
 
 build-server:
 	cp -r src/server bin/server
+	cp bin/client/node/stack.io.js bin/server/lib/middleware/auth/stack.js
 
 build-server-app:
 	cp -r src/server-app bin/server-app

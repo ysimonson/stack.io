@@ -1,6 +1,6 @@
 var db = require('./sqlite-wrapper');
 
-module.exports = function(dbName) {
+module.exports = function(dbName, errorCallback, finishCallback) {
     db.init(dbName);
 
     var schema = {
@@ -25,11 +25,13 @@ module.exports = function(dbName) {
         }
     }
 
+    var createdCount = 0;
+
     for (var table in schema) {
-        console.log('Creating ' + table);
-        
         db.createTable(table, schema[table], function(err) {
-            err && console.log(err);
+            if(err) errorCallback(err);
+            createdCount++;
+            if(createdCount == 4) finishCallback();
         });
     }
 };

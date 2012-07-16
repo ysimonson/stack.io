@@ -24,9 +24,9 @@ function useOAuth(server, connector, providers) {
 //      The pattern for connector names that this should apply to
 //registrarEndpoint : string
 //      The ZeroMQ endpoint of the registrar
-function useNormalAuth(server, connector, registrarEndpoint) {
+function useNormalAuth(server, connector, registrarEndpoint, seedConfig) {
     applySharedMiddleware(server, connector);
-    server.middleware(connector, /_stackio/, /login/, normalLogin(registrarEndpoint));
+    server.middleware(connector, /_stackio/, /login/, normalLogin(registrarEndpoint, seedConfig));
 }
 
 //Applies shared middleware used by both normal and OAuth mechanisms

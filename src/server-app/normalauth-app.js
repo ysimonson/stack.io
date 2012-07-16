@@ -1,7 +1,13 @@
 var stack = require("./stack"),
-    express = require("express");
+    express = require("express"),
+    nopt = require("nopt"),
+    fs = require("fs");
 
 var REGISTRAR_ENDPOINT = "tcp://127.0.0.1:27615";
+
+var options = nopt(
+    { "seed": [String, null] }
+);
 
 //Create the express app
 var expressApp = express.createServer();
@@ -17,7 +23,13 @@ var server = new stack.IOServer();
 server.connector(new stack.SocketIOConnector(expressApp));
 
 //Use normal (username+password) authentication
-stack.useNormalAuth(server, /.+/, REGISTRAR_ENDPOINT);
+var seedConfig = null;
+
+if(options.seed) {
+    seedConfig = JSON.parse(fs.readFileSync(options.seed));
+}
+
+stack.useNormalAuth(server, /.+/, REGISTRAR_ENDPOINT, seedConfig);
 
 //Add middleware necessary for making ZeroRPC calls
 server.middleware(/.+/, /_stackio/, /.+/, stack.builtinsMiddleware);
