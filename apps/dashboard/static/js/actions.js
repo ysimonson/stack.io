@@ -13,7 +13,7 @@ function introspectService(service) {
 
     if(service) {
         var content = tmpl("introspectorResultsTemplate", {
-            methods: client.services[service].introspected.methods
+            methods: client._services[service].introspected.methods
         });
         
         container.append($(content));

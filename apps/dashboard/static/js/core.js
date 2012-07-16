@@ -49,7 +49,7 @@ function start() {
 
         $(".serviceSelector").append($("<option>"));
 
-        for(var service in client.services) {
+        for(var service in client._services) {
             $(".serviceSelector").append($("<option>").text(service));
         }
     };
@@ -72,14 +72,16 @@ function start() {
             var services = client.services();
 
             for(var i=0; i<services.length; i++) {
-                client.use(services[i], function(error) {
-                    if(error) {
-                        console.error("Could not use service " + service + ":", error);
-                    }
+                (function(service) {
+                    client.use(service, function(error) {
+                        if(error) {
+                            console.error("Could not use service " + service + ":", error);
+                        }
 
-                    introspectedCount++;
-                    if(introspectedCount == services.length) showContent(permissions);
-                });
+                        introspectedCount++;
+                        if(introspectedCount == services.length) showContent(permissions);
+                    });
+                })(services[i]);
             }
         }
     };

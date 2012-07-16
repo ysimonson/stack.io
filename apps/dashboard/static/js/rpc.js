@@ -4,7 +4,7 @@ function rpcService(service) {
 
     if(service) {
         var content = tmpl("rpcMethodsTemplate", {
-            methods: client.services[service].introspected.methods
+            methods: client._services[service].introspected.methods
         });    
 
         container.append($(content));
@@ -12,7 +12,7 @@ function rpcService(service) {
 }
 
 function rpcMethod(service, method) {
-    var args = client.services[service].introspected.methods[method].args;
+    var args = client._services[service].introspected.methods[method].args;
     var content = tmpl("rpcArgsTemplate", { args: args });
     $("#rpcArgs").empty().append($(content));
 
