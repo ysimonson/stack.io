@@ -2,12 +2,18 @@
 
 To instantiate a new client:
 
-    stack.io(function(error, client) {
+    stack.io(options, function(error, client) {
         ...
     });
 
-The argument is a callback when the initialization is complete, which will
-include either a fatal `error` message, or the `client` object.
+Allowable `options`:
+
+ * `registrar` (string) - The ZeroMQ endpoint of the registrar
+   (defaults to `tcp://localhost:27615`).
+ * `timeout` (number) - The timeout for function calls in seconds.
+
+The callback is executed when initialization is complete, and will include
+either a fatal `error` message, or the `client` object.
 
 Methods:
  * `expose(serviceName, endpoint, context)` - Exposes a new stack.io service,

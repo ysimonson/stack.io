@@ -39,7 +39,7 @@ After you start any of these apps, navigate your browser to
 To use stack.io from a webapp, include the script in `./bin/client/stack.io.js`
 in your webapp. Then instantiate a new client:
 
-    stack.io(host, {}, function(error, client) {
+    stack.io({}, function(error, client) {
         ...
     });
 

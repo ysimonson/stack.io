@@ -2,10 +2,7 @@
 
 To instantiate a new client:
 
-    client = StackIO()
-
-The argument is a callback when the initialization is complete, which will
-include either a fatal `error` message, or the `client` object.
+    client = StackIO(registrar="tcp://127.0.0.1:27615")
 
 Methods:
  * `expose(service_name, endpoint, context)` - Exposes a new stack.io service,
