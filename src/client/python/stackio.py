@@ -10,15 +10,14 @@ class ServiceConfig(object):
 
 class StackIO(object):
     def __init__(self, options=None):
-        self.options = options || {}
+        self.options = options or {}
 
         registrar_client = zerorpc.Client(self.options)
         registrar_client.connect(REGISTRAR_ENDPOINT)
 
         service_endpoints = registrar_client.services(True)
 
-        self._services = dict([name, ServiceConfig(endpoint)) \
-            for name, endpoint in service_endpoints])
+        self._services = dict([(name, ServiceConfig(endpoint)) for name, endpoint in service_endpoints.iteritems()])
 
         registrar_client.close()
 
