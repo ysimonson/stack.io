@@ -2,6 +2,7 @@ all: clean build-server build-server-app build-client build-utils build-apps cre
 
 clean:
 	rm -rf bin/
+	rm -rf build/
 	mkdir bin
 
 build-server:
@@ -27,9 +28,6 @@ build-client:
 	rm -rf build
 
 build-utils:
-	cp -r src/authorizer bin/authorizer
-	node bin/authorizer/sqlite/lib/init-db.js bin/authorizer/sqlite/authorizer.db
-
 	cp -r src/registrar bin/registrar
 
 build-apps:
