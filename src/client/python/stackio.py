@@ -9,11 +9,11 @@ class ServiceConfig(object):
         self.introspected = None
 
 class StackIO(object):
-    def __init__(self, options=None):
-        self.options = options or {}
+    def __init__(self, **options):
+        self.options = options
 
         registrar_client = zerorpc.Client(self.options)
-        registrar_client.connect(REGISTRAR_ENDPOINT)
+        registrar_client.connect(self.options.registrar or REGISTRAR_ENDPOINT)
 
         service_endpoints = registrar_client.services(True)
 
