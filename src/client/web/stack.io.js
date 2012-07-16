@@ -7,20 +7,22 @@ define(['socket.io'], function() {
     }
 
     //Creates a new stack.io engine
-    //host : string
-    //      The stack.io host
     //options : object
     //      The ZeroRPC options
     //      Allowable options:
+    //      * host (string) - specifies the host
     //      * timeout (number) - specifies the timeout in seconds
-    function Engine(host, options, callback) {
+    //callback : function(error, client)
+    //      The function to call when initialization is complete. It is passed
+    //      a potential error message, or the initialized client object
+    function Engine(options, callback) {
         if (!(this instanceof Engine)) {
-            return new Engine(host, options, callback);
+            return new Engine(options, callback);
         }
 
         var self = this;
 
-        self.host = host || defaultHost();
+        self.host = options.host || defaultHost();
         if(self.host.indexOf("http://") != 0 && self.host.indexOf("https://") != 0) {
             self.host = window.location.protocol + "//" + self.host;
         }

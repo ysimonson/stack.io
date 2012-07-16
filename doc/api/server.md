@@ -4,14 +4,20 @@ If the built-in server app does not fulfill your needs, you can create a
 server programmatically:
 
     var stack = require("./stack");
-    var server = new stack.IOServer();
+    var server = new stack.ioServer();
 
 Here's a full example:
 
     var stack = require("./stack"),
-        express = require("express");
+        express = require("express"),
+        nopt = require("nopt"),
+        fs = require("fs");
 
     var REGISTRAR_ENDPOINT = "tcp://127.0.0.1:27615";
+
+    var options = nopt(
+        { "seed": [String, null] }
+    );
 
     //Create the express app
     var expressApp = express.createServer();
@@ -21,13 +27,19 @@ Here's a full example:
     });
 
     //Create the stack.io server
-    var server = new stack.IOServer();
+    var server = new stack.ioServer();
 
     //Use the socket.io connector
     server.connector(new stack.SocketIOConnector(expressApp));
 
     //Use normal (username+password) authentication
-    stack.useNormalAuth(server, /.+/, REGISTRAR_ENDPOINT);
+    var seedConfig = null;
+
+    if(options.seed) {
+        seedConfig = JSON.parse(fs.readFileSync(options.seed));
+    }
+
+    stack.useNormalAuth(server, /.+/, seedConfig);
 
     //Add middleware necessary for making ZeroRPC calls
     server.middleware(/.+/, /_stackio/, /.+/, stack.builtinsMiddleware);
@@ -96,26 +108,3 @@ Additionally, introspection is exposed as the method `_stackio.introspect`, and
 service listing is exposed as `_stackio.services`. A middleware then converts
 these calls to their actual ones. This is so that the calls are usable even
 outside of an authenticated session.
-
-## Registrar ##
-
-The registrar maintains a mapping of service names to their ZeroRPC endpoints.
-It itself is implemented as a ZeroRPC service, so - like any other service -
-it can be used from the client, provided you have authorization. Usually you
-should not need to use it directly.
-
-## Authorizer ##
-
-This is another ZeroRPC service that exposes an authentication and
-authorization API for normal username/password-based authentication. Again,
-like any other service, it can be used directly from the client, provided you
-have the authorization. The normal authentication middleware uses this service
-for checking a user's credentials.
-
-The default authorizer includes the notion of users, groups and permissions. A
-user may be a member of zero or more groups. A group may have zero or more
-permissions. A permission specifies an allowable call for a user.
-
-Because it's just another API, you can add, remove and update users, groups
-and permissions at run-time, so you can build real-world applications by
-leveraging stack.io with its built-in authentication and authorization.
