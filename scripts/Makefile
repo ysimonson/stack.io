@@ -26,11 +26,14 @@ build-client:
 
 build-apps:
 	cp -r apps bin/apps
+
 	./scripts/build_app dashboard
 	./scripts/build_app test
 	./scripts/build_app oauth
 	./scripts/build_app mice
 	./scripts/build_app stress
+
+	cp -r bin/client/python/stackio.py bin/apps/dashboard/service/stackio.py
 
 create-index:
 	echo "module.exports = require('./bin/stack.io');" > index.js

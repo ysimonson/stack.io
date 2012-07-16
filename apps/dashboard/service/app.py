@@ -20,12 +20,6 @@ class PythonExample(object):
 
 def main():
     client = StackIO()
-
-    print client.services()
-    print client.introspect("registrar")
-    registrar = client.use("registrar")
-    registrar.register("WTFISTHIS", "tcp://127.0.0.1:1111")
-
     client.expose("example-python", "tcp://127.0.0.1:4243", PythonExample())
 
 if __name__ == "__main__":
