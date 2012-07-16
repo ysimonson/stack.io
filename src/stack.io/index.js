@@ -1,5 +1,6 @@
 var model = require("./lib/model"),
     server = require("./lib/server"),
+    client = require("./lib/client"),
     auth = require("./lib/middleware/auth");
 
 var connectors = {
@@ -24,6 +25,8 @@ exports.createSyntheticError = model.createSyntheticError;
 exports.Session = model.Session;
 exports.Request = model.Request;
 exports.Response = model.Response;
-exports.IOServer = server.IOServer;
 exports.useOAuth = auth.useOAuth;
 exports.useNormalAuth = auth.useNormalAuth;
+
+exports.ioServer = server.ioServer;
+exports.io = client.ioClient;

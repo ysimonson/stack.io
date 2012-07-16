@@ -104,4 +104,4 @@ IOServer.prototype.listen = function() {
     }
 };
 
-exports.IOServer = IOServer;
+exports.ioServer = IOServer;

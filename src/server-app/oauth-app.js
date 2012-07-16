@@ -11,7 +11,7 @@ expressApp.configure(function() {
 });
 
 //Create the stack.io server
-var server = new stack.IOServer();
+var server = new stack.ioServer();
 
 //Use the socket.io connector
 server.connector(new stack.SocketIOConnector(expressApp));
