@@ -7,7 +7,7 @@ clean:
 
 build-server:
 	cp -r src/server bin/server
-	cp bin/client/node/stack.io.js bin/server/lib/middleware/auth/normal/stack.js
+	./scripts/simple_replace src/server/lib/client.js src/shared/client.js bin/server/lib/client.js
 
 build-server-app:
 	cp -r src/server-app bin/server-app
@@ -16,14 +16,10 @@ build-server-app:
 build-client:
 	mkdir bin/client
 	mkdir bin/client/python
-	mkdir bin/client/node
-
 	cp src/client/python/stackio.py bin/client/python/stackio.py
-	
-	./scripts/simple_replace src/client/node/stack.io.js src/client/shared/js/shared.js bin/client/node/stack.io.js
 
 	mkdir build
-	./scripts/simple_replace src/client/web/stack.io.js src/client/shared/js/shared.js build/stack.io.js
+	./scripts/simple_replace src/client/web/stack.io.js src/shared/client.js build/stack.io.js
 	node scripts/r.js -o scripts/client-build-prod.cfg.js
 	node scripts/r.js -o scripts/client-build-debug.cfg.js
 	rm -rf build

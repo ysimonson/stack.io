@@ -129,4 +129,4 @@ Engine.prototype._introspect = function(service, callback) {
 //--BEGIN SHARED CODE--
 //--END SHARED CODE--
 
-exports.io = Engine;
+exports.ioClient = Engine;

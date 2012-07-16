@@ -3,7 +3,7 @@ var _ = require("underscore"),
     apiCreator = require("./engine/api"),
     schema = require("./engine/schema"),
     seed = require("./engine/seed"),
-    stack = require("./stack");
+    client = require("../../../client");
 
 var AUTH_DB = "stackio_auth";
 var AUTH_ENDPOINT = "tcp://0.0.0.0:27616";
@@ -32,7 +32,7 @@ module.exports = function(initialConfig) {
         });
     }
 
-    stack.io({}, function(error, client) {
+    client.ioClient({}, function(error, client) {
         if(error) {
             console.error(error);
         } else {
