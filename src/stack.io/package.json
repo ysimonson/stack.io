@@ -1,5 +1,5 @@
 {
-    "name": "stack.io-server",
+    "name": "stack.io",
     "version": "0.1.0",
     "dependencies": {
         "underscore": "*",

@@ -91,7 +91,7 @@ function start() {
     }
 }
 
-stack.io("http://localhost:8080", function(error, clt) {
+stack.io("http://localhost:8080", {}, function(error, clt) {
     client = clt;
     
     if(error) {

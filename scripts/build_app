@@ -2,4 +2,4 @@
 set -e
 cp -r lib/apps "bin/apps/$1/static/lib"
 cp -r bin/client/web/stack.io.debug.js "bin/apps/$1/static/stack.io.js"
-cp -r bin/stack.io "bin/apps/$1/server/stack"
+cp -r bin/stack.io "bin/apps/$1/service/stack"

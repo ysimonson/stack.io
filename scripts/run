@@ -13,8 +13,8 @@ function server_normalauth {
 # Starts a dashboard
 function dashboard {
     server_normalauth
-    node bin/apps/dashboard/server/app.js &
-    python bin/apps/dashboard/server/app.py &
+    node bin/apps/dashboard/service/app.js &
+    python bin/apps/dashboard/service/app.py &
 
     pushd bin/apps/dashboard/static
     python -m SimpleHTTPServer &
@@ -24,7 +24,7 @@ function dashboard {
 # Starts the unit tests
 function test {
     server_normalauth
-    node bin/apps/test/server/app.js &
+    node bin/apps/test/service/app.js &
     
     pushd bin/apps/test/static
     python -m SimpleHTTPServer &
@@ -34,7 +34,7 @@ function test {
 # Starts the mice app
 function mice {
     server_normalauth
-    node bin/apps/mice/server/app.js &
+    node bin/apps/mice/service/app.js &
     
     pushd bin/apps/mice/static
     python -m SimpleHTTPServer &
@@ -44,7 +44,7 @@ function mice {
 # Starts the OAuth test app
 function oauth {
     server_oauth
-    node bin/apps/oauth/server/app.js &
+    node bin/apps/oauth/service/app.js &
     
     pushd bin/apps/oauth/static
     python -m SimpleHTTPServer &
@@ -54,7 +54,7 @@ function oauth {
 # Starts the stress tester
 function stress {
     server_normalauth
-    node bin/apps/stress/server/app.js &
+    node bin/apps/stress/service/app.js &
     
     pushd bin/apps/stress/static
     python -m SimpleHTTPServer &

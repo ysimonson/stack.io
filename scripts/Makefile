@@ -33,6 +33,6 @@ build-apps:
 	./scripts/build_app stress
 
 create-index:
-	echo "module.exports = require('./bin/server');" > index.js
+	echo "module.exports = require('./bin/stack.io');" > index.js
 
 npm-distrib: clean build-stack build-client create-index
