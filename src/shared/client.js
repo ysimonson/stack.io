@@ -65,6 +65,15 @@ Engine.prototype.use = function(service, callback) {
     }
 };
 
+// Currified version of _invoke (stack.io v0.1 compatibility)
+// service: string
+//      The service name
+// method: string
+//      The method name
+Engine.prototype.call = function(service, method) {
+    return createStubMethod(this, service, method);
+}
+
 //Creates a stub method for a context that actually invokes the remote process
 //engine : object
 //      The stack.io engine
