@@ -120,7 +120,7 @@ The python client can also expose services, e.g.:
         def say_hello(name):
             return "Hello, %s!" % name
 
-    test.expose("test-service", "tcp://127.0.0.1:4242", TestService())
+    client.expose("test-service", "tcp://127.0.0.1:4242", TestService())
 
 This will expose the service `test-service` at the endpoint
 `tcp://127.0.0.1:4242`.

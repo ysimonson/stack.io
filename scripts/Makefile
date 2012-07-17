@@ -29,7 +29,8 @@ build-apps:
 
 	./scripts/build_app dashboard
 	./scripts/build_app test
-	./scripts/build_app oauth
+	./scripts/build_app oauth-twitter
+	./scripts/build_app oauth-dotcloud
 	./scripts/build_app mice
 	./scripts/build_app stress
 

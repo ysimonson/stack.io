@@ -26,7 +26,7 @@ stack.useOAuth(server, /.+/, {
         consumerKey: "zUKjO1SWVtFds3FSkwjg",
         consumerSecret: "VEQ8VfTVYPbUv35TLcBvjcEDSU3Bpbwq8hhsSq3Y",
         permissions: [
-            {service: /twitter-test/, method: /allowed/}
+            {service: /twitter/, method: /.+/}
         ]
     },
 
@@ -38,7 +38,7 @@ stack.useOAuth(server, /.+/, {
         authorizePath: "oauth2/authorize",
         accessTokenPath: "oauth2/token",
         permissions: [
-            {service: /twitter-test/, method: /allowed/}
+            {service: /dotcloud/, method: /.+/}
         ]
     }
 });

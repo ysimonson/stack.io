@@ -1,5 +1,5 @@
 var _ = require("underscore"),
-    model = require("../../model");
+    model = require("../../../model");
 
 //Validates that a request can be conducted by the user given his/her
 //permissions

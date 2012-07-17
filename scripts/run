@@ -41,12 +41,22 @@ function mice {
     popd
 }
 
-# Starts the OAuth test app
-function oauth {
+# Starts the OAuth twitter app
+function oauth_twitter {
     server_oauth
-    node bin/apps/oauth/service/app.js &
+    node bin/apps/oauth-twitter/service/app.js &
     
-    pushd bin/apps/oauth/static
+    pushd bin/apps/oauth-twitter/static
+    python -m SimpleHTTPServer &
+    popd
+}
+
+# Starts the OAuth dotCloud app
+function oauth_dotcloud {
+    server_oauth
+    node bin/apps/oauth-dotcloud/service/app.js &
+    
+    pushd bin/apps/oauth-dotcloud/static
     python -m SimpleHTTPServer &
     popd
 }
