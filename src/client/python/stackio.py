@@ -13,7 +13,7 @@ class StackIO(object):
         self.options = options
 
         registrar_client = zerorpc.Client(self.options)
-        registrar_client.connect(self.options.registrar or REGISTRAR_ENDPOINT)
+        registrar_client.connect(self.options.get('registrar') or REGISTRAR_ENDPOINT)
 
         service_endpoints = registrar_client.services(True)
 
