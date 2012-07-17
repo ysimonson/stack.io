@@ -33,7 +33,9 @@ build-apps:
 	./scripts/build_app oauth-dotcloud
 	./scripts/build_app mice
 	./scripts/build_app stress
+	./scripts/build_app retaliator
 
+	cp -r bin/client/python/stackio.py bin/apps/retaliator/service/stackio.py
 	cp -r bin/client/python/stackio.py bin/apps/dashboard/service/stackio.py
 
 create-index:

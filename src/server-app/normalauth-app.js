@@ -33,6 +33,7 @@ stack.useNormalAuth(server, /.+/, seedConfig);
 
 //Add middleware necessary for making ZeroRPC calls
 server.middleware(/.+/, /_stackio/, /.+/, stack.builtinsMiddleware);
+//server.middleware(/.+/, /.+/, /.+/, stack.printMiddleware);
 server.middleware(/.+/, /.+/, /.+/, stack.zerorpcMiddleware(REGISTRAR_ENDPOINT));
 
 //Start!

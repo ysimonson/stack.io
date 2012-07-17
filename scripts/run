@@ -71,6 +71,16 @@ function stress {
     popd
 }
 
+# Starts RETALIATOR
+function retaliator {
+    server_normalauth
+    python bin/apps/retaliator/service/app.py &
+    
+    pushd bin/apps/retaliator/static
+    python -m SimpleHTTPServer &
+    popd
+}
+
 #Called when the user control+c's, to close background processes
 function control_c {
     kill `jobs -p`
