@@ -1,5 +1,5 @@
 {
-    "name" : "stack.io",
+    "name" : "stack.io-experimental",
     "version" : "0.2.0",
     "description" : "ZeroRPC bridge to the web",
     
@@ -21,9 +21,7 @@
         "zerorpc": "0.9.x",
         "oauth": "0.9.7",
         "sqlite3": "2.1.x",
-        "commander": "1.0.x",
-        "twitter": "0.1.18",
-        "restler": "2.0.x"
+        "commander": "1.0.x"
     },
     
     "repository" : {

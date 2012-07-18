@@ -73,7 +73,7 @@ function testAuth() {
         });
     });
 
-    asyncTest("Get group permissions and membership", 6, function() {
+    asyncTest("Get group permissions and membership", 7, function() {
         var barrier = createBarrier(2, start);
 
         authService.getGroupPermissions("test", function(error, res, more) {
