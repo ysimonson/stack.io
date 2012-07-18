@@ -1,3 +1,5 @@
+#!/usr/bin/node
+
 var stack = require(".."),
     express = require("express"),
     fs = require("fs"),

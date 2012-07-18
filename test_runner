@@ -1,7 +1,7 @@
 #!/bin/sh
 
 # Starts the unit tests
-node scripts/stackio normalauth bin/test/seed.json &
+node bin/stackio normalauth bin/test/seed.json &
 node bin/test/service/app.js &
 
 pushd bin/test/static
