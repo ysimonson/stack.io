@@ -1,4 +1,5 @@
 node_modules
 .git/*
-*.swp
-*.swo
+src/
+scripts/
+lib/

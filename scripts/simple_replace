@@ -1,8 +1,0 @@
-#!/bin/sh
-
-awk -v replacement=$2 '
-    /\/\/--BEGIN SHARED CODE--/ {print; system("cat " replacement); banner=1; next}
-    /\/\/--END SHARED CODE--/ {banner=0}
-    banner {next}
-    {print}
-' $1 > $3

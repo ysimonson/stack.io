@@ -9,27 +9,39 @@
         "remote",
         "communication"
     ],
+
+    "bin": {
+        "stackio": "./bin/stackio"
+    },
+
+    "dependencies": {
+        "underscore": "1.3.x",
+        "socket.io": "0.9.6",
+        "express": "2.5.9",
+        "zerorpc": "0.9.x",
+        "oauth": "0.9.7",
+        "sqlite3": "2.1.x",
+        "commander": "1.0.x",
+        "twitter": "0.1.18",
+        "restler": "2.0.x"
+    },
     
     "repository" : {
         "type" : "git",
         "url" : "http://github.com/ysimonson/stack.io"
     },
-    
-    "engine" : {
-        "node" : ">=0.6.11"
-    },
 
     "author" : "dotCloud <opensource@dotcloud.com>",
     
     "contributors" : [{
+        "name": "Sam Alba",
+        "email": "sam@dotcloud.com"
+    }, {
         "name": "Francois-Xavier Bourlet",
         "email": "fx@dotcloud.com"
     }, {
         "name": "Joffrey Fuhrer",
         "email": "joffrey@dotcloud.com"
-    }, {
-        "name": "Sam Alba",
-        "email": "sam@dotcloud.com"
     }, {
         "name": "Yusuf Simonson",
         "email": "yusuf@dotcloud.com"

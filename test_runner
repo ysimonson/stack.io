@@ -1,0 +1,19 @@
+#!/bin/sh
+
+# Starts the unit tests
+node scripts/stackio normalauth bin/test/seed.json &
+node bin/test/service/app.js &
+
+pushd bin/test/static
+python -m SimpleHTTPServer &
+popd
+
+#Called when the user control+c's, to close background processes
+function control_c {
+    kill `jobs -p`
+    exit $?
+}
+
+trap control_c SIGINT
+while true; do read x; done
+echo "Test server running. Please navigate your browser to http://localhost:8000."
