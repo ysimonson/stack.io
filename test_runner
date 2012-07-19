@@ -1,12 +1,14 @@
 #!/bin/sh
 
 # Starts the unit tests
-node bin/stackio normalauth bin/test/seed.json &
+node bin/stackio --config bin/test/seed.json &
 node bin/test/service/app.js &
 
 pushd bin/test/static
 python -m SimpleHTTPServer &
 popd
+
+echo "Test server running. Please navigate your browser to http://localhost:8000."
 
 #Called when the user control+c's, to close background processes
 function control_c {
@@ -16,4 +18,3 @@ function control_c {
 
 trap control_c SIGINT
 while true; do read x; done
-echo "Test server running. Please navigate your browser to http://localhost:8000."
