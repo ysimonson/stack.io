@@ -1,0 +1,15 @@
+#!/bin/sh
+set -e
+
+if [ ! -d "node_modules" ]; then
+    npm install restler@2.0.x twitter@0.1.18
+fi
+
+rm -rf bin
+
+cp -r src/$1 bin
+cp src/normal.json bin/normal.json
+cp src/oauth.json bin/oauth.json
+
+cp -r lib "bin/static/lib"
+cp ../bin/client/stack.io.debug.js bin/static/stack.io.js

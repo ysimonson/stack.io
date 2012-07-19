@@ -1,0 +1,16 @@
+#!/bin/sh
+set -e
+node bin/service/app.js &
+
+pushd bin/static
+python -m SimpleHTTPServer &
+popd
+
+#Called when the user control+c's, to close background processes
+function control_c {
+    kill `jobs -p`
+    exit $?
+}
+
+trap control_c SIGINT
+while true; do read x; done

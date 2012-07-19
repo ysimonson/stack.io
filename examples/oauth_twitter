@@ -1,0 +1,6 @@
+#!/bin/sh
+
+set -e
+./scripts/build oauth-twitter
+../bin/stackio --auth oauth --config bin/oauth.json &
+./scripts/run

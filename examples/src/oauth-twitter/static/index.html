@@ -1,0 +1,60 @@
+<html>
+    <head>
+        <title>stack.io twitter demo</title>
+        <style type="text/css"></style>
+        <script type="text/javascript" src="lib/jquery.min.js"></script>
+        <script type="text/javascript" src="stack.io.js"></script>
+    </head>
+
+    <body>
+    </body>
+
+    <script type="text/javascript">
+    $("body").text("Authenticating...");
+
+    stack.io({host: "http://localhost:8080", timeout: 5}, function(error, client) {
+        if(error) {
+            console.error(error);
+            return;
+        }
+
+        client._invoke("_stackio", "getLoginUrl", "twitter", function(error, res) {
+            var listener = function(e) {
+                if(e.origin != window.location.origin) return;
+
+                client.login(e.data, "http://localhost:8000/auth.html", function(error, result) {
+                    if(error) {
+                        console.error(error);
+                        $("body").text("Authentication failed, see log.");
+                        return;
+                    }
+
+                    $("body").text("Fetching statuses...");
+
+                    client.use("twitter", function(error, twitter) {
+                        if(error) {
+                            console.error(error);
+                            $("body").text("Could not fetch the twitter service, see log.");
+                            return;
+                        }
+
+                        twitter.statuses(function(error, res, more) {
+                            if(error) {
+                                console.error(error);
+                                $("body").text("Could not fetch statuses, see log.");
+                            } else {
+                                $("body").text(JSON.stringify(res));
+                            }
+                        });
+                    });
+                });
+
+                window.removeEventListener('message', listener);
+            };
+
+            window.addEventListener('message', listener);
+            window.open(res);
+        });
+    });
+    </script>
+</html>
