@@ -7,3 +7,4 @@ node_modules
 /src/authorizer/sqlite/stackio_auth
 /index.js
 stackio_auth
+.DS_Store
