@@ -1,12 +1,54 @@
-#!/usr/bin/node
+#!/usr/bin/env node
 
 var stack = require(".."),
     express = require("express"),
     fs = require("fs"),
     _ = require("underscore"),
-    program = require("commander");
+    optimist = require("optimist");
 
 var DEFAULT_REGISTRAR_ENDPOINT = "tcp://127.0.0.1:27615";
+var DEFAULT_PORT = 8080;
+
+var argv = optimist
+    .usage("Starts the stack.io server")
+
+    .describe("a", "Authentication mode (`oauth' or `normalauth')")
+    .string("a")
+    .default("a", "normalauth")
+    .alias("a", "auth")
+
+    .describe("r", "Sets the registrar endpoint (default " + DEFAULT_REGISTRAR_ENDPOINT + ")")
+    .string("r")
+    .default("r", DEFAULT_REGISTRAR_ENDPOINT)
+    .alias("r", "registrar")
+
+    .describe("d", "Enables debug mode")
+    .boolean("d")
+    .default("d", false)
+    .alias("d", "debug")
+
+    .describe("p", "Sets the port to run on (default " + DEFAULT_PORT + ")")
+    .default("p", DEFAULT_PORT)
+    .alias("p", "port")
+
+    .describe("c", "Authentication config file")
+    .string("c")
+    .alias("c", "config")
+
+    .argv;
+
+//Validate config
+if(argv.auth !== "oauth" && argv.auth !== "normalauth") {
+    throw new Error("Unknown authentication type: " + argv.auth);
+} else if(argv.auth === "oauth" && !argv.config) {
+    throw new Error("OAuth authentication requires a config file");
+}
+
+try {
+    var config = argv.config ? JSON.parse(fs.readFileSync(argv.config)) : undefined;
+} catch(e) {
+    throw new Error("Could not parse config file: " + e);
+}
 
 //Create the express app
 var expressApp = express.createServer();
@@ -22,54 +64,12 @@ var server = new stack.ioServer();
 server.connector(new stack.SocketIOConnector(expressApp));
 
 //Add print middleware if debug is enabled
-if(program.debug) {
+if(argv.debug) {
     server.middleware(/.+/, /.+/, /.+/, stack.printMiddleware);
 }
 
-var authType = null;
-var configFile = null;
-
-program
-    .version("0.0.1")
-    .description("Starts the stack.io server")
-    .option("-r", "--registrar <endpoint>", "Set the ZeroMQ endpoint of the registrar; defaults to " + DEFAULT_REGISTRAR_ENDPOINT)
-    .option("-d", "--debug", "Enable debugging mode to print requests as they come in");
-
-program.command("oauth <config>")
-    .description("Uses OAuth")
-    .action(function(configFileArg) {
-        authType = "oauth";
-        configFile = configFileArg;
-    });
-
-program.command("normalauth [<config>]")
-    .description("Uses normal (username + password) authentication")
-    .action(function(configFileArg) {
-        authType = "normalauth";
-        configFile = configFileArg;
-    });
-
-program.parse(process.argv);
-
-//Validate config
-if(!authType) {
-    throw new Error("No authentication type specified");
-} else if(authType === "oauth" && !configFile) {
-    throw new Error("OAuth authentication requires a config file");
-}
-
-try {
-    var config = configFile ? JSON.parse(fs.readFileSync(configFile)) : undefined;
-} catch(e) {
-    throw new Error("Could not parse config file: " + e);
-}
-
-if(program.debug) {
-    server.middleware(stack.printMiddleware());
-}
-
 //Add auth middleware
-if(authType == "oauth") {
+if(argv.auth == "oauth") {
     //Use OAuth authentication
     for(var service in config) {
         try {
@@ -85,15 +85,15 @@ if(authType == "oauth") {
     }
 
     stack.useOAuth(server, /.+/, config);
-} else if(authType == "normalauth") {
+} else if(argv.auth == "normalauth") {
     //Use normal (username+password) authentication
     stack.useNormalAuth(server, /.+/, config);
 } 
 
 //Add middleware necessary for making ZeroRPC calls
 server.middleware(/.+/, /_stackio/, /.+/, stack.builtinsMiddleware);
-server.middleware(/.+/, /.+/, /.+/, stack.zerorpcMiddleware(program.registrar || DEFAULT_REGISTRAR_ENDPOINT));
+server.middleware(/.+/, /.+/, /.+/, stack.zerorpcMiddleware(argv.registrar));
 
 //Start!
-expressApp.listen(8080);
+expressApp.listen(argv.port);
 server.listen();
