@@ -1,0 +1,181 @@
+<html>
+    <head>
+        <title>Stack.io dashboard</title>
+
+        <link type="text/css" rel="stylesheet" href="lib/bootstrap/css/bootstrap.min.css" />
+        <link type="text/css" rel="stylesheet" href="css/main.css" />
+
+        <script type="text/javascript" src="lib/jquery.min.js"></script>
+        <script type="text/javascript" src="lib/jquery.cookie.js"></script>
+        <script type="text/javascript" src="lib/microtemplating.js"></script>
+        <script type="text/javascript" src="lib/bootstrap/js/bootstrap.min.js"></script>
+        <script type="text/javascript" src="stack.io.js"></script>
+
+        <script type="text/javascript" src="js/core.js"></script>
+        <script type="text/javascript" src="js/ui.js"></script>
+        <script type="text/javascript" src="js/util.js"></script>
+        <script type="text/javascript" src="js/actions.js"></script>
+        <script type="text/javascript" src="js/rpc.js"></script>
+
+        <script id="introspectorResultsTemplate" type="text/html">
+            <%for(var methodName in methods) {%>
+                <% var method = methods[methodName]; %>
+
+                <div class="well">
+                    <div>
+                        <span style="font-weight:bold"><%=methodName%></span>
+                        (
+                            <%var hasPrevious = false;%>
+                            <%for(var i=0; i<method.args.length; i++) {%>
+                                <%if(hasPrevious) {%>
+                                    ,
+                                <%} else {%>
+                                    <%hasPrevious = true;%>
+                                <%}%>
+
+                                <%=method.args[i].name%>
+                            <%}%>
+                        )
+                    </div>
+                    <pre><%=method.doc%></pre>
+                </div>
+            <%}%>
+        </script>
+
+        <script id="errorTemplate" type="text/html">
+            <div class="alert alert-error">
+                <span style="font-weight:bold"><%=title%>: </span><%=message%>
+            </div>
+        </script>
+
+        <script id="rpcMethodsTemplate" type="text/html">
+            <option></option>
+            <%for(var method in methods) {%>
+                <option><%=method%></option>
+            <%}%>
+        </script>
+
+        <script id="rpcArgsTemplate" type="text/html">
+            <form class="form-horizontal">
+                <fieldset>
+                    <%for(var i=0; i<args.length; i++) {%>
+                        <%var arg = args[i];%>
+                        <%if(i === 0 && arg.name === "self") continue;%>
+
+                        <div class="control-group">
+                            <label class="control-label" for="input-<%=arg.name%>"><%=arg.name%></label>
+                            <div class="controls">
+                                <input type="text" class="input-xlarge" id="input-<%=arg.name%>" />
+                                <span class="help-inline"></span>
+                            </div>
+                        </div>
+                    <%}%>
+
+                    <div class="form-actions">
+                        <button type="submit" class="btn btn-primary">Execute</button>
+                    </div>
+                </fieldset>
+            </form>
+        </script>
+
+        <script id="authorizationPermissionsTemplate" type="text/html">
+            <%for(var i=0; i<permissions.length; i++) {%>
+                <tr>
+                    <td><%=permissions[i].service%></td>
+                    <td><%=permissions[i].method%></td>
+                </tr>
+            <%}%>
+        </script>
+    </head>
+    <body>
+        <div id="loading">
+            <p><img src="img/loading.gif" alt="" /></p>
+            <p>Loading...</p>
+        </div>
+
+        <div id="initError" class="alert alert-error" style="display:none">
+            <span style="font-weight:bold">Initialization failed: </span>
+            <span id="initErrorMessage"></span>
+            <a href="javascript:logout()">Click to logout.</a>
+        </div>
+
+        <div id="login" style="display:none">
+            <div class="header"><h1>Stack.io dashboard</h1></div>
+
+            <form id="loginForm" class="form-horizontal">
+                <fieldset>
+                    <div class="control-group">
+                        <label class="control-label" for="username">Username</label>
+                        <div class="controls">
+                            <input id="loginUsername" class="input-xlarge focused" type="text" />
+                        </div>
+                    </div>
+                    <div class="control-group">
+                        <label class="control-label" for="password">Password</label>
+                        <div class="controls">
+                            <input id="loginPassword" class="input-xlarge" type="password" />
+                        </div>
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="submit" class="btn btn-primary">Login</button>
+                    </div>
+                </fieldset>
+            </form>
+        </div>
+
+        <div id="content" class="row" style="display:none">
+            <div class="span4">
+                <div class="header">
+                    <h1>Stack.io dashboard</h1>
+                </div>
+
+                <ul id="nav" class="nav nav-pills nav-stacked">
+                    <li class="active">
+                        <a href="#authorization" data-toggle="tab">Authorization</a>
+                    </li>
+                    <li>
+                        <a href="#introspector" data-toggle="tab">Introspector</a>
+                    </li>
+                    <li>
+                        <a href="#rpc" data-toggle="tab">RPC</a>
+                    </li>
+                    <li>
+                        <a href="javascript:logout()">Logout</a>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="tab-content span8 well">
+                <div id="authorization" class="tab-pane active">
+                    <p>Username: <span id="authorizationUsername"></span></p>
+                    <p>
+                        <div>Permissions:</div>
+                        <table id="authorizationPermissions" class="table table-bordered table-striped">
+                            <tr>
+                                <th>Service</th>
+                                <th>Method</th>
+                            </tr>
+                        </table>
+                    </p>
+                </div>
+                <div id="introspector" class="tab-pane">
+                    <p>
+                        Service:
+                        <select id="introspectorService" class="serviceSelector"></select>
+                    </p>
+                    <p id="introspectorResults"></p>
+                </div>
+                <div id="rpc" class="tab-pane">
+                    <p>
+                        Service: <select id="rpcService" class="serviceSelector"></select>
+                        Method: <select id="rpcMethod" class="methodSelector"></select>
+                    </p>
+
+                    <p id="rpcArgs"></p>
+                    <p id="rpcResults"></p>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>
