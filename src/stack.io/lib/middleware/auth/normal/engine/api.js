@@ -59,7 +59,6 @@ module.exports = function(dbName) {
         },
         hasGroup: function(name, cb) {
             this._getGroupId(name, function(err, result) {
-                console.log(result);
                 if (err) {
                     return cb(err, null, false);
                 }
