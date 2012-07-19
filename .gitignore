@@ -8,3 +8,5 @@ node_modules
 /index.js
 stackio_auth
 .DS_Store
+examples/bin
+
