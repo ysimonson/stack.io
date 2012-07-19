@@ -1,3 +1,5 @@
+var model = require("../../model");
+
 //Converts magic methods on _stackio for introspection to their actual names
 module.exports = function(req, res, next) {
     if(req.method === 'inspect') {
@@ -17,7 +19,7 @@ module.exports = function(req, res, next) {
         req.method = 'services';
     } else {
         //Unknown built-in
-        var error = stack.createSyntheticError("BadMethodError", "Unknown method");
+        var error = model.createSyntheticError("BadMethodError", "Unknown method");
         res.update(error, undefined, false);
     }
 
