@@ -21,8 +21,8 @@ Or, to run the tests:
 
 ...then navigate to `http://localhost:8000`.
 
-A number of stack.io examples are available at
-[https://github.com/ysimonson/stack.io-apps](https://github.com/ysimonson/stack.io-apps).
+A number of stack.io examples are available in
+[the examples directory](https://github.com/ysimonson/stack.io/tree/master/test).
 
 ## Clients ##
 

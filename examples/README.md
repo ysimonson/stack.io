@@ -1,14 +1,8 @@
 # Stack.io Apps #
 
-These are example apps for stack.io. To use an app, first build:
-
-    make
-
-Then start the app:
-
-    ./run <app name>
-
-And navigate your browser to `http://localhost:8000`.
+These are example apps for stack.io. To use an app, simply run its bash script
+while in the examples directory, and navigate your browser to
+`http://localhost:8000`.
 
 Available apps:
  * dashboard
@@ -58,4 +52,5 @@ After that, build and run the app.
 
 ## Stress Tester ##
 
-TODO
+This runs a simple stress test against a single stack.io node.js process that
+streams responses.
