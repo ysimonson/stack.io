@@ -108,17 +108,16 @@ transformations, or provides a response for the connector to send back.
 Stack.io has a number of built-in middleware to handle debugging,
 authentication, request proxying, etc.
 
-You can create a new server programmatically, but for most use cases, the
-built-in server apps should fulfill your needs. To start the server app after
-stack.io has been built:
+You can create a new server programmatically, but for most use cases, the CLI
+tool should fulfill your needs. To run it with normal authentication:
 
-    node ./bin/server-app/normalauth-app
+    stackio --auth normalauth --config <normal auth config file>
 
 Or if you want to use OAuth:
 
-    node ./bin/server-app/oauth-app
+    stackio --auth oauth --config <oauth config file>
 
 This will run stack.io on port 8080.
 
-If you want to run a server programmatically, e.g. to change the port or add
-custom middleware, check out the [server API](https://github.com/ysimonson/stack.io/blob/master/doc/api/server.md).
+If you want to run a server programmatically, e.g. to add custom middleware,
+check out the [server API](https://github.com/ysimonson/stack.io/blob/master/doc/api/server.md).
