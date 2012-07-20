@@ -1,12 +1,9 @@
 node_modules
 *~
-/Makefile
-/run
 /bin
 /examples/bin
 .DS_Store
 /src/authorizer/sqlite/stackio_auth
-/index.js
 stackio_auth
 .DS_Store
 
