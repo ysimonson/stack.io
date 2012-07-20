@@ -16,6 +16,7 @@ To run:
 Or, to run the tests:
 
     git clone https://github.com/dotcloud/stack.io.git
+    cd stack.io
     make
     ./test_runner
 
