@@ -27,7 +27,7 @@
     
     "repository" : {
         "type" : "git",
-        "url" : "http://github.com/ysimonson/stack.io"
+        "url" : "http://github.com/dotcloud/stack.io"
     },
 
     "author" : "dotCloud <opensource@dotcloud.com>",

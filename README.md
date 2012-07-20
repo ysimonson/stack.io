@@ -15,14 +15,14 @@ To run:
 
 Or, to run the tests:
 
-    git clone https://github.com/ysimonson/stack.io.git
+    git clone https://github.com/dotcloud/stack.io.git
     make
     ./test_runner
 
 ...then navigate to `http://localhost:8000`.
 
 A number of stack.io examples are available in
-[the examples directory](https://github.com/ysimonson/stack.io/tree/master/test).
+[the examples directory](https://github.com/dotcloud/stack.io/tree/master/examples).
 
 ## Clients ##
 
@@ -60,7 +60,7 @@ Stack.io clients also have a couple of utility methods. To list available
 services, call `client.services()`. To introspect on the methods of a
 specific service, call `client.introspect("service_name", callback)`.
 
-[See the full API for webapps](https://github.com/ysimonson/stack.io/blob/master/doc/api/client-webapps.md).
+[See the full API for webapps](https://github.com/dotcloud/stack.io/blob/master/doc/api/client-webapps.md).
 
 ### Node.js ###
 
@@ -93,7 +93,7 @@ Stack.io clients also have a couple of utility methods. To list available
 services, call `client.services()`. To introspect on the methods of a
 specific service, call `client.introspect("service_name", callback)`.
 
-[See the full API for node.js](https://github.com/ysimonson/stack.io/blob/master/doc/api/client-node.md).
+[See the full API for node.js](https://github.com/dotcloud/stack.io/blob/master/doc/api/client-node.md).
 
 ## Server ##
 
@@ -120,4 +120,4 @@ Or if you want to use OAuth:
 This will run stack.io on port 8080.
 
 If you want to run a server programmatically, e.g. to add custom middleware,
-check out the [server API](https://github.com/ysimonson/stack.io/blob/master/doc/api/server.md).
+check out the [server API](https://github.com/dotcloud/stack.io/blob/master/doc/api/server.md).
