@@ -22,12 +22,24 @@ function Engine(options, callback) {
     self.options = options || {};
     self._services = {};
 
-    var registrarClient = self._createClient(self.options.registrar || REGISTRAR_ENDPOINT);
+    this._updateSvcList(callback);
+}
+
+util.inherits(Engine, events.EventEmitter);
+
+// Update the list of registered services
+// callback : function
+//      The function to call once the list is updated.
+Engine.prototype._updateSvcList = function(callback) {
+    console.log('Updating service list');
+    var self = this,
+        registrarClient = self._createClient(self.options.registrar || REGISTRAR_ENDPOINT);
 
     registrarClient.invoke("services", true, function(error, res, more) {
         if(error) {
             self.emit("error", error);
         } else {
+            console.log(res);
             for(var serviceName in res) {
                 self._services[serviceName] = {
                     endpoint: res[serviceName],
@@ -42,8 +54,6 @@ function Engine(options, callback) {
         }
     });
 }
-
-util.inherits(Engine, events.EventEmitter);
 
 //Creates a new client
 //endpoint : string
@@ -80,7 +90,7 @@ Engine.prototype._invoke = function(service/*, method, args..., callback*/) {
     var cached = this._services[service];
 
     if(!cached) {
-        throw new Error("Unknown service");
+        throw new Error('Unknown service "' + service + '"');
     } else if(!cached.client) {
         cached.client = this._createClient(cached.endpoint);
     }
