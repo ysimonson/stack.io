@@ -62,7 +62,6 @@ Engine.prototype._updateSvcList = function(callback) {
         if(error) {
             self.emit("error", error);
         } else {
-            console.log(res);
             for(var serviceName in res) {
                 self._services[serviceName] = {
                     endpoint: res[serviceName],
