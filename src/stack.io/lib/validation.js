@@ -1,12 +1,13 @@
 var MAX_IDENTIFIER_LENGTH = 1024,
     MAX_USERNAME_LENGTH = 128,
     MAX_PASSWORD_LENGTH = 128,
-    IDENTIFIER_VALIDATOR = /^[a-zA-Z_][a-zA-Z_0-9]+$/,
+    IDENTIFIER_VALIDATOR = /^[a-zA-Z_][a-zA-Z_0-9-]+$/,
     OPTIONS_CHECKS = { timeout: 'number' };
 
 //Validates an identifier
 function checkIdentifier(identifier, name) {
-    if(typeof(identifier) !== 'string') throw "expected " + name + " to be a string";
+    if(typeof(identifier) !== 'string') throw "expected " + name + " to be a string" +
+        ", got " + JSON.stringify(identifier) + "[" + typeof identifier + "] instead";
     if(identifier.length > MAX_IDENTIFIER_LENGTH) throw name + " is too long";
     if(!IDENTIFIER_VALIDATOR.test(identifier)) throw "invalid " + name;
 }

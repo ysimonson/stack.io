@@ -66,7 +66,7 @@ module.exports = function(registrarEndpoint) {
         registrar.service(req.service, function(error, endpoint) {
             if(error || !endpoint) {
                 //Return an error if the service does not exist
-                var errorObj = model.createSyntheticError("ServiceDoesNotExistError", "Service does not exist");
+                var errorObj = model.createSyntheticError("ServiceDoesNotExistError", "Service '" + req.service + "' does not exist");
                 res.update(errorObj, undefined, false);
             } else {
                 //Invokes the call if possible
