@@ -1,9 +1,0 @@
-#!/bin/sh
-
-if [ ! -d "node_modules" ]; then
-    npm install underscore socket.io@0.9.6 express@2.5.9 zerorpc oauth sqlite3@2.1.x nopt@1.0.x twitter restler
-fi
-
-cp scripts/Makefile Makefile
-cp scripts/run run
-chmod +x run

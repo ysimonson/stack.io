@@ -8,29 +8,22 @@ no intermediate broker. From the client-side, requests come into a node.js
 process via socket.io. Express-like middleware then processes these requests
 to add things like authentication and authorization.
 
-To build:
+To run:
 
-    git clone https://github.com/ysimonson/stack.io.git
-    ./configure
+    npm install -g stackio
+    stackio
+
+Or, to run the tests:
+
+    git clone https://github.com/dotcloud/stack.io.git
+    cd stack.io
     make
+    ./test_runner
 
-Stack.io comes with a number of built-in apps for debugging, testing and
-stress testing.
+...then navigate to `http://localhost:8000`.
 
-To use the dashboard, which allows you to introspect on services:
-
-    ./run dashboard
-
-To use the stress tester:
-
-    ./run stress
-
-To run the unit tests:
-
-    ./run test
-
-After you start any of these apps, navigate your browser to
-`http://localhost:8000`.
+A number of stack.io examples are available in
+[the examples directory](https://github.com/dotcloud/stack.io/tree/master/examples).
 
 ## Clients ##
 
@@ -68,7 +61,7 @@ Stack.io clients also have a couple of utility methods. To list available
 services, call `client.services()`. To introspect on the methods of a
 specific service, call `client.introspect("service_name", callback)`.
 
-[See the full API for webapps](https://github.com/ysimonson/stack.io/blob/master/doc/api/client-webapps.md).
+[See the full API for webapps](https://github.com/dotcloud/stack.io/blob/master/doc/api/client-webapps.md).
 
 ### Node.js ###
 
@@ -101,35 +94,7 @@ Stack.io clients also have a couple of utility methods. To list available
 services, call `client.services()`. To introspect on the methods of a
 specific service, call `client.introspect("service_name", callback)`.
 
-[See the full API for node.js](https://github.com/ysimonson/stack.io/blob/master/doc/api/client-node.md).
-
-### Python ###
-
-To use stack.io from python, import the module and instantiate a new client:
-
-    client = stackio.StackIO()
-
-From there, you can start using a service, e.g.:
-
-    test = client.use("test-service")
-    print test.say_hello("World")
-
-The python client can also expose services, e.g.:
-
-    class TestService(object):
-        def say_hello(name):
-            return "Hello, %s!" % name
-
-    client.expose("test-service", "tcp://127.0.0.1:4242", TestService())
-
-This will expose the service `test-service` at the endpoint
-`tcp://127.0.0.1:4242`.
-
-Stack.io clients also have a couple of utility methods. To list available
-services, call `client.services()`. To introspect on the methods of a
-specific service, call `client.introspect("service_name")`.
-
-[See the full API for python](https://github.com/ysimonson/stack.io/blob/master/doc/api/client-python.md).
+[See the full API for node.js](https://github.com/dotcloud/stack.io/blob/master/doc/api/client-node.md).
 
 ## Server ##
 
@@ -144,17 +109,16 @@ transformations, or provides a response for the connector to send back.
 Stack.io has a number of built-in middleware to handle debugging,
 authentication, request proxying, etc.
 
-You can create a new server programmatically, but for most use cases, the
-built-in server apps should fulfill your needs. To start the server app after
-stack.io has been built:
+You can create a new server programmatically, but for most use cases, the CLI
+tool should fulfill your needs. To run it with normal authentication:
 
-    node ./bin/server-app/normalauth-app
+    stackio --auth normalauth --config <normal auth config file>
 
 Or if you want to use OAuth:
 
-    node ./bin/server-app/oauth-app
+    stackio --auth oauth --config <oauth config file>
 
 This will run stack.io on port 8080.
 
-If you want to run a server programmatically, e.g. to change the port or add
-custom middleware, check out the [server API](https://github.com/ysimonson/stack.io/blob/master/doc/api/server.md).
+If you want to run a server programmatically, e.g. to add custom middleware,
+check out the [server API](https://github.com/dotcloud/stack.io/blob/master/doc/api/server.md).

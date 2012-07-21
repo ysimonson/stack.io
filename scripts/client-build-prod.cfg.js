@@ -1,10 +1,10 @@
 ({
-    baseUrl: '../build',
-    out: '../bin/client/web/stack.io.js',
-    name: '../lib/client/almond',
+    baseUrl: '../src/client',
+    out: '../bin/client/stack.io.js',
+    name: '../../scripts/almond',
     include: ['stack.io'],
     paths: {
-        'socket.io': '../lib/client/socket.io'
+        'socket.io': '../../lib/socket.io'
     },
     wrap: {
         start: "(function() {",
