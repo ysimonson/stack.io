@@ -206,15 +206,7 @@ require the module and instantiate a new server:
 Here's a full example:
 
     var stack = require("stack.io"),
-        express = require("express"),
-        nopt = require("nopt"),
-        fs = require("fs");
-
-    var REGISTRAR_ENDPOINT = "tcp://127.0.0.1:27615";
-
-    var options = nopt(
-        { "seed": [String, null] }
-    );
+        express = require("express");
 
     //Create the express app
     var expressApp = express.createServer();
@@ -226,21 +218,33 @@ Here's a full example:
     //Create the stack.io server
     var server = new stack.ioServer();
 
+    //Print all request for debugging
+    server.middleware(/.+/, /.+/, /.+/, stack.printMiddleware);
+
     //Use the socket.io connector
     server.connector(new stack.SocketIOConnector(expressApp));
 
-    //Use normal (username+password) authentication
-    var seedConfig = null;
+    //Use normal authentication with an initial configuration that has a user
+    //'demo' with the password 'demo-password'. It is a member of the group
+    //'root' which can run any method on any service.
+    stack.useNormalAuth(server, /.+/, {
+        users: {
+            demo: {
+                password: "demo-password",
+                groups: ["root"]
+            }
+        },
 
-    if(options.seed) {
-        seedConfig = JSON.parse(fs.readFileSync(options.seed));
-    }
-
-    stack.useNormalAuth(server, /.+/, seedConfig);
+        groups: {
+            root: {
+                ".+": [".+"]
+            }
+        }
+    });
 
     //Add middleware necessary for making ZeroRPC calls
     server.middleware(/.+/, /_stackio/, /.+/, stack.builtinsMiddleware);
-    server.middleware(/.+/, /.+/, /.+/, stack.zerorpcMiddleware(REGISTRAR_ENDPOINT));
+    server.middleware(/.+/, /.+/, /.+/, stack.zerorpcMiddleware("tcp://127.0.0.1:27615"));
 
     //Start!
     expressApp.listen(8080);
