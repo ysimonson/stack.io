@@ -54,13 +54,12 @@ util.inherits(Engine, events.EventEmitter);
 // callback : function
 //      The function to call once the list is updated.
 Engine.prototype._updateSvcList = function(callback) {
-    console.log('Updating service list');
     var self = this,
         registrarClient = self._createClient(self.options.registrar || REGISTRAR_ENDPOINT);
 
     registrarClient.invoke("services", true, function(error, res, more) {
         if(error) {
-            self.emit("error", error);
+            callback(error, self);
         } else {
             for(var serviceName in res) {
                 self._services[serviceName] = {
