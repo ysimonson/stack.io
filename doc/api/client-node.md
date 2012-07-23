@@ -2,6 +2,8 @@
 
 To instantiate a new client:
 
+    var stack = require("stack.io");
+
     stack.io(options, function(error, client) {
         ...
     });
