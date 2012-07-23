@@ -61,6 +61,18 @@ Stack.io clients also have a couple of utility methods. To list available
 services, call `client.services()`. To introspect on the methods of a
 specific service, call `client.introspect("service_name", callback)`.
 
+Here's a full example:
+
+    stack.io({host: "http://localhost:8080"}, function(error, client) {
+        client.login("demo", "demo-password", function(error) {
+            client.use("example-node", function(error, context) {
+                context.add42(20, function(error, response) {
+                    console.log(response); //=> prints 62
+                });
+            });
+        });
+    });
+
 [See the full API for webapps](https://github.com/dotcloud/stack.io/blob/master/doc/api/client-webapps.md).
 
 ### Node.js ###
@@ -96,6 +108,64 @@ Stack.io clients also have a couple of utility methods. To list available
 services, call `client.services()`. To introspect on the methods of a
 specific service, call `client.introspect("service_name", callback)`.
 
+Here's a full example:
+
+    var stack = require("stack.io");
+
+    stack.io(null, function(error, client) {
+        client.expose("example-node", "tcp://127.0.0.1:4242", {
+            addMan: function(sentence, reply) {
+                reply(null, sentence + ", man!", false);
+            },
+
+            add42: function(n, reply) {
+                reply(null, n + 42, false);
+            },
+
+            iter: function(from, to, step, reply) {
+                for(i=from; i<to; i+=step) {
+                    reply(null, i, true);
+                }
+
+                reply(null, undefined, false);
+            },
+
+            simpleError: function(reply) {
+                reply("This is an error, man!", undefined, false);
+            },
+
+            objectError: function(reply) {
+                reply(new Error("This is an error object, man!"), undefined, false);
+            },
+
+            streamError: function(reply) {
+                reply("This is a stream error, man!", undefined, true);
+
+                var error = false;
+                
+                try {
+                    reply(null, "Should not happen", false);
+                } catch(e) {
+                    error = true;
+                }
+
+                if(!error) {
+                    throw new Error("An error should have been thrown");
+                }
+            },
+
+            quiet: function(reply) {
+                setTimeout(function() {
+                    reply(null, "Should not happen", false);
+                }, 31 * 1000);
+            },
+
+            notAuthorized: function(reply) {
+                reply(null, "Should not happen", false);
+            }
+        });
+    });
+
 [See the full API for node.js](https://github.com/dotcloud/stack.io/blob/master/doc/api/client-node.md).
 
 ## Server ##
@@ -127,4 +197,53 @@ Or if you want to use OAuth:
 This will run stack.io on port 8080.
 
 If you want to run a server programmatically, e.g. to add custom middleware,
-check out the [server API](https://github.com/dotcloud/stack.io/blob/master/doc/api/server.md).
+require the module and instantiate a new server:
+
+    var stack = require("stack.io");
+    var server = new stack.ioServer();
+    ...
+
+Here's a full example:
+
+    var stack = require("stack.io"),
+        express = require("express"),
+        nopt = require("nopt"),
+        fs = require("fs");
+
+    var REGISTRAR_ENDPOINT = "tcp://127.0.0.1:27615";
+
+    var options = nopt(
+        { "seed": [String, null] }
+    );
+
+    //Create the express app
+    var expressApp = express.createServer();
+
+    expressApp.configure(function() {
+        expressApp.use(express.bodyParser());
+    });
+
+    //Create the stack.io server
+    var server = new stack.ioServer();
+
+    //Use the socket.io connector
+    server.connector(new stack.SocketIOConnector(expressApp));
+
+    //Use normal (username+password) authentication
+    var seedConfig = null;
+
+    if(options.seed) {
+        seedConfig = JSON.parse(fs.readFileSync(options.seed));
+    }
+
+    stack.useNormalAuth(server, /.+/, seedConfig);
+
+    //Add middleware necessary for making ZeroRPC calls
+    server.middleware(/.+/, /_stackio/, /.+/, stack.builtinsMiddleware);
+    server.middleware(/.+/, /.+/, /.+/, stack.zerorpcMiddleware(REGISTRAR_ENDPOINT));
+
+    //Start!
+    expressApp.listen(8080);
+    server.listen();
+
+[See the full server API for more details](https://github.com/dotcloud/stack.io/blob/master/doc/api/server.md).

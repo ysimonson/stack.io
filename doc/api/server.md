@@ -6,49 +6,6 @@ server programmatically:
     var stack = require("stack.io");
     var server = new stack.ioServer();
 
-Here's a full example:
-
-    var stack = require("stack.io"),
-        express = require("express"),
-        nopt = require("nopt"),
-        fs = require("fs");
-
-    var REGISTRAR_ENDPOINT = "tcp://127.0.0.1:27615";
-
-    var options = nopt(
-        { "seed": [String, null] }
-    );
-
-    //Create the express app
-    var expressApp = express.createServer();
-
-    expressApp.configure(function() {
-        expressApp.use(express.bodyParser());
-    });
-
-    //Create the stack.io server
-    var server = new stack.ioServer();
-
-    //Use the socket.io connector
-    server.connector(new stack.SocketIOConnector(expressApp));
-
-    //Use normal (username+password) authentication
-    var seedConfig = null;
-
-    if(options.seed) {
-        seedConfig = JSON.parse(fs.readFileSync(options.seed));
-    }
-
-    stack.useNormalAuth(server, /.+/, seedConfig);
-
-    //Add middleware necessary for making ZeroRPC calls
-    server.middleware(/.+/, /_stackio/, /.+/, stack.builtinsMiddleware);
-    server.middleware(/.+/, /.+/, /.+/, stack.zerorpcMiddleware(REGISTRAR_ENDPOINT));
-
-    //Start!
-    expressApp.listen(8080);
-    server.listen();
-
 Events:
  * `error` - When an error occurs.
 
