@@ -120,3 +120,4 @@ server.middleware(/.+/, /.+/, /.+/, stack.zerorpcMiddleware(argv.registrar));
 //Start!
 expressApp.listen(argv.port);
 server.listen();
+console.log("Server listening on port " + argv.port + " (registrar on endpoint " + argv.registrar + ")");
