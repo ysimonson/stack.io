@@ -10,7 +10,7 @@ to add things like authentication and authorization.
 
 To run:
 
-    npm install -g stackio
+    npm install -g stack.io
     stackio
 
 Or, to run the tests:
