@@ -67,6 +67,8 @@ specific service, call `client.introspect("service_name", callback)`.
 
 To use stack.io from node.js, require the module and instantiate a new client:
 
+    var stack = require("stack.io");
+
     stack.io({}, function(error, client) {
         ...
     });
@@ -114,9 +116,13 @@ tool should fulfill your needs. To run it with normal authentication:
 
     stackio --auth normalauth --config <normal auth config file>
 
+([an example config file is available at examples/src/normal.json](https://github.com/dotcloud/stack.io/blob/master/examples/src/normal.json)).
+
 Or if you want to use OAuth:
 
     stackio --auth oauth --config <oauth config file>
+
+([an example config file is available at examples/src/oauth.json](https://github.com/dotcloud/stack.io/blob/master/examples/src/oauth.json)).
 
 This will run stack.io on port 8080.
 
