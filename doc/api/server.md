@@ -8,7 +8,7 @@ server programmatically:
 
 Here's a full example:
 
-    var stack = require("./stack"),
+    var stack = require("stack.io"),
         express = require("express"),
         nopt = require("nopt"),
         fs = require("fs");
