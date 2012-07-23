@@ -12,6 +12,11 @@ Available apps:
  * retaliator
  * stress
 
+These bash scripts move files around, install dependencies, start stack.io
+and run a static server. If you're using the examples as a basis to roll
+out your own stack.io app, you can ignore what these scripts do and just take
+a look at the bin directory, which contains the final built results.
+
 ## Dashboard App ##
 
 This webapp allows you to introspect and call functions on the currently
