@@ -3,7 +3,7 @@
 If the built-in server app does not fulfill your needs, you can create a
 server programmatically:
 
-    var stack = require("./stack");
+    var stack = require("stack.io");
     var server = new stack.ioServer();
 
 Here's a full example:
