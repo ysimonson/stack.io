@@ -25,7 +25,7 @@ var zerorpc = require("zerorpc"),
     util = require("util"),
     events = require("events");
 
-var REGISTRAR_ENDPOINT = "tcp://127.0.0.1:27615";
+var REGISTRAR_ENDPOINT = "ipc:///tmp/stackio-service-registrar";
 
 //Creates a new stack.io engine
 //options : object
@@ -126,8 +126,9 @@ Engine.prototype._invoke = function(service/*, method, args..., callback*/) {
 //      The ZeroMQ endpoint of the service
 //context : object
 //      The methods to expose
-Engine.prototype.expose = function(serviceName, endpoint, context) {
+Engine.prototype.expose = function(serviceName, context) {
     var self = this;
+    var endpoint = "ipc:///tmp/stackio-service-" + serviceName;
 
     var server = new zerorpc.Server(context);
     server.bind(endpoint);
