@@ -25,5 +25,5 @@
 
 set -e
 ./scripts/build dashboard
-../bin/stackio --config bin/normal.json &
+../bin/stackio --config bin/normal.json --debug &
 ./scripts/run
