@@ -24,7 +24,7 @@
 var stack = require("../../../bin/stack.io");
 
 stack.io(null, function(error, client) {
-    client.expose("example-node", "tcp://127.0.0.1:4242", {
+    client.expose("example-node", {
         addMan: function(sentence, reply) {
             reply(null, sentence + ", man!", false);
         },

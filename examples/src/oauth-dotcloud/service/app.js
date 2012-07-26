@@ -28,7 +28,7 @@ var stack = require("../../../bin/stack.io"),
 var ENDPOINT_PREFIX = "https://api-experimental.dotcloud.com/v1/";
 
 stack.io(null, function(error, client) {
-    client.expose("dotcloud", "tcp://127.0.0.1:4242", {
+    client.expose("dotcloud", {
         me: function(oauth, reply) {
             var options = {
                 method: "GET",

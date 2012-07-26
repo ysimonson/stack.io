@@ -18,9 +18,9 @@ The callback is executed when initialization is complete, and will include
 either a fatal `error` message, or the `client` object.
 
 Methods:
- * `expose(serviceName, endpoint, context)` - Exposes a new stack.io service,
-   where `serviceName` is the name of the service, `endpoint` is the ZeroMQ
-   endpoint to expose to, and `context` is the object to expose.
+ * `expose(serviceName, context)` - Exposes a new stack.io service,
+   where `serviceName` is the name of the service and `context` is the object
+   to expose.
  * `use(serviceName, callback)` - Prepares a service to be used. `serviceName`
    is the name of a service and `callback` is a function to call when the
    service is ready. `callback` should be of the form

@@ -29,7 +29,6 @@ var _ = require("underscore"),
     client = require("../../../client");
 
 var AUTH_DB = "stackio_auth";
-var AUTH_ENDPOINT = "tcp://0.0.0.0:27616";
 
 //Compiles a list of permissions to regular expressions
 function compilePermissions(permissions) {
@@ -59,7 +58,7 @@ module.exports = function(initialConfig) {
         if(error) {
             console.error(error);
         } else {
-            client.expose("auth", AUTH_ENDPOINT, api);
+            client.expose("auth", api);
         }
     });
 

@@ -92,5 +92,5 @@ Mice.prototype.listen = function(reply) {
 };
 
 stack.io(null, function(error, client) {
-    client.expose("mice", "tcp://127.0.0.1:4242", new Mice());
+    client.expose("mice", new Mice());
 });

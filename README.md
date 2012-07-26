@@ -95,14 +95,11 @@ From there, you can start using a service, e.g.:
 
 The node.js client can also expose services, e.g.:
 
-    client.expose("test-service", "tcp://127.0.0.1:4242", {
+    client.expose("test-service", {
         sayHello: function(name, reply) {
             reply("Hello, " + name + "!");
         }
     });
-
-This will expose the service `test-service` at the endpoint
-`tcp://127.0.0.1:4242`.
 
 Stack.io clients also have a couple of utility methods. To list available
 services, call `client.services()`. To introspect on the methods of a
@@ -113,7 +110,7 @@ Here's a full example:
     var stack = require("stack.io");
 
     stack.io(null, function(error, client) {
-        client.expose("example-node", "tcp://127.0.0.1:4242", {
+        client.expose("example-node", {
             addMan: function(sentence, reply) {
                 reply(null, sentence + ", man!", false);
             },
