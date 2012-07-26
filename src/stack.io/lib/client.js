@@ -72,7 +72,7 @@ Engine.prototype._updateSvcList = function(callback) {
             }
 
             registrarClient.close();
-            callback(error, self);
+            callback && callback(error, self);
         }
     });
 }

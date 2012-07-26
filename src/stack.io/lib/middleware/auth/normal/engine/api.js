@@ -74,7 +74,7 @@ module.exports = function(dbName) {
                 if (err) {
                     cb(err);
                 } else if (!result) {
-                    cb(null, []);
+                    cb('Unknown user or invalid credentials');
                 } else {
                     self.getUserPermissions(user, cb);
                 }
