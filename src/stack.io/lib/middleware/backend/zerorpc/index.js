@@ -29,7 +29,7 @@ function createServer(endpoint, context) {
     var server = new zerorpc.Server(context);
 
     server.on("error", function(error) {
-        console.error("error", error);
+        console.error("ZeroRPC server error:", error);
     });
 
     server.bind(endpoint);
@@ -45,7 +45,7 @@ function createClient(endpoint, options) {
     var client = new zerorpc.Client(options);
 
     client.on("error", function(error) {
-        console.error("error", error);
+        console.error("ZeroRPC client error:", error);
     });
 
     client.connect(endpoint);

@@ -111,7 +111,6 @@ SocketIOConnector.prototype._doInvoke = function(socket, channel, service, metho
         validation.validateInvocation(service, method, args);
     } catch(e) {
         var errorObj = model.createSyntheticError("RequestError", e.message);
-        console.log("ERROR", errorObj);
         return socket.emit("response", channel, errorObj, undefined, false);
     }
 

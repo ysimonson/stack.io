@@ -25,14 +25,14 @@ var zerorpc = require("zerorpc"),
     util = require("util"),
     events = require("events");
 
-var REGISTRAR_ENDPOINT = "tcp://127.0.0.1:27615";
+var REGISTRAR_ENDPOINT = "ipc:///tmp/stackio-service-registrar";
 
 //Creates a new stack.io engine
 //options : object
 //      The ZeroRPC options
 //      Allowable options:
 //      * registrar (string) - specifies the registrar endpoint
-//        (default 'tcp://127.0.0.1:27615')
+//        (default 'ipc:///tmp/stackio-service-registrar')
 //      * timeout (number) - specifies the timeout in seconds (default 30)
 //callback : function
 //      The function to call when the engine is initialized
@@ -54,13 +54,12 @@ util.inherits(Engine, events.EventEmitter);
 // callback : function
 //      The function to call once the list is updated.
 Engine.prototype._updateSvcList = function(callback) {
-    console.log('Updating service list');
     var self = this,
         registrarClient = self._createClient(self.options.registrar || REGISTRAR_ENDPOINT);
 
     registrarClient.invoke("services", true, function(error, res, more) {
         if(error) {
-            self.emit("error", error);
+            callback(error, self);
         } else {
             for(var serviceName in res) {
                 self._services[serviceName] = {
@@ -127,8 +126,9 @@ Engine.prototype._invoke = function(service/*, method, args..., callback*/) {
 //      The ZeroMQ endpoint of the service
 //context : object
 //      The methods to expose
-Engine.prototype.expose = function(serviceName, endpoint, context) {
+Engine.prototype.expose = function(serviceName, context) {
     var self = this;
+    var endpoint = "ipc:///tmp/stackio-service-" + serviceName;
 
     var server = new zerorpc.Server(context);
     server.bind(endpoint);

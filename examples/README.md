@@ -12,6 +12,11 @@ Available apps:
  * retaliator
  * stress
 
+These bash scripts move files around, install dependencies, start stack.io
+and run a static server. If you're using the examples as a basis to roll
+out your own stack.io app, you can ignore what these scripts do and just take
+a look at the bin directory, which contains the final built results.
+
 ## Dashboard App ##
 
 This webapp allows you to introspect and call functions on the currently
@@ -27,13 +32,13 @@ This app connects to twitter using OAuth and makes a simple API call, showing
 the results in the browser.
 
 To setup, follow these steps:
- * (Register an app with Twitter)[https://dev.twitter.com/apps/new].
+ * [Register an app with Twitter](https://dev.twitter.com/apps/new).
    * Set the callback URL to `http://local.host:8000/auth.html`.
  * Copy the credentials into `src/oauth.json`.
  * Edit `/etc/hosts` and add an entry for `local.host` to `127.0.0.1`
    (This is required because Twitter does not allow localhost redirects.
    Alternatively, you could use something like
-   (localtunnel)[http://progrium.com/localtunnel/].)
+   [localtunnel](http://progrium.com/localtunnel/).)
 
 After that, build and run the app, and make sure you navigate to
 `http://local.host:8000` instead of `http://localhost:8000`.
@@ -44,7 +49,7 @@ This app connects to dotCloud's REST API using OAuth and makes a simple API
 call, showing the results in the browser.
 
 To setup, follow these steps:
- * (Register an app with dotCloud)[https://www.dotcloud.com/settings/oauth2/clients/new].
+ * [Register an app with dotCloud](https://www.dotcloud.com/settings/oauth2/clients/new).
    * Set the Redirect URI to `http://localhost:8000/auth.html`.
  * Copy the credentials into `src/oauth.json`.
 

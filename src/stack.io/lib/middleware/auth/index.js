@@ -47,8 +47,8 @@ function useOAuth(server, connector, providers) {
 //      The stack.io server
 //connector : RegExp
 //      The pattern for connector names that this should apply to
-//registrarEndpoint : string
-//      The ZeroMQ endpoint of the registrar
+//seedConfig : object
+//      The initial normal auth users and groups
 function useNormalAuth(server, connector, seedConfig) {
     applySharedMiddleware(server, connector);
     server.middleware(connector, /(?!_stackio)^.+$/, /.+/, normalValidator);

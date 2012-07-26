@@ -29,7 +29,7 @@ var stack = require(".."),
     _ = require("underscore"),
     optimist = require("optimist");
 
-var DEFAULT_REGISTRAR_ENDPOINT = "tcp://127.0.0.1:27615";
+var DEFAULT_REGISTRAR_ENDPOINT = "ipc:///tmp/stackio-service-registrar";
 var DEFAULT_PORT = 8080;
 
 var argv = optimist
@@ -120,3 +120,4 @@ server.middleware(/.+/, /.+/, /.+/, stack.zerorpcMiddleware(argv.registrar));
 //Start!
 expressApp.listen(argv.port);
 server.listen();
+console.log("Server listening on port " + argv.port + " (registrar on endpoint " + argv.registrar + ")");
