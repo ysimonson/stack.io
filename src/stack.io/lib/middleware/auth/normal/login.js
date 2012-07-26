@@ -70,10 +70,12 @@ module.exports = function(initialConfig) {
             var username = req.args[0], password = req.args[1];
 
             api.login(username, password, function(error, permissions, more) {
-                req.session.auth = {
-                    username: username,
-                    permissions: compilePermissions(permissions)
-                };
+                if (!error) {
+                    req.session.auth = {
+                        username: username,
+                        permissions: compilePermissions(permissions)
+                    };
+                }
 
                 res.update(error, permissions, more);
             });
