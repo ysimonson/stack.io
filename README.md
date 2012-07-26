@@ -73,7 +73,7 @@ Here's a full example:
         });
     });
 
-[See the full API for webapps](https://github.com/dotcloud/stack.io/blob/master/doc/api/client-webapps.md).
+[See the full API for webapps](https://github.com/dotcloud/stack.io/blob/master/doc/client-webapps.md).
 
 ### Node.js ###
 
@@ -163,7 +163,7 @@ Here's a full example:
         });
     });
 
-[See the full API for node.js](https://github.com/dotcloud/stack.io/blob/master/doc/api/client-node.md).
+[See the full API for node.js](https://github.com/dotcloud/stack.io/blob/master/doc/client-node.md).
 
 ## Server ##
 
@@ -247,4 +247,4 @@ Here's a full example:
     expressApp.listen(8080);
     server.listen();
 
-[See the full server API for more details](https://github.com/dotcloud/stack.io/blob/master/doc/api/server.md).
+[See the full server API for more details](https://github.com/dotcloud/stack.io/blob/master/doc/server.md).
