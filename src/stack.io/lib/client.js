@@ -32,7 +32,7 @@ var REGISTRAR_ENDPOINT = "ipc:///tmp/stackio-service-registrar";
 //      The ZeroRPC options
 //      Allowable options:
 //      * registrar (string) - specifies the registrar endpoint
-//        (default 'tcp://127.0.0.1:27615')
+//        (default 'ipc:///tmp/stackio-service-registrar')
 //      * timeout (number) - specifies the timeout in seconds (default 30)
 //callback : function
 //      The function to call when the engine is initialized
