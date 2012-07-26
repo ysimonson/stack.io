@@ -29,7 +29,7 @@ module.exports = function(req, res, next) {
         //Service inspection
 
         if(req.args.length !== 1 || typeof(req.args[0]) !== 'string') {
-            var error = stack.createSyntheticError("BadArgumentsError", "Bad arguments");
+            var error = model.createSyntheticError("BadArgumentsError", "Bad arguments");
             res.update(error, undefined, false);
         } else {
             req.service = req.args[0];
