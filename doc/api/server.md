@@ -51,6 +51,12 @@ Properties:
 
 ##### Session Objects #####
 
+These objects are provided as part of request objects. Values in a session
+persist across invocation requests, so middleware can place items in the
+session to be saved between requests. For example, auth middleware uses
+sessions to save user permissions. It is up to connectors to determine how a
+session should be persisted.
+
 Constructor: `new Session(initialValues)`, where `initialValues` is an object
 containing initial session keys and values.
 
@@ -58,6 +64,10 @@ Events:
  * `finish` - Emitted when the session is closed
 
 ##### Response Objects #####
+
+Response objects are what middleware uses to push responses to connectors.
+Connectors listen for `update` events on response objects to fetch updates
+and push them to the client.
 
 Constructor: `new Response()`
 
