@@ -123,12 +123,18 @@ Engine.prototype._invoke = function(service/*, method, args..., callback*/) {
 //serviceName : string
 //      The name of the service
 //endpoint : string
-//      The ZeroMQ endpoint of the service
+//      The ZeroMQ endpoint of the service (optional)
 //context : object
 //      The methods to expose
-Engine.prototype.expose = function(serviceName, context) {
+Engine.prototype.expose = function(serviceName, endpoint, context) {
     var self = this;
-    var endpoint = "ipc:///tmp/stackio-service-" + serviceName;
+
+    if (typeof endpoint != 'string' && !context) {
+        context = endpoint;
+        endpoint = undefined;
+    }
+
+    endpoint = endpoint || "ipc:///tmp/stackio-service-" + serviceName;
 
     var server = new zerorpc.Server(context);
     server.bind(endpoint);
