@@ -51,6 +51,7 @@ var argv = optimist
     .alias("d", "debug")
 
     .describe("p", "Sets the port to run on (default " + DEFAULT_PORT + ")")
+    .string("p")
     .default("p", DEFAULT_PORT)
     .alias("p", "port")
 
@@ -118,6 +119,6 @@ server.middleware(/.+/, /_stackio/, /.+/, stack.builtinsMiddleware);
 server.middleware(/.+/, /.+/, /.+/, stack.zerorpcMiddleware(argv.registrar));
 
 //Start!
-expressApp.listen(argv.port);
+expressApp.listen(parseInt(argv.port));
 server.listen();
 console.log("Server listening on port " + argv.port + " (registrar on endpoint " + argv.registrar + ")");
