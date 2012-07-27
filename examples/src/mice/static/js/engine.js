@@ -21,7 +21,7 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-var MOUSE_UPDATE_RATE = 10;
+var MOUSE_UPDATE_RATE = 100;
 
 stack.io({host: "http://localhost:8080", timeout: 5}, function(error, client) {
     if(error) {
@@ -55,9 +55,9 @@ stack.io({host: "http://localhost:8080", timeout: 5}, function(error, client) {
                         var update = event.payload[i];
 
                         if(update.type === "move") {
-                            //if(myClientId !== update.value.id) {
-                            moveMouse(update.value.id, update.value.pos);
-                            //}
+                            if(myClientId !== update.value.id) {
+                                moveMouse(update.value.id, update.value.pos);
+                            }
                         } else if(update.type === "stats") {
                             updateCount(update.value);
                         } else if(update.type === "unlisten") {
