@@ -1,6 +1,6 @@
 {
     "name" : "stack.io",
-    "version" : "0.2.3",
+    "version" : "0.2.4",
     "description" : "ZeroRPC bridge to the web",
     "main" : "./index.js",
 
