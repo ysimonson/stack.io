@@ -22,7 +22,7 @@
 // DEALINGS IN THE SOFTWARE.
 
 var stack = require("../../../bin/stack.io");
-var UPDATE_RATE = 0;
+var UPDATE_RATE = 100;
 
 function Mice() {
     var self = this;
@@ -50,7 +50,6 @@ Mice.prototype._sendUpdate = function() {
         try {
             this.clients[clientId].listener(undefined, message, true);
         } catch(e) {
-            console.error(e);
             this._enqueueUpdate("unlisten", clientId);
             delete this.clients[clientId];
         }
@@ -64,12 +63,23 @@ Mice.prototype._enqueueUpdate = function(type, value) {
 };
 
 Mice.prototype.move = function(clientId, x, y, reply) {
+    if(arguments.length !== 4 || typeof(clientId) != 'number' || typeof(x) != 'number' || typeof(y) != 'number') {
+        return arguments[arguments.length - 1]("Invalid arguments");
+    }
+
     this.clients[clientId].pos = [x, y];
     this._enqueueUpdate("move", { id: clientId, pos: [x, y] });
-    reply(null, null, false);
+    
+    try {
+        reply(null, null, false);
+    } catch(e) {}
 };
 
 Mice.prototype.listen = function(reply) {
+    if(arguments.length !== 1) {
+        return arguments[arguments.length - 1]("Incorrect number of arguments");
+    }
+
     var myClientId = this.clientIdCounter++;
     var otherClientStates = [];
 
@@ -83,14 +93,20 @@ Mice.prototype.listen = function(reply) {
         pos: [0, 0]
     };
 
-    reply(undefined, {
-        type: "initial",
-        id: myClientId,
-        count: this._numClients(),
-        clients: otherClientStates
-    }, true);
+    try {
+        reply(undefined, {
+            type: "initial",
+            id: myClientId,
+            count: this._numClients(),
+            clients: otherClientStates
+        }, true);
+    } catch(e) {}
 };
 
 stack.io(null, function(error, client) {
     client.expose("mice", new Mice());
+
+    client.on("error", function(error) {
+        console.error(error);
+    });
 });
