@@ -147,7 +147,7 @@ function runStress(service, numWorkers) {
 }
 
 function initStress(numWorkers) {
-    stack.io({host: "http://localhost:8080", timeout: 5}, function(error, client) {
+    stack.io({host: "http://" + window.location.hostname + ":8080", timeout: 5}, function(error, client) {
         if(error) {
             showError("RPC Initialization Error", error.message);
         } else {

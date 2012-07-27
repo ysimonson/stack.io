@@ -35,7 +35,7 @@ function ready() {
     if(readyCount === 2) start();
 }
 
-stack.io({host: "http://localhost:8080"}, function(error, client) {
+stack.io({host: "http://" + window.location.hostname + ":8080"}, function(error, client) {
     if(error) {
         return console.error(error);
     }

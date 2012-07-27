@@ -23,7 +23,7 @@
 
 var MOUSE_UPDATE_RATE = 100;
 
-stack.io({host: "http://localhost:8080", timeout: 5}, function(error, client) {
+stack.io({host: "http://" + window.location.hostname + ":8080", timeout: 5}, function(error, client) {
     if(error) {
         console.error(error);
         return;

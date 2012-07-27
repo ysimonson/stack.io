@@ -116,7 +116,7 @@ function start() {
     }
 }
 
-stack.io({host: "http://localhost:8080"}, function(error, clt) {
+stack.io({host: "http://" + window.location.hostname + ":8080"}, function(error, clt) {
     client = clt;
     
     if(error) {
