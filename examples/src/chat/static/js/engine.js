@@ -92,13 +92,13 @@ function handleLogin() {
 
             firstMessage = false;
         } else if(res) {
-            incomingMessage(res);
+            incomingMessage(handle, res);
         }
     });
 }
 
 function setupChat(handle) {
-    $("#field-username").text(handle);
+    $("#field-username").text(handle + ":");
 
     $("#chat-form").submit(function(e) {
         e.preventDefault();
@@ -115,8 +115,12 @@ function outgoingMessage(handle, text) {
     });
 }
 
-function incomingMessage(message) {
+function incomingMessage(myHandle, message) {
     var li = $("<li>");
+
+    if(message.handle === myHandle || (message.text || "").indexOf(myHandle) > -1) {
+        li.attr("style", "background-color: #DEDEDE");
+    }
 
     if(message.type === "connected" || message.type === "disconnected") {
         li.append($("<span class='message-handle'>").text(message.handle));
@@ -127,4 +131,5 @@ function incomingMessage(message) {
     }
 
     $("#chat-messages").append(li);
+    $("#chat-messages").scrollTop($("#chat-messages")[0].scrollHeight);
 }
