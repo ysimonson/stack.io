@@ -1,0 +1,70 @@
+<!--
+    Open Source Initiative OSI - The MIT License (MIT):Licensing
+
+    The MIT License (MIT)
+    Copyright (c) 2012 DotCloud Inc (opensource@dotcloud.com)
+
+    Permission is hereby granted, free of charge, to any person obtaining a
+    copy of this software and associated documentation files (the "Software"),
+    to deal in the Software without restriction, including without limitation
+    the rights to use, copy, modify, merge, publish, distribute, sublicense,
+    and/or sell copies of the Software, and to permit persons to whom the
+    Software is furnished to do so, subject to the following conditions:
+
+    The above copyright notice and this permission notice shall be included in
+    all copies or substantial portions of the Software.
+
+    THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+    IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+    FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+    AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+    LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+    FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+    DEALINGS IN THE SOFTWARE.
+-->
+
+<html>
+    <head>
+        <title>stack.io chat</title>
+        <link type="text/css" rel="stylesheet" href="lib/bootstrap/css/bootstrap.min.css" />
+        <link type="text/css" rel="stylesheet" href="css/style.css" />
+    </head>
+
+    <body>
+        <div id="login">
+            <form id="login-form" class="form-horizontal">
+                <fieldset>
+                    <div id="input-handle-container" class="control-group">
+                        <label class="control-label" for="input-handle">Handle</label>
+                        <div class="controls">
+                            <input id="input-handle" type="text" maxlength="50" />
+                            <span id="input-handle-error" class="help-inline"></span>
+                        </div>
+                    </div>
+
+                    <div class="form-actions">
+                        <button id="submit-login-form" type="submit" class="btn btn-primary" disabled>Join</button>
+                    </div>
+                </fieldset>
+            </form>
+        </div>
+
+        <div id="chat" style="display:none">
+            <ul id="chat-messages" class="span12">
+            </ul>
+
+            <form id="chat-form">
+                <div class="span11">
+                    <span id="field-username"></span>:
+                    <input id="input-message" type="text" maxlength="200" />
+                </div>
+                <button id="submit-chat-form" type="submit" class="btn btn-primary span1">Send</button>
+            </form>
+        </div>
+    </body>
+
+    <script type="text/javascript" src="lib/jquery.min.js"></script>
+    <script type="text/javascript" src="lib/bootstrap/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="stack.io.js"></script>
+    <script type="text/javascript" src="js/engine.js"></script>
+</html>
