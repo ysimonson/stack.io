@@ -103,6 +103,7 @@ function setupChat(handle) {
     $("#chat-form").submit(function(e) {
         e.preventDefault();
         outgoingMessage(handle, $("#input-message").val());
+        $("#input-message").val("");
         return false;
     });
 
