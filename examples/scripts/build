@@ -25,10 +25,7 @@
 
 set -e
 
-if [ ! -d "node_modules" ]; then
-    npm install restler@2.0.x twitter@0.1.18
-fi
-
+npm install restler@2.0.x twitter@0.1.18
 rm -rf bin
 
 cp -r src/$1 bin
