@@ -5,6 +5,7 @@ while in the examples directory, and navigate your browser to
 `http://localhost:8000`.
 
 Available apps:
+ * chat
  * dashboard
  * mice
  * oauth_dotcloud
@@ -16,6 +17,10 @@ These bash scripts move files around, install dependencies, start stack.io
 and run a static server. If you're using the examples as a basis to roll
 out your own stack.io app, you can ignore what these scripts do and just take
 a look at the bin directory, which contains the final built results.
+
+## Chat App ##
+
+It's a...chat app.
 
 ## Dashboard App ##
 
