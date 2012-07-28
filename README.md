@@ -1,5 +1,7 @@
 # Stack.io #
 
+![the stack.io quattuordecpus](http://stackio-dotcloud-labs.dotcloud.com/img/logo.png)
+
 Stack.io is a distributed communication framework for web apps and server-side
 processes.
 
