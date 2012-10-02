@@ -21,10 +21,10 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-var db = require('./sqlite-wrapper');
+var dbModule = require('sqlite-wrapper');
 
 module.exports = function(dbName, errorCallback, finishCallback) {
-    db.init(dbName);
+    var db = dbModule(dbName);
 
     var schema = {
         groups: {

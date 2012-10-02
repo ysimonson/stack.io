@@ -24,7 +24,7 @@
 module.exports = function(dbName) {
     var crypto = require('crypto'),
         _ = require('underscore');
-    var db = require('./sqlite-wrapper').init(dbName);
+    var db = require('sqlite-wrapper')(dbName);
 
     function hash(str) {
         var hash = crypto.createHash('sha256');
