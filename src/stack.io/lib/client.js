@@ -62,7 +62,6 @@ function Engine(options, callback) {
     });
 
     registrarClient.invoke('subscribe', function(error, res, more) {
-        console.log('registrar events', res);
         if (error) {
             self.emit('error', error);
         } else if (res && res.type == 'register') {
