@@ -96,6 +96,10 @@ module.exports = function(registrarEndpoint) {
                 var client = getConnection(endpoint, req.session, req.service);
                 var invokeArgs = [req.method].concat(req.args);
 
+                if (registrar._requireSession(req.service, req.method)) {
+                    invokeArgs.unshift(req.session);
+                }
+
                 invokeArgs.push(function(error, zerorpcRes, more) {
                     res.update(error, zerorpcRes, more);
                 });

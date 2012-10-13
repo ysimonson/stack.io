@@ -53,3 +53,4 @@ exports.useNormalAuth = auth.useNormalAuth;
 
 exports.ioServer = server.ioServer;
 exports.io = client.ioClient;
+exports.requireSession = client.requireSession;

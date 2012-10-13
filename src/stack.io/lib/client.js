@@ -52,7 +52,7 @@ function Engine(options, callback) {
         } else {
             for (var serviceName in res) {
                 self._services[serviceName] = {
-                    endpoint: res[serviceName],
+                    endpoint: res[serviceName].endpoint,
                     client: null,
                     context: null,
                     introspected: null
@@ -97,7 +97,7 @@ Engine.prototype._updateSvcList = function(callback) {
                 } else {
                     for (var serviceName in res) {
                         self._services[serviceName] = {
-                            endpoint: res[serviceName],
+                            endpoint: res[serviceName].endpoint,
                             client: null,
                             context: null,
                             introspected: null
@@ -176,15 +176,20 @@ Engine.prototype.expose = function(serviceName, endpoint, context) {
         self.emit("error", error);
     });
 
+    var requireSession = Object.keys(context).filter(function(key) {
+        return context[key].__requireSession === true;
+    });
+
     self.use("registrar", function(error, registrar) {
         if(error) {
             self.emit("error", error);
         } else {
-            registrar.register(serviceName, endpoint, function(error) {
-                if(error) {
-                    self.emit("error", error);
-                }
-            });
+            registrar.register(serviceName, endpoint, { requireSession: requireSession },
+                function(error) {
+                    if(error) {
+                        self.emit("error", error);
+                    }
+                });
         }
     });
 };
@@ -292,3 +297,8 @@ function createStubMethod(engine, service, method) {
 }
 
 exports.ioClient = Engine;
+
+exports.requireSession = function(f) {
+    f.__requireSession = true;
+    return f;
+}

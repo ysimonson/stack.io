@@ -25,7 +25,7 @@ var evts = require('events')
 
 module.exports = function(endpoint) {
     var services = {
-        'registrar': endpoint
+        'registrar': { endpoint: endpoint, options: {} }
     };
 
     var emitter = new evts.EventEmitter();
@@ -50,8 +50,13 @@ module.exports = function(endpoint) {
             }
         },
         // Register a new service
-        register: function(name, endpoint, cb) {
-            services[name] = endpoint;
+        register: function(name, endpoint, options, cb) {
+            if (typeof options == 'function') {
+                cb = options;
+                options = {};
+            }
+
+            services[name] = { endpoint: endpoint, options: options };
             emitter.emit('register', name, endpoint);
             cb(null, true);
         },
@@ -94,6 +99,11 @@ module.exports = function(endpoint) {
             emitter.on('register', onRegister);
 
             emitter.on('unregister', onUnregister);
+        },
+
+        _requireSession: function(service, method) {
+            return services[service].options.requireSession &&
+                services[service].options.requireSession.indexOf(method) >= 0;
         }
     };
 
