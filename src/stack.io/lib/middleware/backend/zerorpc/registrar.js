@@ -21,10 +21,14 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
+var evts = require('events')
+
 module.exports = function(endpoint) {
     var services = {
         'registrar': endpoint
     };
+
+    var emitter = new evts.EventEmitter();
 
     var registrar = {
         // Get the endpoint of a specific service
@@ -48,12 +52,48 @@ module.exports = function(endpoint) {
         // Register a new service
         register: function(name, endpoint, cb) {
             services[name] = endpoint;
+            emitter.emit('register', name, endpoint);
             cb(null, true);
         },
         // Unregister a service
         unregister: function(name, cb) {
             delete services[name];
+            emitter.emit('unregister', name);
             cb(null, true);
+        },
+
+        subscribe: function(cb) {
+            var onRegister = function(name, endpoint) {
+                try {
+                    cb(null, {
+                        type: 'register',
+                        name: name,
+                        endpoint: endpoint
+                    }, true);
+                } catch (e) {
+                    // Client disconnected, unsubscribe.
+                    emitter.removeListener('register', onRegister);
+                    emitter.removeListener('unregister', onUnregister);
+                }
+            }
+
+            var onUnregister = function(name) {
+                try {
+                    cb(null, {
+                        type: 'register',
+                        name: name,
+                        endpoint: endpoint
+                    }, true);
+                } catch (e) {
+                    // Client disconnected, unsubscribe.
+                    emitter.removeListener('register', onRegister);
+                    emitter.removeListener('unregister', onUnregister);
+                }
+            }
+
+            emitter.on('register', onRegister);
+
+            emitter.on('unregister', onUnregister);
         }
     };
 
