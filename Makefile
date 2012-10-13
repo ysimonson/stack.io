@@ -5,7 +5,7 @@ clean:
 
 create-bin:
 	mkdir bin
-	
+
 build-web-client: create-bin
 	mkdir bin/client
 	node scripts/r.js -o scripts/client-build-prod.cfg.js

@@ -45,23 +45,12 @@ function Engine(options, callback) {
     self.options = options || {};
     self._services = {};
 
-    this._updateSvcList(callback);
-}
-
-util.inherits(Engine, events.EventEmitter);
-
-// Update the list of registered services
-// callback : function
-//      The function to call once the list is updated.
-Engine.prototype._updateSvcList = function(callback) {
-    var self = this,
-        registrarClient = self._createClient(self.options.registrar || REGISTRAR_ENDPOINT);
-
-    registrarClient.invoke("services", true, function(error, res, more) {
-        if(error) {
-            callback(error, self);
+    var registrarClient = self._createClient(self.options.registrar || REGISTRAR_ENDPOINT);
+    registrarClient.invoke('services', true, function(error, res, more) {
+        if (error) {
+            return callback(error, self);
         } else {
-            for(var serviceName in res) {
+            for (var serviceName in res) {
                 self._services[serviceName] = {
                     endpoint: res[serviceName],
                     client: null,
@@ -69,9 +58,54 @@ Engine.prototype._updateSvcList = function(callback) {
                     introspected: null
                 };
             }
+        }
+    });
 
-            registrarClient.close();
-            callback && callback(error, self);
+    registrarClient.invoke('subscribe', function(error, res, more) {
+        console.log('registrar events', res);
+        if (error) {
+            self.emit('error', error);
+        } else if (res && res.type == 'register') {
+            if (self._services[res.name] && res.endpoint == self._services[res.name].endpoint)
+                return;
+            self._services[res.name] = {
+                endpoint: res.endpoint,
+                client: null,
+                context: null,
+                introspected: null
+            }
+        } else if (res && res.type == 'unregister') {
+            delete self._services[res.name];
+        }
+    });
+
+    callback && callback(null, self);
+}
+
+util.inherits(Engine, events.EventEmitter);
+
+// Force update the list of registered services
+// callback : function
+//      The function to call once the list is updated.
+Engine.prototype._updateSvcList = function(callback) {
+    self.use("registrar", function(error, registrar) {
+        if(error) {
+            self.emit("error", error);
+        } else {
+            registrar.services(true, function(error, res, more) {
+                if (error) {
+                    return callback(error, self);
+                } else {
+                    for (var serviceName in res) {
+                        self._services[serviceName] = {
+                            endpoint: res[serviceName],
+                            client: null,
+                            context: null,
+                            introspected: null
+                        };
+                    }
+                }
+            });
         }
     });
 }
