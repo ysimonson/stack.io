@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 # Starts the unit tests
 node bin/stackio --config bin/test/seed.json &
