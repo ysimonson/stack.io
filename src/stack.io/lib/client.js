@@ -59,6 +59,8 @@ function Engine(options, callback) {
                 };
             }
         }
+
+        callback && callback(null, self);
     });
 
     registrarClient.invoke('subscribe', function(error, res, more) {
@@ -77,8 +79,6 @@ function Engine(options, callback) {
             delete self._services[res.name];
         }
     });
-
-    callback && callback(null, self);
 }
 
 util.inherits(Engine, events.EventEmitter);
@@ -249,7 +249,7 @@ Engine.prototype.use = function(service, callback) {
 
     //Try to fetch the cached result if possible
     if(!cached) {
-        throw new Error("Unknown service");
+        throw new Error("Unknown service " + service);
     } else if(cached.context) {
         callback(null, cached.context);
     } else {

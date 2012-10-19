@@ -33,7 +33,7 @@ module.exports = function(endpoint) {
     var registrar = {
         // Get the endpoint of a specific service
         service: function(name, cb) {
-            cb(null, services[name]);
+            cb(null, services[name].endpoint);
         },
         // Get the names of all services
         // If verbose is true, get a map of service name to endpoint of all services

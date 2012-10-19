@@ -94,12 +94,20 @@ module.exports = function(registrarEndpoint) {
             } else {
                 //Invokes the call if possible
                 var client = getConnection(endpoint, req.session, req.service);
-                var invokeArgs = [req.method].concat(req.args);
+                var invokeArgs = req.args;
 
+                // Add session as first argument to the call, omitting private session
+                // parameters (starting with _)
                 if (registrar._requireSession(req.service, req.method)) {
-                    invokeArgs.unshift(req.session);
+                    var session = {}
+                    Object.keys(req.session).forEach(function(key) {
+                        if (key[0] !== '_')
+                            session[key] = req.session[key];
+                    });
+                    invokeArgs.unshift(session);
                 }
 
+                invokeArgs.unshift(req.method);
                 invokeArgs.push(function(error, zerorpcRes, more) {
                     res.update(error, zerorpcRes, more);
                 });
