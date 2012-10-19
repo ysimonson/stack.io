@@ -8,7 +8,7 @@
 
     "groups": {
         "test": {
-            "test": ["addMan", "add42", "iter", "simpleError", "objectError", "streamError", "quiet", "_zerorpc_inspect"],
+            "test": ["addMan", "add42", "iter", "simpleError", "objectError", "streamError", "quiet", "_zerorpc_inspect", "sessionPass"],
             "bad_test": [".+"],
             "auth": [".+"]
         }

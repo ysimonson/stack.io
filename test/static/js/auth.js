@@ -102,7 +102,7 @@ function testAuth() {
         authService.getGroupPermissions("test", function(error, res, more) {
             equal(error, null);
             ok(res, "No response");
-            equal(res.length, 10);
+            equal(res.length, 11);
             equal(more, false);
             barrier();
         });
