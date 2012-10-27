@@ -112,7 +112,7 @@ if(argv.auth == "oauth") {
 } else if(argv.auth == "normalauth") {
     //Use normal (username+password) authentication
     stack.useNormalAuth(server, /.+/, config);
-} 
+}
 
 //Add middleware necessary for making ZeroRPC calls
 server.middleware(/.+/, /_stackio/, /.+/, stack.builtinsMiddleware);

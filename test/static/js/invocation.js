@@ -23,7 +23,7 @@
 
 function testInvocation() {
     module("Invocation");
-    
+
     asyncTest("Normal string method", 3, function() {
         testService.addMan("This is not an error", function(error, res, more) {
             equal(error, null);
@@ -92,6 +92,17 @@ function testInvocation() {
             ok(error);
             equal(error.name, "TimeoutExpired");
             equal(res, null);
+            equal(more, false);
+            start();
+        });
+    });
+
+    asyncTest("Session passing", 5, function() {
+        testService.sessionPass(function(error, res, more) {
+            equal(error, null);
+            ok(res);
+            ok(res.auth);
+            equal(res.auth.username, 'test');
             equal(more, false);
             start();
         });

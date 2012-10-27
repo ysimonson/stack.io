@@ -38,7 +38,7 @@ stack.io(null, function(error, client) {
         },
 
         iter: function(from, to, step, reply) {
-            for(i=from; i<to; i+=step) {
+            for(var i = from; i < to; i += step) {
                 reply(null, i, true);
             }
 
@@ -57,7 +57,7 @@ stack.io(null, function(error, client) {
             reply("This is a stream error, man!", undefined, true);
 
             var error = false;
-            
+
             try {
                 reply(null, "Should not happen", false);
             } catch(e) {
@@ -71,12 +71,20 @@ stack.io(null, function(error, client) {
 
         quiet: function(reply) {
             setTimeout(function() {
-                reply(null, "Should not happen", false);
+                try {
+                    reply(null, "Should not happen", false);
+                } catch (e) {
+                    // ignore
+                }
             }, 31 * 1000);
         },
 
         notAuthorized: function(reply) {
             reply(null, "Should not happen", false);
-        }
+        },
+
+        sessionPass: stack.requireSession(function(session, reply) {
+            reply(null, session);
+        })
     });
 });

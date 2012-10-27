@@ -1,6 +1,6 @@
 {
     "name" : "stack.io",
-    "version" : "0.2.9",
+    "version" : "0.2.10",
     "description" : "ZeroRPC bridge to the web",
     "main" : "./index.js",
 
@@ -24,14 +24,14 @@
         "sqlite-wrapper": "0.2.x",
         "optimist": "0.3.4"
     },
-    
+
     "repository" : {
         "type" : "git",
         "url" : "http://github.com/dotcloud/stack.io"
     },
 
     "author" : "dotCloud <opensource@dotcloud.com>",
-    
+
     "contributors" : [{
         "name": "Sam Alba",
         "email": "sam@dotcloud.com"
