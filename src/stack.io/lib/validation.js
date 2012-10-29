@@ -56,7 +56,7 @@ function validateOptions(options) {
     for(var key in OPTIONS_CHECKS) {
         if(key in options) {
             if(typeof(options[key]) != OPTIONS_CHECKS[key]) {
-                throw "option '" + key + "' is of the incorrect type; expected a(n) " + expectedType;
+                throw "option '" + key + "' is of the incorrect type; expected a(n) " + OPTIONS_CHECKS[key];
             }
         }
     }
