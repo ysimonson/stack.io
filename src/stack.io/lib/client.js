@@ -87,6 +87,7 @@ util.inherits(Engine, events.EventEmitter);
 // callback : function
 //      The function to call once the list is updated.
 Engine.prototype._updateSvcList = function(callback) {
+    var self = this;
     self.use("registrar", function(error, registrar) {
         if(error) {
             self.emit("error", error);
