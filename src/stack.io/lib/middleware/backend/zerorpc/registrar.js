@@ -21,7 +21,7 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-var evts = require('events')
+var evts = require('events');
 
 module.exports = function(endpoint) {
     var services = {
@@ -80,7 +80,7 @@ module.exports = function(endpoint) {
                     emitter.removeListener('register', onRegister);
                     emitter.removeListener('unregister', onUnregister);
                 }
-            }
+            };
 
             var onUnregister = function(name) {
                 try {
@@ -94,7 +94,7 @@ module.exports = function(endpoint) {
                     emitter.removeListener('register', onRegister);
                     emitter.removeListener('unregister', onUnregister);
                 }
-            }
+            };
 
             emitter.on('register', onRegister);
 
@@ -108,4 +108,4 @@ module.exports = function(endpoint) {
     };
 
     return registrar;
-}
+};

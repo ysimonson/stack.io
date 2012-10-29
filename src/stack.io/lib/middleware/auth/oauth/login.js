@@ -32,15 +32,16 @@ module.exports = function(req, res, next) {
     } else {
         var config = req.session.auth.config;
 
+        var redirectUrl, provider;
         if(config.version === "1.0") {
             //OAuth 1.0 authentication
 
             var verifier = req.args[0];
-            var redirectUrl = req.args[1];
+            redirectUrl = req.args[1];
             var oldProvider = req.session.auth.provider;
 
             //Create a new OAuth object based on the old provider
-            var provider = new oauth.OAuth(oldProvider._requestUrl,
+            provider = new oauth.OAuth(oldProvider._requestUrl,
                 oldProvider._accessUrl,
                 oldProvider._consumerKey,
                 oldProvider._consumerSecret,
@@ -64,8 +65,8 @@ module.exports = function(req, res, next) {
             //OAuth 2.0 authentication
 
             var code = req.args[0];
-            var redirectUrl = req.args[1];
-            var provider = req.session.auth.provider;
+            redirectUrl = req.args[1];
+            provider = req.session.auth.provider;
 
             var options = {
                 "grant_type": "authorization_code",
@@ -86,4 +87,4 @@ module.exports = function(req, res, next) {
             });
         }
     }
-}
+};

@@ -99,7 +99,7 @@ module.exports = function(registrarEndpoint) {
                 // Add session as first argument to the call, omitting private session
                 // parameters (starting with _)
                 if (registrar._requireSession(req.service, req.method)) {
-                    var session = {}
+                    var session = {};
                     Object.keys(req.session).forEach(function(key) {
                         if (key[0] !== '_')
                             session[key] = req.session[key];
@@ -116,4 +116,4 @@ module.exports = function(registrarEndpoint) {
             }
         });
     };
-}
+};

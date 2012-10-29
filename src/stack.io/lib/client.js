@@ -74,7 +74,7 @@ function Engine(options, callback) {
                 client: null,
                 context: null,
                 introspected: null
-            }
+            };
         } else if (res && res.type == 'unregister') {
             delete self._services[res.name];
         }
@@ -87,6 +87,7 @@ util.inherits(Engine, events.EventEmitter);
 // callback : function
 //      The function to call once the list is updated.
 Engine.prototype._updateSvcList = function(callback) {
+    var self = this;
     self.use("registrar", function(error, registrar) {
         if(error) {
             self.emit("error", error);
@@ -107,7 +108,7 @@ Engine.prototype._updateSvcList = function(callback) {
             });
         }
     });
-}
+};
 
 //Creates a new client
 //endpoint : string
@@ -202,7 +203,7 @@ Engine.prototype.expose = function(serviceName, endpoint, context) {
 //      contains the introspection data
 Engine.prototype._introspect = function(service, callback) {
     this._invoke(service, "_zerorpc_inspect", callback);
-}
+};
 
 //Gets a list of services that are available
 //return : array of string
@@ -278,7 +279,7 @@ Engine.prototype.use = function(service, callback) {
 //      The method name
 Engine.prototype.call = function(service, method) {
     return createStubMethod(this, service, method);
-}
+};
 
 //Creates a stub method for a context that actually invokes the remote process
 //engine : object
@@ -301,4 +302,4 @@ exports.ioClient = Engine;
 exports.requireSession = function(f) {
     f.__requireSession = true;
     return f;
-}
+};

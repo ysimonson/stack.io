@@ -41,11 +41,11 @@ module.exports = function(configs) {
     //Create an OAuth object for each configured provider
     for(var serviceName in configs) {
         var config = configs[serviceName];
-
+        var provider;
         if(config.version === "1.0") {
-            var provider = new oauth.OAuth(config.requestUrl, config.accessUrl, config.consumerKey, config.consumerSecret, "1.0", null, "HMAC-SHA1");
+            provider = new oauth.OAuth(config.requestUrl, config.accessUrl, config.consumerKey, config.consumerSecret, "1.0", null, "HMAC-SHA1");
         } else if(config.version === "2.0") {
-            var provider = new oauth.OAuth2(config.clientId, config.clientSecret, config.baseSite, config.authorizePath, config.accessTokenPath);
+            provider = new oauth.OAuth2(config.clientId, config.clientSecret, config.baseSite, config.authorizePath, config.accessTokenPath);
         } else {
             throw new Error("Unknown OAuth version for service '" + serviceName + "': " + config.version);
         }
@@ -89,4 +89,4 @@ module.exports = function(configs) {
             }
         }
     };
-}
+};

@@ -27,9 +27,9 @@ module.exports = function(dbName) {
     var db = require('sqlite-wrapper')(dbName);
 
     function hash(str) {
-        var hash = crypto.createHash('sha256');
-        hash.update(str);
-        return hash.digest('hex');
+        var h = crypto.createHash('sha256');
+        h.update(str);
+        return h.digest('hex');
     }
 
     function repeat(seq, sep, n) {
@@ -48,7 +48,7 @@ module.exports = function(dbName) {
     function proxy(fn) {
         return function(err, result) {
             fn(err, result, false);
-        }
+        };
     }
 
     return {
@@ -150,7 +150,7 @@ module.exports = function(dbName) {
                     });
                     db.insertAll('permissions', permissions, function(err) {
                         cb(err, !err, false);
-                    })
+                    });
                 }
             });
         },
@@ -182,7 +182,7 @@ module.exports = function(dbName) {
                 if (err) {
                     return cb(err, null, false);
                 } else if (!result) {
-                    return cb(null, false, false)
+                    return cb(null, false, false);
                 }
                 db.remove('permissions', 'group_id=?', [result.id], function(err) {
                     cb(err, !err, false);
@@ -356,4 +356,4 @@ module.exports = function(dbName) {
             });
         }
     };
-}
+};

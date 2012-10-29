@@ -37,11 +37,11 @@ var middleware = {
 };
 
 for(var connectorName in connectors) {
-    exports[connectorName] = require("./lib/connectors/" + connectors[connectorName])
+    exports[connectorName] = require("./lib/connectors/" + connectors[connectorName]);
 }
 
 for(var middlewareName in middleware) {
-    exports[middlewareName] = require("./lib/middleware/" + middleware[middlewareName])
+    exports[middlewareName] = require("./lib/middleware/" + middleware[middlewareName]);
 }
 
 exports.createSyntheticError = model.createSyntheticError;

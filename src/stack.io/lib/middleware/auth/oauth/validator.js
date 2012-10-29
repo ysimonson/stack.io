@@ -34,8 +34,9 @@ module.exports = function(req, res, next) {
     });
 
     if(canInvoke) {
+        var oauthPayload;
         if(req.session.auth.config.version === "1.0") {
-            var oauthPayload = {
+            oauthPayload = {
                 version: "1.0",
                 consumerKey: req.session.auth.config.consumerKey,
                 consumerSecret: req.session.auth.config.consumerSecret,
@@ -43,7 +44,7 @@ module.exports = function(req, res, next) {
                 accessTokenSecret: req.session.auth.accessTokenSecret
             };
         } else {
-            var oauthPayload = {
+            oauthPayload = {
                 version: "2.0",
                 accessToken: req.session.auth.accessToken,
                 refreshToken: req.session.auth.refreshToken
@@ -56,4 +57,4 @@ module.exports = function(req, res, next) {
         var error = model.createSyntheticError("NotPermittedError", "Not permitted");
         res.update(error, undefined, false);
     }
-}
+};

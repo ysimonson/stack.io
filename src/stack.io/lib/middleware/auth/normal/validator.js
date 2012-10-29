@@ -39,4 +39,4 @@ module.exports = function(req, res, next) {
         var error = model.createSyntheticError("NotPermittedError", "Not permitted");
         res.update(error, undefined, false);
     }
-}
+};
