@@ -35,7 +35,7 @@ function compilePermissions(permissions) {
     return permissions ? _.map(permissions, function(permission) {
         return {
             service: new RegExp(permission.service),
-            method: new RegExp(permission.method),
+            method: new RegExp(permission.method)
         };
     }) : [];
 }
