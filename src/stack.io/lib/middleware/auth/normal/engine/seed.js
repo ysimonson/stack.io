@@ -34,7 +34,7 @@ module.exports = function(auth, config) {
             }, []);
             auth.addGroupPermissions(name, insertables, function(err) {
                 if (err) throw err;
-            })
+            });
         }
     }
 
@@ -78,7 +78,7 @@ module.exports = function(auth, config) {
                     auth.addUserGroups(username, data.groups, function(err) {
                         if (err) throw err;
                     });
-                })
+                });
             }
         });
     }
@@ -90,4 +90,4 @@ module.exports = function(auth, config) {
     for (var username in config.users) {
         addUser(username);
     }
-}
+};
