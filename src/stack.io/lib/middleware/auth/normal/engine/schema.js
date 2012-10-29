@@ -50,11 +50,12 @@ module.exports = function(dbName, errorCallback, finishCallback) {
 
     var createdCount = 0;
 
-    for (var table in schema) {
-        db.createTable(table, schema[table], function(err) {
-            if(err) errorCallback(err);
-            createdCount++;
-            if(createdCount == 4) finishCallback();
-        });
-    }
+    var callback = function(err) {
+        if(err) errorCallback(err);
+        createdCount++;
+        if(createdCount == 4) finishCallback();
+    };
+
+    for (var table in schema)
+        db.createTable(table, schema[table], callback);
 };
