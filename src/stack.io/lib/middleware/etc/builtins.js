@@ -25,11 +25,12 @@ var model = require("../../model");
 
 //Converts magic methods on _stackio for introspection to their actual names
 module.exports = function(req, res, next) {
+    var error;
     if(req.method === 'inspect') {
         //Service inspection
 
         if(req.args.length !== 1 || typeof(req.args[0]) !== 'string') {
-            var error = model.createSyntheticError("BadArgumentsError", "Bad arguments");
+            error = model.createSyntheticError("BadArgumentsError", "Bad arguments");
             res.update(error, undefined, false);
         } else {
             req.service = req.args[0];
@@ -42,7 +43,7 @@ module.exports = function(req, res, next) {
         req.method = 'services';
     } else {
         //Unknown built-in
-        var error = model.createSyntheticError("BadMethodError", "Unknown method");
+        error = model.createSyntheticError("BadMethodError", "Unknown method");
         res.update(error, undefined, false);
     }
 
