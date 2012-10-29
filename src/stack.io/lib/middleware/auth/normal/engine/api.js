@@ -27,9 +27,9 @@ module.exports = function(dbName) {
     var db = require('sqlite-wrapper')(dbName);
 
     function hash(str) {
-        var hash = crypto.createHash('sha256');
-        hash.update(str);
-        return hash.digest('hex');
+        var h = crypto.createHash('sha256');
+        h.update(str);
+        return h.digest('hex');
     }
 
     function repeat(seq, sep, n) {
