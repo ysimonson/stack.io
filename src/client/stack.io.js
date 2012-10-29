@@ -130,7 +130,7 @@ define(['socket.io'], function() {
     Engine.prototype.logout = function(/*args..., callback*/) {
         var args = ["_stackio", "logout"].concat(Array.prototype.slice.call(arguments));
         this._invoke.apply(this, args);
-    }
+    };
 
     //Performs introspection
     //service : string
@@ -140,7 +140,7 @@ define(['socket.io'], function() {
     //      contains the introspection data
     Engine.prototype._introspect = function(service, callback) {
         this._invoke("_stackio", "inspect", service, callback);
-    }
+    };
 
     //Gets a list of services that are available
     //return : array of string
@@ -216,7 +216,7 @@ define(['socket.io'], function() {
     //      The method name
     Engine.prototype.call = function(service, method) {
         return createStubMethod(this, service, method);
-    }
+    };
 
     //Creates a stub method for a context that actually invokes the remote process
     //engine : object
