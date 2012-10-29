@@ -46,7 +46,7 @@ module.exports = function(dbName, errorCallback, finishCallback) {
             service: { type: 'TEXT' },
             method: { type: 'TEXT' }
         }
-    }
+    };
 
     var createdCount = 0;
 
