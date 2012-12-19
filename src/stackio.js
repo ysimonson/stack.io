@@ -27,7 +27,8 @@ var stack = require(".."),
     express = require("express"),
     fs = require("fs"),
     _ = require("underscore"),
-    optimist = require("optimist");
+    optimist = require("optimist"),
+    http = require("http");
 
 var DEFAULT_REGISTRAR_ENDPOINT = "ipc:///tmp/stackio-service-registrar";
 var DEFAULT_PORT = 8080;
@@ -75,10 +76,11 @@ try {
 }
 
 //Create the express app
-var expressApp = express.createServer();
+var baseExpressApp = express();
+var expressApp = http.createServer(baseExpressApp);
 
-expressApp.configure(function() {
-    expressApp.use(express.bodyParser());
+baseExpressApp.configure(function() {
+    baseExpressApp.use(express.bodyParser());
 });
 
 //Create the stack.io server
