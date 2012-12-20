@@ -21,7 +21,7 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-define(function() {
+(function() {
     //Gets the default host
     function defaultHost() {
         var host = window.location.protocol + "//" + window.location.hostname;
@@ -273,5 +273,5 @@ define(function() {
         };
     }
 
-    return { io: Engine };
-});
+    window.stack = { io: Engine };
+})();
