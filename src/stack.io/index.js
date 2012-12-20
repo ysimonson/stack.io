@@ -27,7 +27,8 @@ var model = require("./lib/model"),
     auth = require("./lib/middleware/auth");
 
 var connectors = {
-    "SocketIOConnector": "socketio"
+    "SocketIOConnector": "socketio",
+    "HttpConnector": "http"
 };
 
 var middleware = {

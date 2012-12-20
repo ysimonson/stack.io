@@ -88,6 +88,7 @@ var server = new stack.ioServer();
 
 //Use the socket.io connector
 server.connector(new stack.SocketIOConnector(expressApp));
+server.connector(new stack.HttpConnector(baseExpressApp));
 
 //Add print middleware if debug is enabled
 if(argv.debug) {
