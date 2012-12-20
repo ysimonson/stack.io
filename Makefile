@@ -22,5 +22,4 @@ build-cli: create-bin
 
 build-test: create-bin
 	cp -r test bin/test
-	#cp bin/client/stack.io.debug.js bin/test/static/stack.io.js
-	cp bin/client/stack.io-http.debug.js bin/test/static/stack.io.js
+	cp bin/client/stack.io.debug.js bin/test/static/stack.io.js
