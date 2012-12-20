@@ -29,34 +29,34 @@ var MAX_IDENTIFIER_LENGTH = 1024,
 
 //Validates an identifier
 function checkIdentifier(identifier, name) {
-    if(typeof(identifier) !== 'string') throw "expected " + name + " to be a string" +
-        ", got " + JSON.stringify(identifier) + "[" + typeof identifier + "] instead";
-    if(identifier.length > MAX_IDENTIFIER_LENGTH) throw name + " is too long";
-    if(!IDENTIFIER_VALIDATOR.test(identifier)) throw "invalid " + name;
+    if(typeof(identifier) !== 'string') throw new Error("expected " + name + " to be a string" +
+        ", got " + JSON.stringify(identifier) + "[" + typeof identifier + "] instead");
+    if(identifier.length > MAX_IDENTIFIER_LENGTH) throw new Error(name + " is too long");
+    if(!IDENTIFIER_VALIDATOR.test(identifier)) throw new Error("invalid " + name);
 }
 
 function validateCallback(obj) {
-    if(typeof(obj) != 'function') throw "expected a function";
+    if(typeof(obj) != 'function') throw new Error("expected a function");
 }
 
 function validateNumber(name, obj) {
-    if(typeof(obj) != 'number') throw "expected " + name + " to be a number";
+    if(typeof(obj) != 'number') throw new Error("expected " + name + " to be a number");
 }
 
 //Validates an invocation request
 function validateInvocation(service, method, args) {
     checkIdentifier(service, "service");
     checkIdentifier(method, "method");
-    if(!(args instanceof Array)) throw "expected args to be an array";
+    if(!(args instanceof Array)) throw new Error("expected args to be an array");
 }
 
 function validateOptions(options) {
-    if(typeof(options) != 'object') throw "expected options to be an object";
+    if(typeof(options) != 'object') throw new Error("expected options to be an object");
 
     for(var key in OPTIONS_CHECKS) {
         if(key in options) {
             if(typeof(options[key]) != OPTIONS_CHECKS[key]) {
-                throw "option '" + key + "' is of the incorrect type; expected a(n) " + OPTIONS_CHECKS[key];
+                throw new Error("option '" + key + "' is of the incorrect type; expected a(n) " + OPTIONS_CHECKS[key]);
             }
         }
     }

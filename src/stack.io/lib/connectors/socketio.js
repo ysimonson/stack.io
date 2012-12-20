@@ -70,7 +70,7 @@ SocketIOConnector.prototype.listen = function() {
 //      The callback to call when the initialization is complete
 SocketIOConnector.prototype._doInit = function(socket, options, callback) {
     try {
-        if(socket.socketioSession) throw "session already initialized";
+        if(socket.socketioSession) throw new Error("session already initialized");
         validation.validateOptions(options);
         validation.validateCallback(callback);
     } catch(e) {
