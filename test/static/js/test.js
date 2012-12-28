@@ -21,7 +21,6 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-var readyCount = 0;
 var CHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
 
 function randomString(n) {
@@ -40,29 +39,57 @@ stack.io({host: "http://localhost:8080", timeout: 5}, function(error, clt) {
         ok(!error);
     })
 
-    asyncTest("Authenticated for testing", function() {
-        client.login("test", "test-password", function(error) {
-            ok(!error);
+    client.use("test", function(error, service) {
+        equal(error, null);
 
-            client.use("test", function(error, service) {
-                equal(error, null);
-                testService = service;
-                ready();
-            });
+        service.addMan("This is not an error", function(error, res, more) {
+            equal(error, null);
+            equal(res, "This is not an error, man!");
+            equal(more, false);
+            anonReady();
+        });
 
-            client.use("auth", function(error, service) {
-                equal(error, null);
-                authService = service;
-                ready();
-            });
+        service.add42(30, function(error, res, more) {
+            equal(error.name, "NotPermittedError");
+            equal(res, null);
+            equal(more, false);
+            anonReady();
         });
     });
 });
 
 var testService = null;
 var authService = null;
+var anonReadyCount = 0;
+var readyCount = 0;
 
 $(ready);
+
+function anonReady() {
+    anonReadyCount++;
+
+    if(anonReadyCount == 2) {
+        start();
+
+        asyncTest("Authenticated for testing", function() {
+            client.login("test", "test-password", function(error) {
+                ok(!error);
+
+                client.use("test", function(error, service) {
+                    equal(error, null);
+                    testService = service;
+                    ready();
+                });
+
+                client.use("auth", function(error, service) {
+                    equal(error, null);
+                    authService = service;
+                    ready();
+                });
+            });
+        });
+    }
+}
 
 function ready() {
     readyCount++;

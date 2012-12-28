@@ -22,21 +22,43 @@
 // DEALINGS IN THE SOFTWARE.
 
 var _ = require("underscore"),
-    model = require("../../../model");
+    model = require("../../../model"),
+    apiCreator = require("./engine/api"),
+    util = require("./util");
 
 //Validates that a request can be conducted by the user given his/her
 //permissions
-module.exports = function(req, res, next) {
-    var permissions = req.session.auth ? req.session.auth.permissions : [];
+module.exports = function(initialConfig) {
+    var api = apiCreator("stackio_auth");
+    var anonPermissions = null;
 
-    var canInvoke = _.any(permissions, function(permission) {
-        return permission.service.test(req.service) && permission.method.test(req.method);
-    });
+    return function(req, res, next) {
+        var validate = function(permissions) {
+            var canInvoke = _.any(permissions, function(permission) {
+                return permission.service.test(req.service) && permission.method.test(req.method);
+            });
+            
+            if(canInvoke) {
+                next();
+            } else {
+                var error = model.createSyntheticError("NotPermittedError", "Not permitted");
+                res.update(error, undefined, false);
+            }
+        };
 
-    if(canInvoke) {
-        next();
-    } else {
-        var error = model.createSyntheticError("NotPermittedError", "Not permitted");
-        res.update(error, undefined, false);
-    }
+        if(req.session.auth) {
+            validate(req.session.auth.permissions);
+        } else if(anonPermissions) {
+            validate(anonPermissions);
+        } else {
+            api.getGroupPermissions("__anon__", function(error, res, more) {
+                if(error) {
+                    res.update(error, res, more);
+                } else {
+                    anonPermissions = util.compilePermissions(res);
+                    validate(anonPermissions);
+                }
+            });
+        }
+    };
 };
