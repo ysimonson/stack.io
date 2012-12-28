@@ -69,10 +69,16 @@ function testAuth() {
         });
     });
 
-    asyncTest("Get all groups", 3, function() {
+    asyncTest("Get all groups", 5, function() {
         authService.getAllGroups(function(error, res, more) {
             equal(error, null);
-            deepEqual(res, [{id: 1, name: "test"}, {id: 2, name: "__anon__"}]);
+            equal(res.length, 2);
+
+            for(var i=0; i<res.length; i++) {
+                var name = res[i].name;
+                ok(name == "__anon__" || name == "test");
+            }
+
             equal(more, false);
             start();
         });
