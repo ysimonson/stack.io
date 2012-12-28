@@ -72,7 +72,7 @@ function testAuth() {
     asyncTest("Get all groups", 3, function() {
         authService.getAllGroups(function(error, res, more) {
             equal(error, null);
-            deepEqual(res, [{id: 1, name: "test"}]);
+            deepEqual(res, [{id: 1, name: "test"}, {id: 2, name: "__anon__"}]);
             equal(more, false);
             start();
         });

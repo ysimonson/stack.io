@@ -51,7 +51,7 @@ function useOAuth(server, connector, providers) {
 //      The initial normal auth users and groups
 function useNormalAuth(server, connector, seedConfig) {
     applySharedMiddleware(server, connector);
-    server.middleware(connector, /(?!_stackio)^.+$/, /.+/, normalValidator);
+    server.middleware(connector, /(?!_stackio)^.+$/, /.+/, normalValidator(seedConfig));
     server.middleware(connector, /_stackio/, /login/, normalLogin(seedConfig));
 }
 
