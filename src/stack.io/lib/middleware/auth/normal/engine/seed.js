@@ -32,6 +32,7 @@ module.exports = function(auth, config) {
                 });
                 return prev;
             }, []);
+
             auth.addGroupPermissions(name, insertables, function(err) {
                 if (err) throw err;
             });

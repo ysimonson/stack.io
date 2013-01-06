@@ -148,6 +148,7 @@ module.exports = function(dbName) {
                     permissions.forEach(function(item) {
                         item.group_id = result.id;
                     });
+
                     db.insertAll('permissions', permissions, function(err) {
                         cb(err, !err, false);
                     });

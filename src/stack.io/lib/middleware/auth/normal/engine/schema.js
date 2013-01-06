@@ -28,23 +28,23 @@ module.exports = function(dbName, errorCallback, finishCallback) {
 
     var schema = {
         groups: {
-            id: { type: 'INTEGER', primary: true },
-            name: { type: 'TEXT', unique: true }
+            id: { type: 'INTEGER', primary: true, notnull: true },
+            name: { type: 'TEXT', unique: true, notnull: true }
         },
         user_groups: {
-            group_id: { type: 'INTEGER', ref: 'groups' },
-            user_id: { type: 'INTEGER', ref: 'users' }
+            group_id: { type: 'INTEGER', ref: 'groups', notnull: true },
+            user_id: { type: 'INTEGER', ref: 'users', notnull: true }
         },
         users: {
-            id: { primary: true, type: 'INTEGER' },
+            id: { primary: true, type: 'INTEGER', notnull: true },
             username: { unique: true, type: 'TEXT', notnull: true },
             password_hash: { type: 'TEXT', notnull: true }
         },
         permissions: {
-            id: { type: 'INTEGER', primary : true },
-            group_id: { ref: 'groups', type: 'INTEGER' },
-            service: { type: 'TEXT' },
-            method: { type: 'TEXT' }
+            id: { type: 'INTEGER', primary: true, notnull: true },
+            group_id: { ref: 'groups', type: 'INTEGER', notnull: true },
+            service: { type: 'TEXT', notnull: true },
+            method: { type: 'TEXT', notnull: true }
         }
     };
 
