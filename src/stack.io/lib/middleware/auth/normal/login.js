@@ -26,28 +26,17 @@ var _ = require("underscore"),
     apiCreator = require("./engine/api"),
     schema = require("./engine/schema"),
     seed = require("./engine/seed"),
-    client = require("../../../client");
-
-var AUTH_DB = "stackio_auth";
-
-//Compiles a list of permissions to regular expressions
-function compilePermissions(permissions) {
-    return permissions ? _.map(permissions, function(permission) {
-        return {
-            service: new RegExp(permission.service),
-            method: new RegExp(permission.method)
-        };
-    }) : [];
-}
+    client = require("../../../client"),
+    util = require("./util");
 
 //Creates a normal login middleware
 //registrarEndpoint : string
 //      The ZeroMQ endpoint of the registrar
 module.exports = function(initialConfig) {
-    var api = apiCreator(AUTH_DB);
+    var api = apiCreator("stackio_auth");
 
     if(initialConfig) {
-        schema(AUTH_DB, function(error) {
+        schema("stackio_auth", function(error) {
             console.error(error);
         }, function() {
             seed(api, initialConfig);
@@ -73,7 +62,7 @@ module.exports = function(initialConfig) {
                 if (!error) {
                     req.session.auth = {
                         username: username,
-                        permissions: compilePermissions(permissions)
+                        permissions: util.compilePermissions(permissions)
                     };
                 }
 

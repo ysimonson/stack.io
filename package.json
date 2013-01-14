@@ -25,6 +25,10 @@
         "socket.io": "0.9.13"
     },
 
+    "devDependencies": {
+        "nodeunit": "0.7.4"
+    },
+
     "repository" : {
         "type" : "git",
         "url" : "http://github.com/dotcloud/stack.io"

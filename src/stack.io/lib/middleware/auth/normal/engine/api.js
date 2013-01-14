@@ -148,6 +148,7 @@ module.exports = function(dbName) {
                     permissions.forEach(function(item) {
                         item.group_id = result.id;
                     });
+
                     db.insertAll('permissions', permissions, function(err) {
                         cb(err, !err, false);
                     });
@@ -328,13 +329,11 @@ module.exports = function(dbName) {
                         if (err) {
                             return cb(err, null, false);
                         }
-                        var links = ids.reduce(function(prev, item) {
-                            prev.push({
-                                group_id: gid,
-                                user_id: item.id
-                            });
-                            return prev;
-                        }, []);
+
+                        var links = ids.map(function(item) {
+                            return { group_id: gid, user_id: item.id };
+                        });
+
                         db.insertAll('user_groups', links, function(err) {
                             cb(err, !err, false);
                         });

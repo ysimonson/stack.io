@@ -28,7 +28,8 @@ var model = require("./lib/model"),
 
 var connectors = {
     "SocketIOConnector": "socketio",
-    "HttpConnector": "http"
+    "HttpConnector": "http",
+    "UdpConnector": "udp"
 };
 
 var middleware = {

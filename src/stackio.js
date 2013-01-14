@@ -60,6 +60,19 @@ var argv = optimist
     .string("c")
     .alias("c", "config")
 
+    .describe("s", "Use socket.io connector")
+    .boolean("s")
+    .default("s", true)
+    .alias("s", "socketio")
+
+    .describe("h", "Use HTTP connector")
+    .boolean("h")
+    .default("h", false)
+    .alias("h", "http")
+
+    .describe("u", "Defines a UDP port to listen on. Implicitly enables the UDP connector.")
+    .alias("u", "udp")
+
     .argv;
 
 //Validate config
@@ -86,9 +99,20 @@ baseExpressApp.configure(function() {
 //Create the stack.io server
 var server = new stack.ioServer();
 
-//Use the socket.io connector
-server.connector(new stack.SocketIOConnector(expressApp));
-server.connector(new stack.HttpConnector(baseExpressApp));
+//Adds the socket.io connector
+if(argv.socketio) {
+    server.connector(new stack.SocketIOConnector(expressApp));    
+}
+
+//Adds the HTTP connector
+if(argv.http) {
+    server.connector(new stack.HttpConnector(baseExpressApp));    
+}
+
+//Adds the UDP connector
+if(argv.udp) {
+    server.connector(new stack.UdpConnector(argv.udp, argv.debug));
+}
 
 //Add print middleware if debug is enabled
 if(argv.debug) {

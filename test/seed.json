@@ -7,6 +7,10 @@
     },
 
     "groups": {
+        "__anon__": {
+            "test": ["addMan"]
+        },
+
         "test": {
             "test": ["addMan", "add42", "iter", "simpleError", "objectError", "streamError", "quiet", "_zerorpc_inspect", "sessionPass"],
             "bad_test": [".+"],
