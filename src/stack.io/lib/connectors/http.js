@@ -1,5 +1,4 @@
-var io = require("socket.io"),
-    validation = require("../validation"),
+var validation = require("../validation"),
     model = require("../model"),
     util = require("util"),
     events = require("events"),

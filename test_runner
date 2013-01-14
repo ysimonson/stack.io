@@ -1,8 +1,11 @@
 #!/bin/bash
+set -e
 
 # Starts the unit tests
 node bin/stackio --config bin/test/seed.json --debug &
 node bin/test/service/app.js &
+
+./node_modules/nodeunit/bin/nodeunit bin/test/server/udp.js
 
 pushd bin/test/static
 python -m SimpleHTTPServer &
