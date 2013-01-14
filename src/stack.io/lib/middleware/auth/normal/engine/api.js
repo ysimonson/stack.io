@@ -330,8 +330,8 @@ module.exports = function(dbName) {
                         }
                         var links = ids.reduce(function(prev, item) {
                             prev.push({
-                                group_id: item.id,
-                                user_id: gid
+                                group_id: gid,
+                                user_id: item.id
                             });
                             return prev;
                         }, []);
