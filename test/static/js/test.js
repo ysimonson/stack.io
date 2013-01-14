@@ -96,10 +96,10 @@ function ready() {
 
     if(readyCount == 3) {
         start();
-        //testInvocation();
-        //testAuth();
+        testInvocation();
+        testAuth();
         testAccounts();
-        //testValidation();
+        testValidation();
     }
 }
 
